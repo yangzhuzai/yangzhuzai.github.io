@@ -1,0 +1,125 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>HTB | 养猪日记</title>
+<meta name=keywords content><meta name=description content="养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/categories/htb/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=https://yangzhuzai.github.io/categories/htb/index.xml><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/categories/htb/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="HTB"><meta property="og:description" content="养猪日记"><meta property="og:type" content="website"><meta property="og:url" content="https://yangzhuzai.github.io/categories/htb/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="HTB"><meta name=twitter:description content="养猪日记"></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/categories/>Categories</a></div><h1>HTB</h1></header><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0X033 Atom</h2></header><div class=entry-content><p>端口扫描 获取立足点 从端口开放情况来看，值得关注的点有：smb、redis、5985、80、443
+先看smb:
+这里的内容，似乎在说，把程序放在这个目录，会自动运行：
+创建者Pages
+看看redis呢：
+好像不行，没有未授权：
+web方面，443和80页面一样：
+发现文件，下载：
+smb确实有写入权限：
+程序看起来没有什么特别的，逆向看看把：
+好像没逆向出来，有点尴尬：
+抓包看看了：
+发现dns查询，添加hosts抓取tun0：
+然后大概了解一下，程序通过访问目标上的yml文件，然后根据yml文件的内容，来尝试更新软件，然后结合刚刚PDF的内容，我们可以上传一个yml文件，指向我们的exe程序，就可以尝试getshell了：
+计算一下值：
+sha512sum “8'889.exe” | cut -d ’ ’ -f1 | xxd -r -p | base64 -w0
+jJ7y5xvMF62HF3VmIQOFMpTogFyyYLl04zditACTK5L0j9CMQRHaC7OuI0mWeRI09tE0zOMTKienCmBNJqn+fA==
+yml文件内容如下：
+version: 1.0.1
+files:
+- url: 8'889.exe
+sha512: jJ7y5xvMF62HF3VmIQOFMpTogFyyYLl04zditACTK5L0j9CMQRHaC7OuI0mWeRI09tE0zOMTKienCmBNJqn+fA==
+size: 73802
+path: 8'889.exe
+sha512: jJ7y5xvMF62HF3VmIQOFMpTogFyyYLl04zditACTK5L0j9CMQRHaC7OuI0mWeRI09tE0zOMTKienCmBNJqn+fA== 上传上去：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;77 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X033 Atom" href=https://yangzhuzai.github.io/posts/htb/0x033-atom/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0X034 Querier</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的端口：445、1433、5985
+445：
+用户名：Luis
+不知道为啥，打开是空的：
+但是在windows中打开，发现好像是存在宏：
+使用unzip工具进行提取即可，在提取出来的文件中，可以发现：
+reporting
+PcwTWTHRwryjc$c6
+登录成功：
+xp_cmd无法开启，试着中继了hash:
+破解成功：
+corporate568 (mssql-svc)
+但是登录失败了：
+试试psexec，也失败了：
+使用新的账户登录MSSQL：
+xp_cmd开启成功：
+通过smb共享，反弹shell回来：
+提权 winpe,
+看起来是打了补丁的，但还是看一下有没有比较好提权的把：
+好像没有，看看其他的：
+简单查了一下，好像是可以提权的：
+接着看：
+失败了：
+psexec，成功了：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;28 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X034 Querier" href=https://yangzhuzai.github.io/posts/htb/0x034-querier/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0X035 Sniper</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注端口：80、445：
+445：
+80：
+发现文件包含：
+经过测试远程文件包含不存在，那么该如何getshell呢？
+读取session文件：
+发现里面有我们的名字，于是，我们可以在这里面写入webshell，反弹shell:
+大概就是传入nc，然后反弹：
+数据库账号密码：
+这个密码是Chris用户的密码：
+使用powershell弹个Chris的shell回来：
+直接调用temp里面的失败了：
+得重新下一个到Chris的目录里面：
+提权 常规提权思路无果，需要信息收集：
+其实这里的意思是，让我们做一个帮助文档，然后会有人查看这个文档，结合downloads里面的chm文档，上面应该放置的就是这个文档，我们需要利用chm做一个payload：
+后续使用htmlhelp.exe来进行制作，然后就可以获取到administrator的ntlmhash进行破解即可：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;19 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X035 Sniper" href=https://yangzhuzai.github.io/posts/htb/0x035-sniper/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0X036 BreadCrumbs</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得注意的服务：ssh\http\smb\mysql
+smb：
+http:
+看起来是个搜索框，可能是sql注入？
+fuzz好像没有：
+目录扫描，发现登录框：
+发现很多用户名：
+似乎是存放cookie的地方：
+同时发现，疑似文件包含：
+根据报错，看样子是有了：
+成功读取cookie.php:
+查看login.php的源码：
+似乎authController.php才是负责身份控制的：
+发现数据文件：
+发现账号密码：
+但是不允许登录：
+看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：
+读取它：
+简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：
+返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：
+这里面只需要提供账号名，我们就可以伪造了：
+结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：
+代码如下：
+import hashlib
+import random
+def makesession(username):
+max_index = len(username) - 1
+seed = random.randint(0, max_index)
+key = "s4lTy_stR1nG_" + username[seed] + "(!528./9890"
+session_cookie = username + hashlib.md5(key.encode()).hexdigest()
+return session_cookie
+# 测试示例
+username = "paul"
+session_cookie = makesession(username)
+print("Generated Session Cookie:", session_cookie) ...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;203 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X036 BreadCrumbs" href=https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>0X038 Tally</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的服务：
+ftp、http、smb、mysql、winrm
+先看ftp:
+smb：
+只能看看http了：
+我扫了半天也没扫出东西来，看了才知道，得用其他字典:
+/usr/share/wordlists/dirb/vulns/sharepoint.txt
+这三个都可以用：
+发现文档：
+有密码了，但是好像没名字
+先试试，但是失败了，继续信息收集，通过删除#号前面的内容，可以成功看到信息：
+用户名为：ftp_user，同时告诉我们一个信息，他们会定时查看htlm文件，在Intranet文件夹中，可能可以钓鱼：
+发现用户名：
+继续信息收集，发现一个keepass软件：
+这个软件好像是个密码保存软件：
+并且查询后发现存储的密码是可以破解的：
+simplementeyo (tim)
+通过keepass2读取文件：
+winrm登录失败了，但是成功登录了smb，说实话，东西太多了，这样增加的难度我不是很喜欢：
+在zz_Archived中发现密码：
+但是好像不对：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X038 Tally" href=https://yangzhuzai.github.io/posts/htb/0x038-tally/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=https://yangzhuzai.github.io/categories/htb/page/5/>«&nbsp;Prev&nbsp;</a></nav></footer></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

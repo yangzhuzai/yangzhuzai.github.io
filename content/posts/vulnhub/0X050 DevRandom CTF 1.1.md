@@ -1,4 +1,6 @@
 +++
+ShowToc = true
+TocOpen = true
 title = '0x050 DevRandom CTF 1.1'
 date = 2024-10-11T14:25:59+08:00
 draft = false

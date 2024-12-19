@@ -1,10 +1,12 @@
 +++
+ShowToc = true
+TocOpen = true
 title = 'Spring'
 date = 2024-10-11T14:25:59+08:00
 draft = false
 private = true
 show_reading_time = true
-categories = 'Java组件'
+categories = 'Java安全'
 +++
 
 # 一、Spring生态
@@ -14,20 +16,16 @@ Spring开源框架由Rod Johnson创建，从简单性、可测试性和松耦合
 Spring生态系统提供许多有用的编程框架或工具集。 当下最为流行的Spring项目： Spring Framework，Spring Security，Spring Boot，Spring Cloud等。  
 
 
-## 
-Spring Framework 
+## Spring Framework 
 
 
 Spring Framework项目是整个Spring生态的基础，Spring Framework项目又包含多个子模块，如：spring-core，spring-beans，spring-context，spring-aop，spring web，spring-webmvc等等。 
 
 
-## 
-Spring Boot 
+## Spring Boot 
 
 
 Spring Boot是一个开发基于Spring Framework的项目，它默认集成了嵌入式 Tomcat，配置注解化，支持快速集成第三方开发组件（如MyBatis），大大降低了使用 Spring的门槛，而且内置了许多可以直接用于生产环境的功能，是目前用于开发微服务架构项目的不二选择。
-
-
 
 
 
@@ -37,9 +35,6 @@ Spring Boot是一个开发基于Spring Framework的项目，它默认集成了�
 Spring Cloud为开发基于微服务架构的软件系统提供了一整套工具集合，其中包含了开发各个微服务组件的具体项目，如：Spring Cloud Config（配置中心），Spring Cloud Netflix（服务注册中心），Spring Cloud Sleuth（服务调用监控），Spring Cloud Gateway（服务网关）等等。 Spring Cloud的基础是Spring Boot，基于Spring Boot可以大大简化开发各微服务组件 的流程。 
 
 
-
-
-
 ## Spring Security
 
 
@@ -47,19 +42,17 @@ Spring Security是用于实现认证和授权，以及访问控制的安全框�
 
 # 二、漏洞原理
 
-Spring于2002年最早提出并随后创建，2009年9月Spring 3.0 RC1发布后，Spring就引入了
+Spring于2002年最早提出并随后创建，2009年9月Spring 3.0 RC1发布后，Spring就引入了SpEL (Spring Expression Language)。SpEL(Spring Expression Language)是基于spring的一个表达式语言，类似于struts的OGNL，能够在运行时动态执行一些运算甚至一些指令，类似于Java的反射功能。
 
 # 三、漏洞利用
 
 ## 1、Spring Security OAuth2远程命令执行 CVE-2016-4977
 
-**oauth/authorize**
+oauth/authorize路径下，认证后漏洞，所以实战需要先爆破或者获取密码，也可以认为漏洞特征，发现可配合插件进行发现
 
 影响版本：
 
 2.0.0-2.0.9
-
-
 1.0.0-1.0.5
 
 POC生成脚本：
@@ -85,7 +78,7 @@ print(poc)
 
 ## 2、Spring Web Flow框架远程代码执行(CVE-2017-4971)
 
-Spring Web Flow是Spring的一个子项目，主要目的是解决跨越多个请求的、用户与服务器之间的、有状态交互问题，提供了描述业务流程的抽象能力，Spring WebFlow是一个适用于开发基于流程的应用程序的框架（如购物逻辑），可以将流程的定义和实现流程行为的类和视图分离开来。在其
+Spring Web Flow是Spring的一个子项目，主要目的是解决跨越多个请求的、用户与服务器之间的、有状态交互问题，提供了描述业务流程的抽象能力，Spring WebFlow是一个适用于开发基于流程的应用程序的框架（如购物逻辑），可以将流程的定义和实现流程行为的类和视图分离开来。在其2.4.0 - 2.4.4 版本中，如果我们控制了数据绑定时的field，将导致一个SpEL表达式注入漏洞，最终造成任意命令执行。
 
 POC：
 

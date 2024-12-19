@@ -1,4 +1,6 @@
 +++
+ShowToc = true
+TocOpen = true
 title = '0x059 Sedna'
 date = 2024-10-11T14:25:59+08:00
 draft = false

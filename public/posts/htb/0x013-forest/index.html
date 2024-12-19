@@ -1,0 +1,141 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0X013 Forest | 养猪日记</title>
+<meta name=keywords content><meta name=description content="端口扫描
+
+
+
+
+
+
+获取立足点
+smb无法利用，但是ldap存在匿名访问：
+
+
+查询所有用户：
+ldapsearch -x -H ldap://10.10.10.161:389 -u &rsquo;&rsquo; -w &rsquo;&rsquo; -b &ldquo;DC=htb,DC=local&rdquo; &ldquo;(&(objectCategory=person)(objectClass=user))&rdquo; |grep dn
+
+
+经过一段处理：
+把用户名提取出来：
+
+
+拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting
+用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash
+python ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/
+发现可用：
+
+
+破解hash:
+s3rvice          ($krb5asrep$svc-alfresco@HTB.LOCAL)
+
+
+5985开启，可用通过winrm getshell:
+
+
+
+
+提权
+使用bloodhunnd:
+
+
+发现两条路径：
+第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：
+
+
+第二条是通过EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：
+
+
+那么如何进入EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL组呢："><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/htb/0x013-forest/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/htb/0x013-forest/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0X013 Forest"><meta property="og:description" content="端口扫描
+
+
+
+
+
+
+获取立足点
+smb无法利用，但是ldap存在匿名访问：
+
+
+查询所有用户：
+ldapsearch -x -H ldap://10.10.10.161:389 -u &rsquo;&rsquo; -w &rsquo;&rsquo; -b &ldquo;DC=htb,DC=local&rdquo; &ldquo;(&(objectCategory=person)(objectClass=user))&rdquo; |grep dn
+
+
+经过一段处理：
+把用户名提取出来：
+
+
+拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting
+用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash
+python ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/
+发现可用：
+
+
+破解hash:
+s3rvice          ($krb5asrep$svc-alfresco@HTB.LOCAL)
+
+
+5985开启，可用通过winrm getshell:
+
+
+
+
+提权
+使用bloodhunnd:
+
+
+发现两条路径：
+第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：
+
+
+第二条是通过EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：
+
+
+那么如何进入EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL组呢："><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/htb/0x013-forest/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0X013 Forest"><meta name=twitter:description content="端口扫描
+
+
+
+
+
+
+获取立足点
+smb无法利用，但是ldap存在匿名访问：
+
+
+查询所有用户：
+ldapsearch -x -H ldap://10.10.10.161:389 -u &rsquo;&rsquo; -w &rsquo;&rsquo; -b &ldquo;DC=htb,DC=local&rdquo; &ldquo;(&(objectCategory=person)(objectClass=user))&rdquo; |grep dn
+
+
+经过一段处理：
+把用户名提取出来：
+
+
+拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting
+用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash
+python ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/
+发现可用：
+
+
+破解hash:
+s3rvice          ($krb5asrep$svc-alfresco@HTB.LOCAL)
+
+
+5985开启，可用通过winrm getshell:
+
+
+
+
+提权
+使用bloodhunnd:
+
+
+发现两条路径：
+第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：
+
+
+第二条是通过EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：
+
+
+那么如何进入EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL组呢："><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0X013 Forest","item":"https://yangzhuzai.github.io/posts/htb/0x013-forest/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0X013 Forest","name":"0X013 Forest","description":"端口扫描 获取立足点 smb无法利用，但是ldap存在匿名访问：\n查询所有用户：\nldapsearch -x -H ldap://10.10.10.161:389 -u \u0026rsquo;\u0026rsquo; -w \u0026rsquo;\u0026rsquo; -b \u0026ldquo;DC=htb,DC=local\u0026rdquo; \u0026ldquo;(\u0026amp;(objectCategory=person)(objectClass=user))\u0026rdquo; |grep dn\n经过一段处理：\n把用户名提取出来：\n拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting\n用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash\npython ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/\n发现可用：\n破解hash:\ns3rvice ($krb5asrep$svc-alfresco@HTB.LOCAL)\n5985开启，可用通过winrm getshell:\n提权 使用bloodhunnd:\n发现两条路径：\n第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：\n第二条是通过EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：\n那么如何进入EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL组呢：\n","keywords":[],"articleBody":"端口扫描 获取立足点 smb无法利用，但是ldap存在匿名访问：\n查询所有用户：\nldapsearch -x -H ldap://10.10.10.161:389 -u ’’ -w ’’ -b “DC=htb,DC=local” “(\u0026(objectCategory=person)(objectClass=user))” |grep dn\n经过一段处理：\n把用户名提取出来：\n拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting\n用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash\npython ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/\n发现可用：\n破解hash:\ns3rvice ($krb5asrep$svc-alfresco@HTB.LOCAL)\n5985开启，可用通过winrm getshell:\n提权 使用bloodhunnd:\n发现两条路径：\n第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：\n第二条是通过EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：\n那么如何进入EXCHANGE WINDOWS PERMISSIONS@HTB.LOCALL组呢：\nbloodhound告诉我们，SVC-ALFRESCO@HTB.LOCAL是可以通过添加账户来进入这个组的：\n也就是说，我们可以赋予一个用户dcsync权限：\n先使用SVC-ALFRESCO@HTB.LOCAL创建一个属于EXCHANGE WINDOWS PERMISSIONS@HTB.LOCAL组的用户：\n赋予dcsync权限：\n不知道哪里有问题，secretsdump失败了，使用powershell脚本试试：\n看来是权限没给上，再研究一下：\n给上了，这次导出hash成功了：\nhash登录：\nwmiexec.py administrator@10.10.10.161 -hashes ‘aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6’\na3c166fcef465897b552ea3f9d2c1eba\n总结 这个靶场的核心是使用bloodhound，对bloodhound的使用和理解有一定要求，如果有域内扎实权限基础的话，会更好打一些 ","wordCount":"64","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/htb/0x013-forest/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X013 Forest</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;64 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#这个靶场的核心是使用bloodhound对bloodhound的使用和理解有一定要求如果有域内扎实权限基础的话会更好打一些>这个靶场的核心是使用bloodhound，对<strong>bloodhound的使用和理解有一定要求，如果有域内扎实权限基础的话，会更好打一些</strong></a></li></ul></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE93fdbc1cf8437edf1e751023e9ed1e2bimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE1e68350840d2018df4ed107ffb3f6c08image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE033784e1aad5bf646aee9b3abd881f80image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>smb无法利用，但是ldap存在匿名访问：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEc2050611b4266ff071f8d900185cfb69image.png alt></p><p>查询所有用户：</p><p>ldapsearch -x -H ldap://10.10.10.161:389 -u &rsquo;&rsquo; -w &rsquo;&rsquo; -b &ldquo;DC=htb,DC=local&rdquo; &ldquo;(&(objectCategory=person)(objectClass=user))&rdquo; |grep dn</p><p><img loading=lazy src=/htb_img/WEBRESOURCEfe4307047ea47ceafd2b1efe1def47d1image.png alt></p><p>经过一段处理：</p><p>把用户名提取出来：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE64f411aa6c41500447fed65e433ecdc4image.png alt></p><p>拿到所有的用户名，几个想法：1、密码喷洒；2、AS-REP Roasting</p><p>用impacket工具包的GetNPUsers.py进行爆破，尝试获取hash</p><p>python ../impacket/examples/GetNPUsers.py -dc-ip 10.10.10.161 -usersfile username.txt -format john htb.local/</p><p>发现可用：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEca0d1df87d377c387427b0c959ac35b2image.png alt></p><p>破解hash:</p><p>s3rvice ($krb5asrep$svc-alfresco@HTB.LOCAL)</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8320a03326f3360b22481ebb4298c5b3image.png alt></p><p>5985开启，可用通过winrm getshell:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb8bd0e5f6b4ae711c2d344b99403dcacimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE43c068ea933f27d2853b15eddedeec1dimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>使用bloodhunnd:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb54eddfd1c767692663810ea6b449e24image.png alt></p><p>发现两条路径：</p><p>第一条是，CanPSRemote，通过登录来获取域管理员权限，但是前提是使用本地提权，然后DCSYNC，但是这条路不完全有效，后面看了一下，似乎不让读取系统信息，也就不要太好本地提权了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE50639070763fb043c8fb3a628461dedfimage.png alt></p><p>第二条是通过EXCHANGE WINDOWS <a href=mailto:PERMISSIONS@HTB.LOCALL>PERMISSIONS@HTB.LOCALL</a>这个组有完全控制权：bloodhound给的建议是给用户添加dcsync权限：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb406f0a27830d6d156e8a207be4c40bfimage.png alt></p><p>那么如何进入EXCHANGE WINDOWS <a href=mailto:PERMISSIONS@HTB.LOCALL>PERMISSIONS@HTB.LOCALL</a>组呢：</p><p>bloodhound告诉我们，SVC-ALFRESCO@HTB.LOCAL是可以通过添加账户来进入这个组的：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE792ebfdef5747d1d81ae5c24a92e0c70image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE495dc5f8a8937ad595fbf4d6a65411d0image.png alt></p><p>也就是说，我们可以赋予一个用户dcsync权限：</p><p>先使用SVC-ALFRESCO@HTB.LOCAL创建一个属于EXCHANGE WINDOWS <a href=mailto:PERMISSIONS@HTB.LOCAL>PERMISSIONS@HTB.LOCAL</a>组的用户：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE351f2b652dd56d12e721cf4940138cf2image.png alt></p><p>赋予dcsync权限：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEc42f7017986b2e09894f010ae1c8c3fdimage.png alt></p><p>不知道哪里有问题，secretsdump失败了，使用powershell脚本试试：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE370215061601254ca9e6e14ea4a5d1dfimage.png alt></p><p>看来是权限没给上，再研究一下：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE45ae99d0685f7c8396171b6cfe27b8e3image.png alt></p><p>给上了，这次导出hash成功了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE1c34d374b8a9346efc38c2fdffe04374image.png alt></p><p>hash登录：</p><p>wmiexec.py <a href=mailto:administrator@10.10.10.161>administrator@10.10.10.161</a> -hashes &lsquo;aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6&rsquo;</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbce8a514dc22193001326a4d636af659image.png alt></p><p>a3c166fcef465897b552ea3f9d2c1eba</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd7ed52f53b34b26b7d7490ccd694531cimage.png alt></p><h1 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h1><h2 id=这个靶场的核心是使用bloodhound对bloodhound的使用和理解有一定要求如果有域内扎实权限基础的话会更好打一些>这个靶场的核心是使用bloodhound，对<strong>bloodhound的使用和理解有一定要求，如果有域内扎实权限基础的话，会更好打一些</strong><a hidden class=anchor aria-hidden=true href=#这个靶场的核心是使用bloodhound对bloodhound的使用和理解有一定要求如果有域内扎实权限基础的话会更好打一些>#</a></h2></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x012-dpwwn-1-/><span class=title>« Prev</span><br><span>0x012 dpwwn 1 </span></a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x013-westwild-1.1/><span class=title>Next »</span><br><span>0x013 WestWild-1.1</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

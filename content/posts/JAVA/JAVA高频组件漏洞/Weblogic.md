@@ -1,10 +1,12 @@
 +++
+ShowToc = true
+TocOpen = true
 title = 'Weblogic'
 date = 2024-10-11T14:25:59+08:00
 draft = false
 private = true
 show_reading_time = true
-categories = 'Java组件'
+categories = 'Java安全'
 +++
 
 # 一、Weblogic

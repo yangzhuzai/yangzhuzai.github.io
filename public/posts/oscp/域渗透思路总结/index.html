@@ -1,0 +1,100 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>域渗透思路总结 | 养猪日记</title>
+<meta name=keywords content><meta name=description content="一、获取立足身份凭证
+1、LDAP匿名信息泄露：
+配合windapsearch.py获取域内用户信息：
+① 可能存在密码泄露；
+② 可获取用户名，配合AS-REP Roasting破解；
+③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos
+2、SMB+HTTP+LDAP信息收集
+① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可
+② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计
+③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）
+④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作
+二、提权思路
+以下方式一般为优先级按个执行
+1、Bloodhound
+bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。
+2、winpeass
+winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。
+具体提权漏洞，见windows操作[[windows提权]]
+3、组信息
+查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等
+4、密码获取
+当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。
+5、kerberoasting
+我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单
+6、ADCS证书攻击
+在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板
+7、白银票据
+如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令
+8、域内漏洞
+我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：
+① MS14-068
+② Netlogon"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="域渗透思路总结"><meta property="og:description" content="一、获取立足身份凭证
+1、LDAP匿名信息泄露：
+配合windapsearch.py获取域内用户信息：
+① 可能存在密码泄露；
+② 可获取用户名，配合AS-REP Roasting破解；
+③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos
+2、SMB+HTTP+LDAP信息收集
+① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可
+② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计
+③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）
+④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作
+二、提权思路
+以下方式一般为优先级按个执行
+1、Bloodhound
+bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。
+2、winpeass
+winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。
+具体提权漏洞，见windows操作[[windows提权]]
+3、组信息
+查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等
+4、密码获取
+当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。
+5、kerberoasting
+我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单
+6、ADCS证书攻击
+在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板
+7、白银票据
+如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令
+8、域内漏洞
+我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：
+① MS14-068
+② Netlogon"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="域渗透思路总结"><meta name=twitter:description content="一、获取立足身份凭证
+1、LDAP匿名信息泄露：
+配合windapsearch.py获取域内用户信息：
+① 可能存在密码泄露；
+② 可获取用户名，配合AS-REP Roasting破解；
+③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos
+2、SMB+HTTP+LDAP信息收集
+① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可
+② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计
+③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）
+④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作
+二、提权思路
+以下方式一般为优先级按个执行
+1、Bloodhound
+bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。
+2、winpeass
+winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。
+具体提权漏洞，见windows操作[[windows提权]]
+3、组信息
+查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等
+4、密码获取
+当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。
+5、kerberoasting
+我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单
+6、ADCS证书攻击
+在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板
+7、白银票据
+如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令
+8、域内漏洞
+我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：
+① MS14-068
+② Netlogon"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"域渗透思路总结","item":"https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"域渗透思路总结","name":"域渗透思路总结","description":"一、获取立足身份凭证 1、LDAP匿名信息泄露： 配合windapsearch.py获取域内用户信息：\n① 可能存在密码泄露；\n② 可获取用户名，配合AS-REP Roasting破解；\n③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos\n2、SMB+HTTP+LDAP信息收集 ① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可\n② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计\n③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）\n④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作\n二、提权思路 以下方式一般为优先级按个执行\n1、Bloodhound bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。\n2、winpeass winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。\n具体提权漏洞，见windows操作[[windows提权]]\n3、组信息 查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等\n4、密码获取 当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。\n5、kerberoasting 我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单\n6、ADCS证书攻击 在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板\n7、白银票据 如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令\n8、域内漏洞 我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：\n① MS14-068\n② Netlogon\n","keywords":[],"articleBody":"一、获取立足身份凭证 1、LDAP匿名信息泄露： 配合windapsearch.py获取域内用户信息：\n① 可能存在密码泄露；\n② 可获取用户名，配合AS-REP Roasting破解；\n③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos\n2、SMB+HTTP+LDAP信息收集 ① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可\n② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计\n③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）\n④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作\n二、提权思路 以下方式一般为优先级按个执行\n1、Bloodhound bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。\n2、winpeass winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。\n具体提权漏洞，见windows操作[[windows提权]]\n3、组信息 查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等\n4、密码获取 当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。\n5、kerberoasting 我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单\n6、ADCS证书攻击 在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板\n7、白银票据 如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令\n8、域内漏洞 我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：\n① MS14-068\n② Netlogon\n","wordCount":"44","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">域渗透思路总结</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;44 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#1ldap匿名信息泄露>1、LDAP匿名信息泄露：</a></li><li><a href=#2smbhttpldap信息收集>2、SMB+HTTP+LDAP信息收集</a></li></ul><ul><li><a href=#1bloodhound>1、Bloodhound</a></li><li><a href=#2winpeass>2、winpeass</a></li><li><a href=#3组信息>3、组信息</a></li><li><a href=#4密码获取>4、密码获取</a></li><li><a href=#5kerberoasting>5、kerberoasting</a></li><li><a href=#6adcs证书攻击>6、ADCS证书攻击</a></li><li><a href=#7白银票据>7、白银票据</a></li><li><a href=#8域内漏洞>8、域内漏洞</a></li></ul></nav></div></details></div><div class=post-content><h1 id=一获取立足身份凭证>一、获取立足身份凭证<a hidden class=anchor aria-hidden=true href=#一获取立足身份凭证>#</a></h1><h2 id=1ldap匿名信息泄露>1、LDAP匿名信息泄露：<a hidden class=anchor aria-hidden=true href=#1ldap匿名信息泄露>#</a></h2><p>配合windapsearch.py获取域内用户信息：</p><p>① 可能存在密码泄露；</p><p>② 可获取用户名，配合AS-REP Roasting破解；</p><p>③ 密码喷洒，记得使用可获取密码策略，可使用crackmapexec爆破smb协议，不直接爆破kerberos</p><h2 id=2smbhttpldap信息收集>2、SMB+HTTP+LDAP信息收集<a hidden class=anchor aria-hidden=true href=#2smbhttpldap信息收集>#</a></h2><p>① SMB注意共享目录，如果存在当前身份无法访问的目标，大概率是要切换身份，目前推荐使用工具为impacket的smbclient.py，网上下载的即可</p><p>② HTTP目前遇到直接getshell的少，但是SQL注入、文件包含的多，甚至需要代码审计</p><p>③ 信息收集方面，注意姓+名的用户名生成方式，收集员工、组织、邮箱等方式，LDAP匿名和有身份的情况下查找的信息可能存在不一样（名字组合：首字母姓+名、姓.名、姓_名、姓首字母.名字）</p><p>④ NTLM relay的攻击不在少数，如打印机、sqlserver等情况可以考虑操作</p><h1 id=二提权思路>二、提权思路<a hidden class=anchor aria-hidden=true href=#二提权思路>#</a></h1><p>以下方式一般为优先级按个执行</p><h2 id=1bloodhound>1、Bloodhound<a hidden class=anchor aria-hidden=true href=#1bloodhound>#</a></h2><p>bloodhound基本能识别大部分默认的权限组织和权限滥用的提权，如：委派、DCSync、组织、ACL滥用、一些特殊组等，如果没有直接的提权方式，基本也是可以梳理一下思路的。</p><h2 id=2winpeass>2、winpeass<a hidden class=anchor aria-hidden=true href=#2winpeass>#</a></h2><p>winpeass说实话，直接帮忙提权的点在域内很少，但是它可以帮忙提取很多信息，比如GPP组策略、一些配置信息等，如果当真有直接提权点，那也相当好了。</p><p>具体提权漏洞，见windows操作[[windows提权]]</p><h2 id=3组信息>3、组信息<a hidden class=anchor aria-hidden=true href=#3组信息>#</a></h2><p>查看当前用户是否存在一些不太常见的组信息，比如：LDAP_Readers、ReadGMSAPassword等</p><h2 id=4密码获取>4、密码获取<a hidden class=anchor aria-hidden=true href=#4密码获取>#</a></h2><p>当前主机的软件密码，使用LaZagne即可，可能存在不匹配，建议多尝试。</p><h2 id=5kerberoasting>5、kerberoasting<a hidden class=anchor aria-hidden=true href=#5kerberoasting>#</a></h2><p>我认为在进行信息收集后就可以尝试，因为该攻击的操作算作比较简单</p><h2 id=6adcs证书攻击>6、ADCS证书攻击<a hidden class=anchor aria-hidden=true href=#6adcs证书攻击>#</a></h2><p>在目标主机开放80和https的情况下，很有可能存在证书攻击，CVE-2022-26923、CVE-2021-42287、错误的ADCS模板</p><h2 id=7白银票据>7、白银票据<a hidden class=anchor aria-hidden=true href=#7白银票据>#</a></h2><p>如果在一些特殊情况下，可以获得服务账户密码的情况下可以尝试登录服务，如sqlserver，使用pip 安装的mssqlclient甚至可以执行命令</p><h2 id=8域内漏洞>8、域内漏洞<a hidden class=anchor aria-hidden=true href=#8域内漏洞>#</a></h2><p>我认为该方式一般为没有方法的情况下进行尝试，因为这种方式没有明显特征：</p><p>① MS14-068</p><p>② Netlogon</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/><span class=title>« Prev</span><br><span>另类技巧</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C/><span class=title>Next »</span><br><span>域渗透操作</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

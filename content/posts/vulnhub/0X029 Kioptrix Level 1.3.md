@@ -1,4 +1,6 @@
 +++
+ShowToc = true
+TocOpen = true
 title = '0x029 Kioptrix Level 1.3'
 date = 2024-10-11T14:25:59+08:00
 draft = false

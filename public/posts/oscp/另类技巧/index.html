@@ -1,0 +1,125 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>另类技巧 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='wget 批量下载文件：
+#!/bin/bash
+
+# 设置起始和结束日期
+start_date="2020-01-01"
+end_date="2020-01-31"
+
+# 初始化当前日期为起始日期
+current_date="$start_date"
+
+# 循环，直到当前日期等于当前系统日期
+while [ $current_date != $(end_date) ]; do
+    # 构建下载链接
+    url="http://10.10.10.248/Documents/$current_date-upload.pdf"
+    
+    # 输出正在下载的链接
+    echo "Downloading $url"
+    
+    # 使用 wget 下载文件
+    wget "$url"
+    
+    # 递增日期
+    current_date=$(date -I -d "$current_date + 1 day")
+done
+批量读取文件创建者信息：
+exiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq > userlist
+exiftool *.jpg | grep -i Author | cut -d ":" -f 2 | cut -d " " -f 2,3 > authors
+将所有pdf文件转换成txt文件：'><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="另类技巧"><meta property="og:description" content='wget 批量下载文件：
+#!/bin/bash
+
+# 设置起始和结束日期
+start_date="2020-01-01"
+end_date="2020-01-31"
+
+# 初始化当前日期为起始日期
+current_date="$start_date"
+
+# 循环，直到当前日期等于当前系统日期
+while [ $current_date != $(end_date) ]; do
+    # 构建下载链接
+    url="http://10.10.10.248/Documents/$current_date-upload.pdf"
+    
+    # 输出正在下载的链接
+    echo "Downloading $url"
+    
+    # 使用 wget 下载文件
+    wget "$url"
+    
+    # 递增日期
+    current_date=$(date -I -d "$current_date + 1 day")
+done
+批量读取文件创建者信息：
+exiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq > userlist
+exiftool *.jpg | grep -i Author | cut -d ":" -f 2 | cut -d " " -f 2,3 > authors
+将所有pdf文件转换成txt文件：'><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="另类技巧"><meta name=twitter:description content='wget 批量下载文件：
+#!/bin/bash
+
+# 设置起始和结束日期
+start_date="2020-01-01"
+end_date="2020-01-31"
+
+# 初始化当前日期为起始日期
+current_date="$start_date"
+
+# 循环，直到当前日期等于当前系统日期
+while [ $current_date != $(end_date) ]; do
+    # 构建下载链接
+    url="http://10.10.10.248/Documents/$current_date-upload.pdf"
+    
+    # 输出正在下载的链接
+    echo "Downloading $url"
+    
+    # 使用 wget 下载文件
+    wget "$url"
+    
+    # 递增日期
+    current_date=$(date -I -d "$current_date + 1 day")
+done
+批量读取文件创建者信息：
+exiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq > userlist
+exiftool *.jpg | grep -i Author | cut -d ":" -f 2 | cut -d " " -f 2,3 > authors
+将所有pdf文件转换成txt文件：'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"另类技巧","item":"https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"另类技巧","name":"另类技巧","description":"wget 批量下载文件：\n#!/bin/bash # 设置起始和结束日期 start_date=\u0026#34;2020-01-01\u0026#34; end_date=\u0026#34;2020-01-31\u0026#34; # 初始化当前日期为起始日期 current_date=\u0026#34;$start_date\u0026#34; # 循环，直到当前日期等于当前系统日期 while [ $current_date != $(end_date) ]; do # 构建下载链接 url=\u0026#34;http://10.10.10.248/Documents/$current_date-upload.pdf\u0026#34; # 输出正在下载的链接 echo \u0026#34;Downloading $url\u0026#34; # 使用 wget 下载文件 wget \u0026#34;$url\u0026#34; # 递增日期 current_date=$(date -I -d \u0026#34;$current_date + 1 day\u0026#34;) done 批量读取文件创建者信息：\nexiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq \u0026gt; userlist exiftool *.jpg | grep -i Author | cut -d \u0026#34;:\u0026#34; -f 2 | cut -d \u0026#34; \u0026#34; -f 2,3 \u0026gt; authors 将所有pdf文件转换成txt文件：\n","keywords":[],"articleBody":"wget 批量下载文件：\n#!/bin/bash # 设置起始和结束日期 start_date=\"2020-01-01\" end_date=\"2020-01-31\" # 初始化当前日期为起始日期 current_date=\"$start_date\" # 循环，直到当前日期等于当前系统日期 while [ $current_date != $(end_date) ]; do # 构建下载链接 url=\"http://10.10.10.248/Documents/$current_date-upload.pdf\" # 输出正在下载的链接 echo \"Downloading $url\" # 使用 wget 下载文件 wget \"$url\" # 递增日期 current_date=$(date -I -d \"$current_date + 1 day\") done 批量读取文件创建者信息：\nexiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq \u003e userlist exiftool *.jpg | grep -i Author | cut -d \":\" -f 2 | cut -d \" \" -f 2,3 \u003e authors 将所有pdf文件转换成txt文件：\nfor f in *pdf; do pdftotext $f; done 查看所有文件的第一行：\nhead -n1 *txt kali安装wps\nsudo dpkg -i wps.dep windows 目录：\nC:\\windows\\temp\\ C:\\windows\\system32\\spool\\drivers\\color\\ 根据用户名自动生成字典：\nhttps://github.com/urbanadventurer/username-anarchy 命令如下：会自动生成.或者拼接的大部分字典，但是没有_的 username-anarchy/username-anarchy -i authors \u003eusernames 如果要生成_或者其他自定义格式的吗，参考下面这条命令，其中anna_key便是格式形式： username-anarchy/username-anarchy -i authors -F \"anna_key\"\u003eusernames ","wordCount":"114","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">另类技巧</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;114 words&nbsp;·&nbsp;养猪日记</div></header><div class=post-content><p>wget 批量下载文件：</p><pre tabindex=0><code>#!/bin/bash
+
+# 设置起始和结束日期
+start_date=&#34;2020-01-01&#34;
+end_date=&#34;2020-01-31&#34;
+
+# 初始化当前日期为起始日期
+current_date=&#34;$start_date&#34;
+
+# 循环，直到当前日期等于当前系统日期
+while [ $current_date != $(end_date) ]; do
+    # 构建下载链接
+    url=&#34;http://10.10.10.248/Documents/$current_date-upload.pdf&#34;
+    
+    # 输出正在下载的链接
+    echo &#34;Downloading $url&#34;
+    
+    # 使用 wget 下载文件
+    wget &#34;$url&#34;
+    
+    # 递增日期
+    current_date=$(date -I -d &#34;$current_date + 1 day&#34;)
+done
+</code></pre><p>批量读取文件创建者信息：</p><pre tabindex=0><code>exiftool -Creator -csv *pdf | cut -d, -f2 | sort | uniq &gt; userlist
+exiftool *.jpg | grep -i Author | cut -d &#34;:&#34; -f 2 | cut -d &#34; &#34; -f 2,3 &gt; authors
+</code></pre><p>将所有pdf文件转换成txt文件：</p><pre tabindex=0><code>for f in *pdf; do pdftotext $f; done
+</code></pre><p>查看所有文件的第一行：</p><pre tabindex=0><code>head -n1 *txt
+</code></pre><p>kali安装wps</p><pre tabindex=0><code>sudo dpkg -i wps.dep
+</code></pre><p>windows 目录：</p><pre tabindex=0><code>C:\windows\temp\
+C:\windows\system32\spool\drivers\color\
+</code></pre><p>根据用户名自动生成字典：</p><pre tabindex=0><code>https://github.com/urbanadventurer/username-anarchy
+
+命令如下：会自动生成.或者拼接的大部分字典，但是没有_的
+username-anarchy/username-anarchy -i authors &gt;usernames
+
+如果要生成_或者其他自定义格式的吗，参考下面这条命令，其中anna_key便是格式形式：
+username-anarchy/username-anarchy -i authors -F &#34;anna_key&#34;&gt;usernames
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/oscp/%E5%8F%8D%E5%BC%B9shell/><span class=title>« Prev</span><br><span>反弹shell</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/><span class=title>Next »</span><br><span>域渗透思路总结</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

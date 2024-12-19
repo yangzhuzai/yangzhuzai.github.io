@@ -1,4 +1,6 @@
 +++
+ShowToc = true
+TocOpen = true
 title = '0x066 Digitalworld.local(JOY)'
 date = 2024-10-11T14:25:59+08:00
 draft = false

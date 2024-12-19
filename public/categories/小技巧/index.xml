@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>小技巧 on 养猪日记</title>
+    <link>https://yangzhuzai.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+    <description>Recent content in 小技巧 on 养猪日记</description>
+    <image>
+      <title>养猪日记</title>
+      <url>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.135.0</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 18 Oct 2024 14:25:59 +0800</lastBuildDate>
+    <atom:link href="https://yangzhuzai.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>001 JS逆向</title>
+      <link>https://yangzhuzai.github.io/posts/skill/001-js%E9%80%86%E5%90%91/</link>
+      <pubDate>Fri, 18 Oct 2024 14:25:59 +0800</pubDate>
+      <guid>https://yangzhuzai.github.io/posts/skill/001-js%E9%80%86%E5%90%91/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;实战渗透项目很多时候都能遇到数据包加密的情况，很多时候会觉得棘手，因为很多改包的动作无法实现，但是这样不完全是坏处，特别是一些参数加密的时候，由于数据包加密，所以他们天然存在WAF绕过，将我们的payload加入JS加密的文本中传输，WAF几乎很难识别。&lt;/p&gt;
+&lt;p&gt;目前有两种解决方案，一种是扣JS代码，获取所有的加密函数，中间很容易遇到函数嵌套，陷入扣代码的困局，还有一种是JS-RPC的解决方案，详情可以参考：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://xz.aliyun.com/t/14629?time__1311=GqAhYK0KBKAIP05DKBOxmODRrzc6LK%3D63x#toc-2
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;JS-RPC，详情查看使用方式配合上文食用：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;https://github.com/jxhczhl/JsRpc
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;简单记录一些遇到的网站，以及如何配合burp插件，方便我们进行渗透：&lt;/p&gt;
+&lt;h1 id=&#34;一常规扣代码解密&#34;&gt;一、常规扣代码解密&lt;/h1&gt;
+&lt;p&gt;返回数据包中带有encrypt_data：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE06fb036892c213ea424de433727ff58bimage.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;浏览器ctrl+shift+f搜索encrypt_data，找到对应的JS代码文件，找到符合要求的，必须为某方法，全部包含该参数的，而非只取某个值，打上断点可以看URL是否正确，以及参数是否对应：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCEce73a6a38d5282da884652c227096b51image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;控制台再次确认参数是否找正确了：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE3359011f28caf526691da6e5769de273image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;源码里面点进去，找到相关函数：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCEbfa2c9d9cd97a6475566dd72c44bc67bimage.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;把相关的内容放到本地进行调试：&lt;/p&gt;
+&lt;p&gt;这里出现错误，W未定义：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE1d3417e238773a0070ce8234a73d1150image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;把W也复制过来：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE839694b9468a1ab934fb75653f1abc39image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;继续把J也复制过来，中间还会遇到好几个函数缺失，都复制过来即可：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE639721e284de5468f2153dc055aa0959image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;这里就算是逆向完成了，接下来就要做代码层面的嵌入了，用python的execjs库即可：&lt;/p&gt;
+&lt;p&gt;pip install pyexecjs2&lt;/p&gt;
+&lt;p&gt;demo01.py&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;import requests
+import execjs
+
+headers = {
+    &amp;#39;accept&amp;#39;: &amp;#39;application/json, text/plain, */*&amp;#39;,
+    &amp;#39;accept-language&amp;#39;: &amp;#39;zh-CN&amp;#39;,
+    &amp;#39;cache-control&amp;#39;: &amp;#39;no-cache&amp;#39;,
+    &amp;#39;content-type&amp;#39;: &amp;#39;application/x-www-form-urlencoded&amp;#39;,
+    &amp;#39;origin&amp;#39;: &amp;#39;https://rxxx&amp;#39;,
+    &amp;#39;pragma&amp;#39;: &amp;#39;no-cache&amp;#39;,
+    &amp;#39;priority&amp;#39;: &amp;#39;u=1, i&amp;#39;,
+    &amp;#39;referer&amp;#39;: &amp;#39;https://xxx/&amp;#39;,
+    &amp;#39;sec-fetch-dest&amp;#39;: &amp;#39;empty&amp;#39;,
+    &amp;#39;sec-fetch-mode&amp;#39;: &amp;#39;cors&amp;#39;,
+    &amp;#39;sec-fetch-site&amp;#39;: &amp;#39;cross-site&amp;#39;,
+    &amp;#39;user-agent&amp;#39;: &amp;#39;Mozilla/5.0Â\xa0(compatible;Â\xa0Baiduspider-render/2.0;Â\xa0+http://www.baidu.com/search/spider.html)&amp;#39;,
+}
+
+data = {
+    &amp;#39;page&amp;#39;: &amp;#39;1&amp;#39;,
+    &amp;#39;num&amp;#39;: &amp;#39;8&amp;#39;,
+    &amp;#39;type&amp;#39;: &amp;#39;榜单&amp;#39;,
+}
+
+response = requests.post(&amp;#39;https://xxxn/web/webSiteCaNews&amp;#39;, headers=headers, data=data)
+encrypt_data= response.json()[&amp;#39;encrypt_data&amp;#39;]
+print(encrypt_data)
+
+decrypt = execjs.compile(open(&amp;#39;./demo01.js&amp;#39;, &amp;#39;r&amp;#39;, encoding=&amp;#39;utf-8&amp;#39;).read()).call(&amp;#39;Z&amp;#39;,encrypt_data)
+print(decrypt)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;demo01.js&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

