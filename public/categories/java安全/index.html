@@ -3,8 +3,8 @@
 常见组件漏洞 1、Shiro shiro的漏洞主要是两个，一个是硬编码，一个是权限绕过：
 硬编码： 硬编码漏洞大家都知道问题出在rememberMe功能上，对于shiro而言，配置rememberMe的方法大致如下：
 securityManager.setRememberMeManager(rememberMeManager());//设置rememberMeManager() 关键词：setRememberMeManager 具体实现： public CookieRememberMeManager rememberMeManager() { CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager(); cookieRememberMeManager.setCookie(rememberMeCookie()); cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ==")); return cookieRememberMeManager; } 搜索密钥关键词：setCipherKey shiro还可以通过配置文件的方式进行配置，同样可以搜索关键词： org.apache.shiro.web.mgt.DefaultWebSecurityManager org.apache.shiro.web.mgt.CookieRememberMeManager 案例：
-权限绕过： CVE 描述 影响范围 payload CVE-2020-1957 权限绕过 Shiro &lt; 1.5.2 /xxx/..;/admin/ CVE-2020-11989 CVE-2020-1957补丁绕过 Shiro &lt; 1.5.3 /;/admin/page CVE-2020-13933 CVE-2020-11989补丁绕过 Shiro &lt; 1.6.0 /admin/%3bpage CVE-2020-17523 权限绕过 Shiro &lt; 1.7.1 /admin/%20 /admin/%2e shiro配置路径匿名访问的方法大概如下：
-...</p></div><footer class=entry-footer><span title='2024-12-19 14:25:59 +0800 CST'>December 19, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;837 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 代码审计总结" href=https://yangzhuzai.github.io/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>Fastjson</h2></header><div class=entry-content><p>一、FastJson介绍 Fastjson是Alibaba开发的Java语言编写的高性能JSON库，用于将数据在JSON和Java Object 之间互相转换，不需要添加额外的依赖，能够直接跑在JDK上，FastJson采用独创的算法，将序列化的速度提升到极致，深受用户喜爱。产品主要提供两个接口 JSON.toJSONString 和 JSON.parseObject/JSON.parse 来分别实现序列化和反序列化操作。
+权限绕过： CVE 描述 影响范围 payload CVE-2020-1957 权限绕过 Shiro &lt; 1.5.2 /xxx/..;/admin/ CVE-2020-11989 CVE-2020-1957补丁绕过 Shiro &lt; 1.5.3 /;/admin/page CVE-2020-13933 CVE-2020-11989补丁绕过 Shiro &lt; 1.6.0 /admin/%3bpage CVE-2020-17523 权限绕过 Shiro &lt; 1.7.1 /admin/%20 /admin/%2e shiro配置路径匿名访问的方法大概如下： 1、集中配置
+...</p></div><footer class=entry-footer><span title='2024-12-19 14:25:59 +0800 CST'>December 19, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;938 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 代码审计总结" href=https://yangzhuzai.github.io/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>Fastjson</h2></header><div class=entry-content><p>一、FastJson介绍 Fastjson是Alibaba开发的Java语言编写的高性能JSON库，用于将数据在JSON和Java Object 之间互相转换，不需要添加额外的依赖，能够直接跑在JDK上，FastJson采用独创的算法，将序列化的速度提升到极致，深受用户喜爱。产品主要提供两个接口 JSON.toJSONString 和 JSON.parseObject/JSON.parse 来分别实现序列化和反序列化操作。
 二、漏洞原理 fastjson的漏洞涉及几个重要概念，深入理解一些概念后才能理解为什么会出现这种情况，以及一些面试官为什么会问一些奇怪的问题，比如fastjson不出网利用、如何判断版本等；
 2.1 JNDI注入的前置知识 2.1.1 Java Bean 一类满足标准写法的类，满足以下条件的Java类可以称之为Java Bean。
 1、成员变量均使用private关键字进行修饰
@@ -16,9 +16,9 @@ securityManager.setRememberMeManager(rememberMeManager());//设置rememberMeMana
 在实战利用中，常见的服务为LDAP、DNS、RMI，具体的代码实现效果为，如果lookup可控就可以导致JNDI注入
 InitialContext context = new InitialContext();
 context.lookup("rmi://localhost:1099/HelloService"); 具体流程如下：
-1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； 2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； 3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； 4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 5、攻击者可以在Factory类文件的
+1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； 2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； 3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； 4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；
 另外一种解释：
-JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。
+JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。
 一些版本注入的问题：
 RMI攻击主要分3种目标：RMI Client、RMI Server、RMI Registry。
 使用远程Reference字节码进行攻击。（最初始的方式，没有任何拦截）
@@ -40,7 +40,7 @@ jrmp的payload（其实就是绕过了黑名单能发送数据的类）
 舞台
 （4）ldap也被不信任，相当于无法远程加载，目前给的方法就是直接打过去让本
 地存在的链子命令执行，不需要像外部做加载。 高版本注入的解决办法：
-...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;814 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to Fastjson" href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>Log4j2</h2></header><div class=entry-content><p>一、Log4j2 Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等；我们也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;817 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to Fastjson" href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/></a></article><article class="post-entry tag-entry"><header class=entry-header><h2 class=entry-hint-parent>Log4j2</h2></header><div class=entry-content><p>一、Log4j2 Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等；我们也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。
 ​ Log4j在工程中可以易用，方便等代替了 System.out 等打印语句，它是Java下最流行的日志输入工具，一些著名的开源项目，像spring、hibernate、struts都使用该工具作为日志输入工具，可以帮助调试（有时候debug是发挥不了作用的）和分析。
 二、漏洞原理 由于log4j2库中的JNDI查询功能存在反序列化漏洞，具体来说是由于log4j2在处理日志事件时，使用了java反序列化机制(java Serialization)对java的对象和反序列化操作,没有对反序列化中的过程做安全的验证措施 导致可以构造恶意的JNDI名称的特殊日志来触发log4j2库中的JndiLookup.deserialized()方法调用，在执行反序操作时，可以利用java反序列漏洞，将恶意的代码注入到反序列化对象中，从而实现远程命令攻击。
 来看一下正常使用的代码：

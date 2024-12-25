@@ -73,11 +73,11 @@ context.lookup("rmi://localhost:1099/HelloService");
 
 4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 
 
-5、攻击者可以在Factory类文件的
+5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；
 
 另外一种解释：
 
-JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。
+JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。
 
 **一些版本注入的问题：**
 
@@ -201,9 +201,9 @@ public class Main {
 
 ### 2.2.2 AutoType机制
 
-在上一步的反序列化中，我们需要指定传入的Student.class，也就是
+在上一步的反序列化中，我们需要指定传入的Student.class，也就是Class字节码对象，很显然，这样子并不方便进行利用，因为需要一个已经实例化了的class对象，所以有了该机制。
 
- FastJson的AutoType机制支持在反序列化的过程中
+ FastJson的AutoType机制支持在反序列化的过程中自动获取指定类的Class文件对象，当序列化的JSON字符串中包含@type键时就会自动将其值作为反序列化生成对象的具体类型，重点就在这里了，我们只需要传入类里面的数据就行了，不需要传输对象字节码。
 
 FastJson自动获取对应的Class字节码对象，从而进行反射创建实例,为对象属性赋值等操作(和正常情况一样)，唯一的区别是不用直接传递class对象了，在JSON字符串中使用@type健即可自动获取类对应的Class对象。
 
@@ -649,6 +649,10 @@ java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.RMIRefServer "http://
 这种方法属于是对计划任务不出网的一种补充，但是实操难度较高。
 
 [https://github.com/LandGrey/spring-boot-upload-file-lead-to-rce-tricks](https://github.com/LandGrey/spring-boot-upload-file-lead-to-rce-tricks)
+
+## 5、classes
+
+https://threedr3am.github.io/2021/04/13/JDK8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84Fastjson%20RCE/
 
 # 八、FastJsonParty
 

@@ -58,9 +58,9 @@ damin目录下：
 在实战利用中，常见的服务为LDAP、DNS、RMI，具体的代码实现效果为，如果lookup可控就可以导致JNDI注入
 InitialContext context = new InitialContext();
 context.lookup("rmi://localhost:1099/HelloService"); 具体流程如下：
-1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； 2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； 3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； 4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 5、攻击者可以在Factory类文件的
+1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； 2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； 3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； 4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；
 另外一种解释：
-JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。
+JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。
 一些版本注入的问题：
 RMI攻击主要分3种目标：RMI Client、RMI Server、RMI Registry。
 使用远程Reference字节码进行攻击。（最初始的方式，没有任何拦截）
@@ -82,7 +82,7 @@ jrmp的payload（其实就是绕过了黑名单能发送数据的类）
 舞台
 （4）ldap也被不信任，相当于无法远程加载，目前给的方法就是直接打过去让本
 地存在的链子命令执行，不需要像外部做加载。 高版本注入的解决办法：
-...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;814 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to Fastjson" href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>kali 环境爬坑</h2></header><div class=entry-content><p>python2 安装pip问题：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;817 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to Fastjson" href=https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>kali 环境爬坑</h2></header><div class=entry-content><p>python2 安装pip问题：
 wget https://bootstrap.pypa.io/pip/2.7/get-pip.py python2 get-pip.py python2 -m pip install --upgrade setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple pip2 安装impacket:
 python2 -m pip install impacket==0.9.22 kali安装bloodhound sudo apt-get install neo4j sudo neo4j console 控制台默认账密：neo4j 配置好后，安装bloodhound sudo apt-get install bloodhound 输入修改后的密码 ps1脚本使用： Import-Module ./SharpHound.ps1; Invoke-BloodHound -c all kali 使用impacket–docker 安装docker apt-get install docker.io systemctl start docker 下载相关文件夹： 构建 Impacket 的镜像： docker build -t "impacket:latest" . 使用 Impacket 的镜像： docker run -it --rm "impacket:latest" 安装impacket–推荐此方式 git clone https://github.com/CoreSecurity/impacket.git cd impacket/ python3 -m pip install . sudo python3 setup.py install No module named “Crypto” 解决方案： pip install pycryptodome openvpn over socsk5 socks-proxy 192.168.5.2 7890 /etc/samba/smb.conf 配置 注释：
 ...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;164 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to kali 环境爬坑" href=https://yangzhuzai.github.io/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=https://yangzhuzai.github.io/page/22/>«&nbsp;Prev&nbsp;
