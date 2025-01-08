@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0x032 lazysysadmin | 养猪日记</title>
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x032 lazysysadmin | 养猪日记</title>
 <meta name=keywords content><meta name=description content="这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了
 端口扫描
 
@@ -60,130 +60,8 @@ http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php
 
 果然懒啊，sudo权限这样给：
 
-"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0x032 lazysysadmin"><meta property="og:description" content="这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了
-端口扫描
-
-
-
-
-
-
-
-
-渗透
-大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：
-试了几个payload都不行：
-
-
-smb:
-
-
-挂载到本地慢慢看：
-
-
-疑似可用信息：
-
-
-
-
-
-
-mysql passwd:
-admin
-TogieMYSQL12345^^
-
-
-但是不让连：
-
-
-那就web渗透吧：
-
-
-wp疑似用户名？
-
-
-wpscan扫一下：
-两个用户名没有插件：
-
-
-用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin
-
-
-后台getsghell：
-http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php
-
-
-提权
-额，早该想到的，lazysysadmin
-
-
-
-
-果然懒啊，sudo权限这样给：
-
-"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0x032 lazysysadmin"><meta name=twitter:description content="这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了
-端口扫描
-
-
-
-
-
-
-
-
-渗透
-大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：
-试了几个payload都不行：
-
-
-smb:
-
-
-挂载到本地慢慢看：
-
-
-疑似可用信息：
-
-
-
-
-
-
-mysql passwd:
-admin
-TogieMYSQL12345^^
-
-
-但是不让连：
-
-
-那就web渗透吧：
-
-
-wp疑似用户名？
-
-
-wpscan扫一下：
-两个用户名没有插件：
-
-
-用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin
-
-
-后台getsghell：
-http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php
-
-
-提权
-额，早该想到的，lazysysadmin
-
-
-
-
-果然懒啊，sudo权限这样给：
-
-"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0x032 lazysysadmin","item":"https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0x032 lazysysadmin","name":"0x032 lazysysadmin","description":"这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了\n端口扫描 渗透 大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：\n试了几个payload都不行：\nsmb:\n挂载到本地慢慢看：\n疑似可用信息：\nmysql passwd:\nadmin\nTogieMYSQL12345^^\n但是不让连：\n那就web渗透吧：\nwp疑似用户名？\nwpscan扫一下：\n两个用户名没有插件：\n用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin\n后台getsghell：\nhttp://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php\n提权 额，早该想到的，lazysysadmin\n果然懒啊，sudo权限这样给：\n","keywords":[],"articleBody":"这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了\n端口扫描 渗透 大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：\n试了几个payload都不行：\nsmb:\n挂载到本地慢慢看：\n疑似可用信息：\nmysql passwd:\nadmin\nTogieMYSQL12345^^\n但是不让连：\n那就web渗透吧：\nwp疑似用户名？\nwpscan扫一下：\n两个用户名没有插件：\n用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin\n后台getsghell：\nhttp://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php\n提权 额，早该想到的，lazysysadmin\n果然懒啊，sudo权限这样给：\n","wordCount":"23","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x032 lazysysadmin</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;23 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><p>这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了</p><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE72d08c1b1b33442a24aefef7e2dd85e2%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE913fadb661d1be6ad997f2b8d151d3fd%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEce67c11b54ab1775c3260d79679abae9%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1b7c82ea0bef70c52d8f88983586720d%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：</p><p>试了几个payload都不行：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE648c582fd1610675ca160aeca15f5046%e6%88%aa%e5%9b%be.png alt></p><p>smb:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5348002957b2fe8528d516f5d6f5bd4c%e6%88%aa%e5%9b%be.png alt></p><p>挂载到本地慢慢看：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3d4c787b2b3d27b9471048a0a7995ef4%e6%88%aa%e5%9b%be.png alt></p><p>疑似可用信息：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5387be05bf182af18b80f053abc6a20c%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5c390678d56ad9bb45609de099ca2ae2%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc1a4aa7ddae6bb4905197064fa054fe4%e6%88%aa%e5%9b%be.png alt></p><p>mysql passwd:</p><p>admin</p><p>TogieMYSQL12345^^</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3cb813f0b54a85fa2d08ea6896737f55%e6%88%aa%e5%9b%be.png alt></p><p>但是不让连：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf3dc66aee2cd2605d826cde9cddbbf1e%e6%88%aa%e5%9b%be.png alt></p><p>那就web渗透吧：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE99bcc89ff554b4ba8f30a175111e1016%e6%88%aa%e5%9b%be.png alt></p><p>wp疑似用户名？</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc7e55b84059143f8886483c6a8a61144%e6%88%aa%e5%9b%be.png alt></p><p>wpscan扫一下：</p><p>两个用户名没有插件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf4a5cce86e62459ed90cbb1e111868d7%e6%88%aa%e5%9b%be.png alt></p><p>用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc03b87b06cb11c44d26db41edc00afd9%e6%88%aa%e5%9b%be.png alt></p><p>后台getsghell：</p><p><a href=http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php>http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa206dfd6e8a9dc0d5803560d01bd0047%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>额，早该想到的，lazysysadmin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3049624f0d62c6b7e14d39312d167d3b%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEbb5af2dc8c822faf67f910aa63b5bba2%e6%88%aa%e5%9b%be.png alt></p><p>果然懒啊，sudo权限这样给：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE81f08b76f4f9d223db807d8d1270b253%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/htb/0x032-aero/><span class=title>« Prev</span><br><span>0X032 Aero</span>
-</a><a class=next href=https://yangzhuzai.github.io/posts/htb/0x033-atom/><span class=title>Next »</span><br><span>0X033 Atom</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x032-lazysysadmin/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x032-lazysysadmin/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x032 lazysysadmin</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;23 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><p>这个靶机的网络环境建议直接使用自带的NAT，折腾了一会儿桥接，算了</p><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE72d08c1b1b33442a24aefef7e2dd85e2%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE913fadb661d1be6ad997f2b8d151d3fd%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEce67c11b54ab1775c3260d79679abae9%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1b7c82ea0bef70c52d8f88983586720d%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>大概看了一下开放端口和脚本扫描情况，大部分是常规端口，比较让人在意的是6667端口的irc服务，非常规服务，搜索了一下如何利用：</p><p>试了几个payload都不行：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE648c582fd1610675ca160aeca15f5046%e6%88%aa%e5%9b%be.png alt></p><p>smb:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5348002957b2fe8528d516f5d6f5bd4c%e6%88%aa%e5%9b%be.png alt></p><p>挂载到本地慢慢看：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3d4c787b2b3d27b9471048a0a7995ef4%e6%88%aa%e5%9b%be.png alt></p><p>疑似可用信息：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5387be05bf182af18b80f053abc6a20c%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5c390678d56ad9bb45609de099ca2ae2%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc1a4aa7ddae6bb4905197064fa054fe4%e6%88%aa%e5%9b%be.png alt></p><p>mysql passwd:</p><p>admin</p><p>TogieMYSQL12345^^</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3cb813f0b54a85fa2d08ea6896737f55%e6%88%aa%e5%9b%be.png alt></p><p>但是不让连：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf3dc66aee2cd2605d826cde9cddbbf1e%e6%88%aa%e5%9b%be.png alt></p><p>那就web渗透吧：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE99bcc89ff554b4ba8f30a175111e1016%e6%88%aa%e5%9b%be.png alt></p><p>wp疑似用户名？</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc7e55b84059143f8886483c6a8a61144%e6%88%aa%e5%9b%be.png alt></p><p>wpscan扫一下：</p><p>两个用户名没有插件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf4a5cce86e62459ed90cbb1e111868d7%e6%88%aa%e5%9b%be.png alt></p><p>用刚刚收集的密码试了一下，果然，毕竟靶机名字叫lazysysadmin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc03b87b06cb11c44d26db41edc00afd9%e6%88%aa%e5%9b%be.png alt></p><p>后台getsghell：</p><p><a href=http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php>http://192.168.1.138/wordpress/wp-content/themes/twentyfifteen/404.php</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa206dfd6e8a9dc0d5803560d01bd0047%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>额，早该想到的，lazysysadmin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3049624f0d62c6b7e14d39312d167d3b%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEbb5af2dc8c822faf67f910aa63b5bba2%e6%88%aa%e5%9b%be.png alt></p><p>果然懒啊，sudo权限这样给：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE81f08b76f4f9d223db807d8d1270b253%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/htb/0x032-aero/><span class=title>« Prev</span><br><span>0X032 Aero</span>
+</a><a class=next href=http://localhost:1313/posts/htb/0x033-atom/><span class=title>Next »</span><br><span>0X033 Atom</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>

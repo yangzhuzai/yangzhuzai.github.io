@@ -2,22 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>小技巧 on 养猪日记</title>
-    <link>https://yangzhuzai.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+    <link>http://localhost:1313/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
     <description>Recent content in 小技巧 on 养猪日记</description>
     <image>
       <title>养猪日记</title>
-      <url>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
-      <link>https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
     </image>
     <generator>Hugo -- 0.135.0</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 18 Oct 2024 14:25:59 +0800</lastBuildDate>
-    <atom:link href="https://yangzhuzai.github.io/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 08 Jan 2025 15:06:59 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/%E5%B0%8F%E6%8A%80%E5%B7%A7/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>002 常见前端加密算法</title>
+      <link>http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Wed, 08 Jan 2025 15:06:59 +0800</pubDate>
+      <guid>http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/</guid>
+      <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
+&lt;p&gt;为了更好的对加密数据进行解密，了解常见的加密算法是需要的，这里只讨论数据加密，散列和编码不讨论。&lt;/p&gt;
+&lt;h1 id=&#34;1对称加密&#34;&gt;1、对称加密&lt;/h1&gt;
+&lt;h2 id=&#34;aes&#34;&gt;AES&lt;/h2&gt;
+&lt;p&gt;高级加密标准，加密和解密使用相同的密钥，作为使用者我们需要关注的参数有6个：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1. 密钥 (Key)
+
+2. 明文 (Plaintext)
+
+3. 加密模式 (Cipher Mode)
+常见模式：
+ECB（电子密码本模式）：简单，但不推荐使用（易遭受模式攻击）。
+CBC（加密块链模式）：安全性高，但需要初始化向量 (IV)。
+CFB（加密反馈模式）：支持流式加密。
+OFB（输出反馈模式）：避免错误传播。
+GCM（加洛瓦计数器模式）：提供加密和认证功能。
+
+4. 填充方式 (Padding Scheme)
+常见方式：
+Pkcs5
+Pkcs7
+AnsiX923
+Iso97971
+Iso10126
+ZeroPadding
+NoPadding
+
+5. 初始化向量 (IV)
+用于某些加密模式（如 CBC 和 GCM），确保相同的明文在每次加密时生成不同的密文。
+要求：
+长度为 16 字节（128 位）。
+必须随机生成且不可重复。
+注意：IV 不需要保密，但需要在加密时和解密时一致。
+
+6. 密文 (Ciphertext)
+密文常见两种格式：Hex、Base64
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在线解密：https://tool.hiofd.com/aes-encrypt-online/&lt;/p&gt;
+&lt;p&gt;案例，来自开源靶场encrypt-labs：&lt;/p&gt;
+&lt;p&gt;使用v_jstools js hook工具监控函数：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/jmsf_img/Pasted%20image%2020250107105633.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;定位加密函数位置：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/jmsf_img/Pasted%20image%2020250107105926.png&#34; alt=&#34;&#34;  /&gt;
+
+打上断点查看：&lt;/p&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/jmsf_img/Pasted%20image%2020250107110126.png&#34; alt=&#34;&#34;  /&gt;
+&lt;/p&gt;
+&lt;p&gt;这里其实比较清晰了，我们关注的几个参数：&lt;/p&gt;
+&lt;p&gt;1、加密模式为：CBC
+2、初始化向量 (IV)为：1234567890123456
+3、填充方式 (Padding Scheme)为：PKCS7
+4、密钥 (Key)为：1234567890123456&lt;/p&gt;</description>
+    </item>
     <item>
       <title>001 JS逆向</title>
-      <link>https://yangzhuzai.github.io/posts/skill/001-js%E9%80%86%E5%90%91/</link>
+      <link>http://localhost:1313/posts/skill/001-js%E9%80%86%E5%90%91/</link>
       <pubDate>Fri, 18 Oct 2024 14:25:59 +0800</pubDate>
-      <guid>https://yangzhuzai.github.io/posts/skill/001-js%E9%80%86%E5%90%91/</guid>
+      <guid>http://localhost:1313/posts/skill/001-js%E9%80%86%E5%90%91/</guid>
       <description>&lt;h1 id=&#34;前言&#34;&gt;前言&lt;/h1&gt;
 &lt;p&gt;实战渗透项目很多时候都能遇到数据包加密的情况，很多时候会觉得棘手，因为很多改包的动作无法实现，但是这样不完全是坏处，特别是一些参数加密的时候，由于数据包加密，所以他们天然存在WAF绕过，将我们的payload加入JS加密的文本中传输，WAF几乎很难识别。&lt;/p&gt;
 &lt;p&gt;目前有两种解决方案，一种是扣JS代码，获取所有的加密函数，中间很容易遇到函数嵌套，陷入扣代码的困局，还有一种是JS-RPC的解决方案，详情可以参考：&lt;/p&gt;
@@ -27,26 +85,26 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;简单记录一些遇到的网站，以及如何配合burp插件，方便我们进行渗透：&lt;/p&gt;
 &lt;h1 id=&#34;一常规扣代码解密&#34;&gt;一、常规扣代码解密&lt;/h1&gt;
 &lt;p&gt;返回数据包中带有encrypt_data：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE06fb036892c213ea424de433727ff58bimage.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCE06fb036892c213ea424de433727ff58bimage.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;浏览器ctrl+shift+f搜索encrypt_data，找到对应的JS代码文件，找到符合要求的，必须为某方法，全部包含该参数的，而非只取某个值，打上断点可以看URL是否正确，以及参数是否对应：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCEce73a6a38d5282da884652c227096b51image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCEce73a6a38d5282da884652c227096b51image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;控制台再次确认参数是否找正确了：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE3359011f28caf526691da6e5769de273image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCE3359011f28caf526691da6e5769de273image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;源码里面点进去，找到相关函数：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCEbfa2c9d9cd97a6475566dd72c44bc67bimage.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCEbfa2c9d9cd97a6475566dd72c44bc67bimage.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;把相关的内容放到本地进行调试：&lt;/p&gt;
 &lt;p&gt;这里出现错误，W未定义：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE1d3417e238773a0070ce8234a73d1150image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCE1d3417e238773a0070ce8234a73d1150image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;把W也复制过来：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE839694b9468a1ab934fb75653f1abc39image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCE839694b9468a1ab934fb75653f1abc39image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;继续把J也复制过来，中间还会遇到好几个函数缺失，都复制过来即可：&lt;/p&gt;
-&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://yangzhuzai.github.io/skills_img/WEBRESOURCE639721e284de5468f2153dc055aa0959image.png&#34; alt=&#34;&#34;  /&gt;
+&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/skills_img/WEBRESOURCE639721e284de5468f2153dc055aa0959image.png&#34; alt=&#34;&#34;  /&gt;
 &lt;/p&gt;
 &lt;p&gt;这里就算是逆向完成了，接下来就要做代码层面的嵌入了，用python的execjs库即可：&lt;/p&gt;
 &lt;p&gt;pip install pyexecjs2&lt;/p&gt;

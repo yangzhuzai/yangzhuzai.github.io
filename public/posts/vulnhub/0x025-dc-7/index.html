@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0x025 DC 7 | 养猪日记</title>
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x025 DC 7 | 养猪日记</title>
 <meta name=keywords content><meta name=description content="端口扫描
 
 
@@ -63,142 +63,14 @@ done
 
 修改代码，保存后自动执行
 
-"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/vulnhub/0x025-dc-7/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/vulnhub/0x025-dc-7/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0x025 DC 7"><meta property="og:description" content="端口扫描
-
-
-
-
-渗透
-drupal准确版本：8.7.6
-
-
-作者提示要跳出思维，暂时不要考虑爆破：
-
-
-好好好，我打死也没想到要这样子跳出思维：
-
-
-去github上搜索这个用户名：
-
-
-找到数据库配置文件：
-
-
-由于没开mysql只能先试试ssh:
-
-
-提权
-这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：
-
-
-查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：
-
-
-理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：
-#!/bin/bash
+"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x025-dc-7/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x025-dc-7/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x025 DC 7</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf727e4cac6c3d940ff1aac06aee664de%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb1527c0ea7168f2d51b2b4158dbdef95%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>drupal准确版本：8.7.6</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEec78e70ad5fb9066201f86fcb6670d09%e6%88%aa%e5%9b%be.png alt></p><p>作者提示要跳出思维，暂时不要考虑爆破：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEdd2f715a6719ccd40c398f1c8e8f3d29%e6%88%aa%e5%9b%be.png alt></p><p>好好好，我打死也没想到要这样子跳出思维：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEab409d8569bbf0be265dec29e302b3cc%e6%88%aa%e5%9b%be.png alt></p><p>去github上搜索这个用户名：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE33bc1bb7046a8a01c3a3f49fd9a83492%e6%88%aa%e5%9b%be.png alt></p><p>找到数据库配置文件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE86d8cd1aaa55eb57dce4b0a56835951b%e6%88%aa%e5%9b%be.png alt></p><p>由于没开mysql只能先试试ssh:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE03be98d809d2fee2455fe3e35f824801%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE6f02ef6140f51f973af2b9c13baa45f9%e6%88%aa%e5%9b%be.png alt></p><p>查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEca2b9c1242fcf271a8ced0c5ac391cb0%e6%88%aa%e5%9b%be.png alt></p><p>理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：</p><pre tabindex=0><code>#!/bin/bash
 for i in {1..10000}
 do
 cp website.sql ../
 sleep 1
 done
-
-
-成功了：
-
-
-内容太多了，不好看，罢了，我有数据库密码：
-
-
-算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。
-直接修改sh，是没修改权限的，但是www-data有：
-
-
-然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：
-
-
-无奈看wp，修改drupal的密码：
-
-
-然后登录后台去修改php代码，添加php模块，url:https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz
-
-
-开启：
-
-
-修改代码，保存后自动执行
-
-"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/vulnhub/0x025-dc-7/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0x025 DC 7"><meta name=twitter:description content="端口扫描
-
-
-
-
-渗透
-drupal准确版本：8.7.6
-
-
-作者提示要跳出思维，暂时不要考虑爆破：
-
-
-好好好，我打死也没想到要这样子跳出思维：
-
-
-去github上搜索这个用户名：
-
-
-找到数据库配置文件：
-
-
-由于没开mysql只能先试试ssh:
-
-
-提权
-这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：
-
-
-查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：
-
-
-理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：
-#!/bin/bash
-for i in {1..10000}
-do
-cp website.sql ../
-sleep 1
-done
-
-
-成功了：
-
-
-内容太多了，不好看，罢了，我有数据库密码：
-
-
-算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。
-直接修改sh，是没修改权限的，但是www-data有：
-
-
-然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：
-
-
-无奈看wp，修改drupal的密码：
-
-
-然后登录后台去修改php代码，添加php模块，url:https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz
-
-
-开启：
-
-
-修改代码，保存后自动执行
-
-"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0x025 DC 7","item":"https://yangzhuzai.github.io/posts/vulnhub/0x025-dc-7/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0x025 DC 7","name":"0x025 DC 7","description":"端口扫描 渗透 drupal准确版本：8.7.6\n作者提示要跳出思维，暂时不要考虑爆破：\n好好好，我打死也没想到要这样子跳出思维：\n去github上搜索这个用户名：\n找到数据库配置文件：\n由于没开mysql只能先试试ssh:\n提权 这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：\n查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：\n理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：\n#!/bin/bash\rfor i in {1..10000}\rdo\rcp website.sql ../\rsleep 1\rdone 成功了：\n内容太多了，不好看，罢了，我有数据库密码：\n算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。\n直接修改sh，是没修改权限的，但是www-data有：\n然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：\n无奈看wp，修改drupal的密码：\n然后登录后台去修改php代码，添加php模块，url:https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz\n开启：\n修改代码，保存后自动执行\n","keywords":[],"articleBody":"端口扫描 渗透 drupal准确版本：8.7.6\n作者提示要跳出思维，暂时不要考虑爆破：\n好好好，我打死也没想到要这样子跳出思维：\n去github上搜索这个用户名：\n找到数据库配置文件：\n由于没开mysql只能先试试ssh:\n提权 这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：\n查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：\n理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：\n#!/bin/bash\rfor i in {1..10000}\rdo\rcp website.sql ../\rsleep 1\rdone 成功了：\n内容太多了，不好看，罢了，我有数据库密码：\n算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。\n直接修改sh，是没修改权限的，但是www-data有：\n然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：\n无奈看wp，修改drupal的密码：\n然后登录后台去修改php代码，添加php模块，url:https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz\n开启：\n修改代码，保存后自动执行\n接下来就简单了，去修改backups.sh:\n提权成功\n","wordCount":"35","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/vulnhub/0x025-dc-7/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x025 DC 7</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf727e4cac6c3d940ff1aac06aee664de%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb1527c0ea7168f2d51b2b4158dbdef95%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>drupal准确版本：8.7.6</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEec78e70ad5fb9066201f86fcb6670d09%e6%88%aa%e5%9b%be.png alt></p><p>作者提示要跳出思维，暂时不要考虑爆破：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEdd2f715a6719ccd40c398f1c8e8f3d29%e6%88%aa%e5%9b%be.png alt></p><p>好好好，我打死也没想到要这样子跳出思维：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEab409d8569bbf0be265dec29e302b3cc%e6%88%aa%e5%9b%be.png alt></p><p>去github上搜索这个用户名：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE33bc1bb7046a8a01c3a3f49fd9a83492%e6%88%aa%e5%9b%be.png alt></p><p>找到数据库配置文件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE86d8cd1aaa55eb57dce4b0a56835951b%e6%88%aa%e5%9b%be.png alt></p><p>由于没开mysql只能先试试ssh:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE03be98d809d2fee2455fe3e35f824801%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>这靶机完全翻车了，提权也很离谱，首先是家目录下面有一个非正常文件，叫mbox，看一下发现计划任务字样：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE6f02ef6140f51f973af2b9c13baa45f9%e6%88%aa%e5%9b%be.png alt></p><p>查看文件，大致内容为清空文件夹、备份数据库，打包，修改权限，然后删除，看样子，理论上，我是有机会在计划任务执行期间复制website.sql的：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEca2b9c1242fcf271a8ced0c5ac391cb0%e6%88%aa%e5%9b%be.png alt></p><p>理论上行得通，这又何尝不是一种条件竞争呢，写一个shell脚本试试：</p><pre tabindex=0><code>#!/bin/bash
-for i in {1..10000}
-do
-cp website.sql ../
-sleep 1
-done
-</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE43db16261b1ad56453179eb10c637a2d%e6%88%aa%e5%9b%be.png alt></p><p>成功了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd7978a4fa5cdc3e0f9f8b595f6ce2070%e6%88%aa%e5%9b%be.png alt></p><p>内容太多了，不好看，罢了，我有数据库密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE37df18db587e342de64ce78e622add64%e6%88%aa%e5%9b%be.png alt></p><p>算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。</p><p>直接修改sh，是没修改权限的，但是www-data有：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8ea968f9eea505d4490c874a11b9e524%e6%88%aa%e5%9b%be.png alt></p><p>然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf590a498ceac7ef7236b8a3eabc3e812%e6%88%aa%e5%9b%be.png alt></p><p>无奈看wp，修改drupal的密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE31551ab625f010a14b5ea0523d34e834%e6%88%aa%e5%9b%be.png alt></p><p>然后登录后台去修改php代码，添加php模块，url:<a href=https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz>https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9ab714f997ac369e289c6522fcb98f19%e6%88%aa%e5%9b%be.png alt></p><p>开启：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE89cd5def2f6b4dab07b0e8f878cc692e%e6%88%aa%e5%9b%be.png alt></p><p>修改代码，保存后自动执行</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEed66d330641168e2fb32801784958155%e6%88%aa%e5%9b%be.png alt></p><p>接下来就简单了，去修改backups.sh:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE86fa57d0dbcfdb7510829afcefedd13a%e6%88%aa%e5%9b%be.png alt></p><p>提权成功</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb4845c1f380ee67fa06bb5a75a430cd1%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/htb/0x024-intelligence/><span class=title>« Prev</span><br><span>0X024 Intelligence</span>
-</a><a class=next href=https://yangzhuzai.github.io/posts/htb/0x025-monteverde/><span class=title>Next »</span><br><span>0X025 monteverde</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE43db16261b1ad56453179eb10c637a2d%e6%88%aa%e5%9b%be.png alt></p><p>成功了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd7978a4fa5cdc3e0f9f8b595f6ce2070%e6%88%aa%e5%9b%be.png alt></p><p>内容太多了，不好看，罢了，我有数据库密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE37df18db587e342de64ce78e622add64%e6%88%aa%e5%9b%be.png alt></p><p>算了，搞了半天，数据库连不上，其实想看数据库主要也是想看web后台密码。</p><p>直接修改sh，是没修改权限的，但是www-data有：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8ea968f9eea505d4490c874a11b9e524%e6%88%aa%e5%9b%be.png alt></p><p>然后想去拿个webshell，直接修改php文件，然后我一看web目录又没权限，再次翻车：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf590a498ceac7ef7236b8a3eabc3e812%e6%88%aa%e5%9b%be.png alt></p><p>无奈看wp，修改drupal的密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE31551ab625f010a14b5ea0523d34e834%e6%88%aa%e5%9b%be.png alt></p><p>然后登录后台去修改php代码，添加php模块，url:<a href=https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz>https://ftp.drupal.org/files/projects/php-8.x-1.x-dev.tar.gz</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9ab714f997ac369e289c6522fcb98f19%e6%88%aa%e5%9b%be.png alt></p><p>开启：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE89cd5def2f6b4dab07b0e8f878cc692e%e6%88%aa%e5%9b%be.png alt></p><p>修改代码，保存后自动执行</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEed66d330641168e2fb32801784958155%e6%88%aa%e5%9b%be.png alt></p><p>接下来就简单了，去修改backups.sh:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE86fa57d0dbcfdb7510829afcefedd13a%e6%88%aa%e5%9b%be.png alt></p><p>提权成功</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb4845c1f380ee67fa06bb5a75a430cd1%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/htb/0x024-intelligence/><span class=title>« Prev</span><br><span>0X024 Intelligence</span>
+</a><a class=next href=http://localhost:1313/posts/htb/0x025-monteverde/><span class=title>Next »</span><br><span>0X025 monteverde</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>

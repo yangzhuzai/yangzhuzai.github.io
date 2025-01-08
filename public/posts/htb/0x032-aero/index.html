@@ -1,4 +1,4 @@
-<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>0X032 Aero | 养猪日记</title>
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0X032 Aero | 养猪日记</title>
 <meta name=keywords content><meta name=description content="端口扫描
 
 
@@ -46,102 +46,8 @@ https://github.com/duck-sec/CVE-2023-28252-Compiled-exe
 使用msf生成一个木马，然后nc监听即可：
 .\exploit.exe 1208 1 cxk.exe，比较简单
 
-"><meta name=author content="养猪日记"><link rel=canonical href=https://yangzhuzai.github.io/posts/htb/0x032-aero/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://yangzhuzai.github.io/posts/htb/0x032-aero/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="0X032 Aero"><meta property="og:description" content="端口扫描
-
-
-
-
-
-
-获取立足点
-单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。
-windows 主题 themes
-是有个win11的主题漏洞，研究一下怎么打吧：
-git clone https://github.com/Jnnshschl/CVE-2023-38146.git
-
-
-python3 -m pip install -r requirements.txt
-
-
-sudo apt-get install g++-mingw-w64-x86-64
-
-
-运行：
-这里的IP和端口都是本地IP端口：
-
-
-开启监听：
-
-
-上传：
-
-
-可能要多尝试几次：
-后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：
-
-
-提权
-
-
-那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：
-
-
-去github找现成的：
-https://github.com/duck-sec/CVE-2023-28252-Compiled-exe
-
-
-使用msf生成一个木马，然后nc监听即可：
-.\exploit.exe 1208 1 cxk.exe，比较简单
-
-"><meta property="og:type" content="article"><meta property="og:url" content="https://yangzhuzai.github.io/posts/htb/0x032-aero/"><meta property="og:image" content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-11T14:25:59+08:00"><meta property="article:modified_time" content="2024-10-11T14:25:59+08:00"><meta property="og:site_name" content="养猪日记"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E"><meta name=twitter:title content="0X032 Aero"><meta name=twitter:description content="端口扫描
-
-
-
-
-
-
-获取立足点
-单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。
-windows 主题 themes
-是有个win11的主题漏洞，研究一下怎么打吧：
-git clone https://github.com/Jnnshschl/CVE-2023-38146.git
-
-
-python3 -m pip install -r requirements.txt
-
-
-sudo apt-get install g++-mingw-w64-x86-64
-
-
-运行：
-这里的IP和端口都是本地IP端口：
-
-
-开启监听：
-
-
-上传：
-
-
-可能要多尝试几次：
-后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：
-
-
-提权
-
-
-那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：
-
-
-去github找现成的：
-https://github.com/duck-sec/CVE-2023-28252-Compiled-exe
-
-
-使用msf生成一个木马，然后nc监听即可：
-.\exploit.exe 1208 1 cxk.exe，比较简单
-
-"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://yangzhuzai.github.io/posts/"},{"@type":"ListItem","position":2,"name":"0X032 Aero","item":"https://yangzhuzai.github.io/posts/htb/0x032-aero/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"0X032 Aero","name":"0X032 Aero","description":"端口扫描 获取立足点 单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。\nwindows 主题 themes\n是有个win11的主题漏洞，研究一下怎么打吧：\ngit clone https://github.com/Jnnshschl/CVE-2023-38146.git\npython3 -m pip install -r requirements.txt\nsudo apt-get install g++-mingw-w64-x86-64\n运行：\n这里的IP和端口都是本地IP端口：\n开启监听：\n上传：\n可能要多尝试几次：\n后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：\n提权 那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：\n去github找现成的：\nhttps://github.com/duck-sec/CVE-2023-28252-Compiled-exe\n使用msf生成一个木马，然后nc监听即可：\n.\\exploit.exe 1208 1 cxk.exe，比较简单\n","keywords":[],"articleBody":"端口扫描 获取立足点 单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。\nwindows 主题 themes\n是有个win11的主题漏洞，研究一下怎么打吧：\ngit clone https://github.com/Jnnshschl/CVE-2023-38146.git\npython3 -m pip install -r requirements.txt\nsudo apt-get install g++-mingw-w64-x86-64\n运行：\n这里的IP和端口都是本地IP端口：\n开启监听：\n上传：\n可能要多尝试几次：\n后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：\n提权 那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：\n去github找现成的：\nhttps://github.com/duck-sec/CVE-2023-28252-Compiled-exe\n使用msf生成一个木马，然后nc监听即可：\n.\\exploit.exe 1208 1 cxk.exe，比较简单\n","wordCount":"35","inLanguage":"en","image":"https://yangzhuzai.github.io/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E","datePublished":"2024-10-11T14:25:59+08:00","dateModified":"2024-10-11T14:25:59+08:00","author":{"@type":"Person","name":"养猪日记"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://yangzhuzai.github.io/posts/htb/0x032-aero/"},"publisher":{"@type":"Organization","name":"养猪日记","logo":{"@type":"ImageObject","url":"https://yangzhuzai.github.io/%3Clink%20/%20abs%20url%3E"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://yangzhuzai.github.io/ accesskey=h title="Home (Alt + H)"><img src=https://yangzhuzai.github.io/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://yangzhuzai.github.io/categories/ title=分类><span>分类</span></a></li><li><a href=https://yangzhuzai.github.io/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://yangzhuzai.github.io/>Home</a>&nbsp;»&nbsp;<a href=https://yangzhuzai.github.io/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X032 Aero</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE3750b7f1fc2738082cd7871831d3edafimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEe0654ee3d610ebcd14d3a5ba9650ae07image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEb6abefba514da9dd59d306ff8a843ea3image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。</p><p>windows 主题 themes</p><p>是有个win11的主题漏洞，研究一下怎么打吧：</p><p>git clone <a href=https://github.com/Jnnshschl/CVE-2023-38146.git>https://github.com/Jnnshschl/CVE-2023-38146.git</a></p><p><img loading=lazy src=/htb_img/WEBRESOURCE773a351fb7a3fcdd79d4258fc2f1cbf6image.png alt></p><p>python3 -m pip install -r requirements.txt</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa8ce4703d341cf4a2f7355c08ecd11beimage.png alt></p><p>sudo apt-get install g++-mingw-w64-x86-64</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8288500b6dee031de9e04ba372635e58image.png alt></p><p>运行：</p><p>这里的IP和端口都是本地IP端口：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE789bb20b3b5d29bddb3ead726e61bd48image.png alt></p><p>开启监听：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd7cd34b427d7310495d28128b404d9efimage.png alt></p><p>上传：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE19a69ea993df83c9cc54837c7de94b52image.png alt></p><p>可能要多尝试几次：</p><p>后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd6acd0c9b9b41a2e0eb889042889301aimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE07735a3a4c81bcac2a8ec7b984f40cd0image.png alt></p><p>那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb172412664b5050414524af622297decimage.png alt></p><p>去github找现成的：</p><p><a href=https://github.com/duck-sec/CVE-2023-28252-Compiled-exe>https://github.com/duck-sec/CVE-2023-28252-Compiled-exe</a></p><p><img loading=lazy src=/htb_img/WEBRESOURCEc39591775bad6a6622f9ab5b84a67f52image.png alt></p><p>使用msf生成一个木马，然后nc监听即可：</p><p>.\exploit.exe 1208 1 cxk.exe，比较简单</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbf99bb16e37461ce4aa58db5e114830aimage.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=https://yangzhuzai.github.io/posts/vulnhub/0x031-lampsecurity-ctf7/><span class=title>« Prev</span><br><span>0x031 LampSecurity CTF7</span>
-</a><a class=next href=https://yangzhuzai.github.io/posts/vulnhub/0x032-lazysysadmin/><span class=title>Next »</span><br><span>0x032 lazysysadmin</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=https://yangzhuzai.github.io/>养猪日记</a></span> ·
+"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/htb/0x032-aero/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/htb/0x032-aero/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X032 Aero</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE3750b7f1fc2738082cd7871831d3edafimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEe0654ee3d610ebcd14d3a5ba9650ae07image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEb6abefba514da9dd59d306ff8a843ea3image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>单从靶机的端口开放情况来看，只有80端口开放，web渗透获取立足点，或者有knockd？但是这不是linux，暂且看看吧，没有什么头绪，不是现场的框架，也没有其他端口开放，同时没有其他目录和域名，后面看了一下WP。</p><p>windows 主题 themes</p><p>是有个win11的主题漏洞，研究一下怎么打吧：</p><p>git clone <a href=https://github.com/Jnnshschl/CVE-2023-38146.git>https://github.com/Jnnshschl/CVE-2023-38146.git</a></p><p><img loading=lazy src=/htb_img/WEBRESOURCE773a351fb7a3fcdd79d4258fc2f1cbf6image.png alt></p><p>python3 -m pip install -r requirements.txt</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa8ce4703d341cf4a2f7355c08ecd11beimage.png alt></p><p>sudo apt-get install g++-mingw-w64-x86-64</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8288500b6dee031de9e04ba372635e58image.png alt></p><p>运行：</p><p>这里的IP和端口都是本地IP端口：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE789bb20b3b5d29bddb3ead726e61bd48image.png alt></p><p>开启监听：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd7cd34b427d7310495d28128b404d9efimage.png alt></p><p>上传：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE19a69ea993df83c9cc54837c7de94b52image.png alt></p><p>可能要多尝试几次：</p><p>后台应该是个计划任务，对于这些非服务端的攻击，其实真的很难有现成的复现资料：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd6acd0c9b9b41a2e0eb889042889301aimage.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCE07735a3a4c81bcac2a8ec7b984f40cd0image.png alt></p><p>那个ps1脚本看起来就是触发脚本，然后那个pdf的内容是再提示漏洞：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb172412664b5050414524af622297decimage.png alt></p><p>去github找现成的：</p><p><a href=https://github.com/duck-sec/CVE-2023-28252-Compiled-exe>https://github.com/duck-sec/CVE-2023-28252-Compiled-exe</a></p><p><img loading=lazy src=/htb_img/WEBRESOURCEc39591775bad6a6622f9ab5b84a67f52image.png alt></p><p>使用msf生成一个木马，然后nc监听即可：</p><p>.\exploit.exe 1208 1 cxk.exe，比较简单</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbf99bb16e37461ce4aa58db5e114830aimage.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/vulnhub/0x031-lampsecurity-ctf7/><span class=title>« Prev</span><br><span>0x031 LampSecurity CTF7</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x032-lazysysadmin/><span class=title>Next »</span><br><span>0x032 lazysysadmin</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>

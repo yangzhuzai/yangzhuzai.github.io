@@ -1,0 +1,276 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>002 常见前端加密算法 | 养猪日记</title>
+<meta name=keywords content><meta name=description content="前言
+为了更好的对加密数据进行解密，了解常见的加密算法是需要的，这里只讨论数据加密，散列和编码不讨论。
+1、对称加密
+AES
+高级加密标准，加密和解密使用相同的密钥，作为使用者我们需要关注的参数有6个：
+1. 密钥 (Key)
+
+2. 明文 (Plaintext)
+
+3. 加密模式 (Cipher Mode)
+常见模式：
+ECB（电子密码本模式）：简单，但不推荐使用（易遭受模式攻击）。
+CBC（加密块链模式）：安全性高，但需要初始化向量 (IV)。
+CFB（加密反馈模式）：支持流式加密。
+OFB（输出反馈模式）：避免错误传播。
+GCM（加洛瓦计数器模式）：提供加密和认证功能。
+
+4. 填充方式 (Padding Scheme)
+常见方式：
+Pkcs5
+Pkcs7
+AnsiX923
+Iso97971
+Iso10126
+ZeroPadding
+NoPadding
+
+5. 初始化向量 (IV)
+用于某些加密模式（如 CBC 和 GCM），确保相同的明文在每次加密时生成不同的密文。
+要求：
+长度为 16 字节（128 位）。
+必须随机生成且不可重复。
+注意：IV 不需要保密，但需要在加密时和解密时一致。
+
+6. 密文 (Ciphertext)
+密文常见两种格式：Hex、Base64
+在线解密：https://tool.hiofd.com/aes-encrypt-online/
+案例，来自开源靶场encrypt-labs：
+使用v_jstools js hook工具监控函数：
+
+
+定位加密函数位置：
+
+
+打上断点查看：
+
+
+这里其实比较清晰了，我们关注的几个参数：
+1、加密模式为：CBC
+2、初始化向量 (IV)为：1234567890123456
+3、填充方式 (Padding Scheme)为：PKCS7
+4、密钥 (Key)为：1234567890123456"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">002 常见前端加密算法</h1><div class=post-meta><span title='2025-01-08 15:06:59 +0800 CST'>January 8, 2025</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;505 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#aes>AES</a></li><li><a href=#des--3des>DES / 3DES</a></li><li><a href=#sm4>SM4</a></li></ul><ul><li><a href=#rsa>RSA</a></li><li><a href=#ecc>ECC</a></li><li><a href=#sm2>SM2</a></li></ul><ul><li><a href=#hmac>HMAC</a></li></ul></nav></div></details></div><div class=post-content><h1 id=前言>前言<a hidden class=anchor aria-hidden=true href=#前言>#</a></h1><p>为了更好的对加密数据进行解密，了解常见的加密算法是需要的，这里只讨论数据加密，散列和编码不讨论。</p><h1 id=1对称加密>1、对称加密<a hidden class=anchor aria-hidden=true href=#1对称加密>#</a></h1><h2 id=aes>AES<a hidden class=anchor aria-hidden=true href=#aes>#</a></h2><p>高级加密标准，加密和解密使用相同的密钥，作为使用者我们需要关注的参数有6个：</p><pre tabindex=0><code>1. 密钥 (Key)
+
+2. 明文 (Plaintext)
+
+3. 加密模式 (Cipher Mode)
+常见模式：
+ECB（电子密码本模式）：简单，但不推荐使用（易遭受模式攻击）。
+CBC（加密块链模式）：安全性高，但需要初始化向量 (IV)。
+CFB（加密反馈模式）：支持流式加密。
+OFB（输出反馈模式）：避免错误传播。
+GCM（加洛瓦计数器模式）：提供加密和认证功能。
+
+4. 填充方式 (Padding Scheme)
+常见方式：
+Pkcs5
+Pkcs7
+AnsiX923
+Iso97971
+Iso10126
+ZeroPadding
+NoPadding
+
+5. 初始化向量 (IV)
+用于某些加密模式（如 CBC 和 GCM），确保相同的明文在每次加密时生成不同的密文。
+要求：
+长度为 16 字节（128 位）。
+必须随机生成且不可重复。
+注意：IV 不需要保密，但需要在加密时和解密时一致。
+
+6. 密文 (Ciphertext)
+密文常见两种格式：Hex、Base64
+</code></pre><p>在线解密：https://tool.hiofd.com/aes-encrypt-online/</p><p>案例，来自开源靶场encrypt-labs：</p><p>使用v_jstools js hook工具监控函数：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107105633.png alt></p><p>定位加密函数位置：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107105926.png alt>
+打上断点查看：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107110126.png alt></p><p>这里其实比较清晰了，我们关注的几个参数：</p><p>1、加密模式为：CBC
+2、初始化向量 (IV)为：1234567890123456
+3、填充方式 (Padding Scheme)为：PKCS7
+4、密钥 (Key)为：1234567890123456</p><p>和JS逆向的那篇文章一样，使用autodecoder可以实现burp解密，不过这次方便很多，到这里加解密可以实现了，PKCS7一般兼容PKCS5，这里直接选PKCS5即可：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107111814.png alt></p><p>然后就是实现自动解密：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107111909.png alt></p><p>正则表达式提取加密字段：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107115022.png alt></p><p>URL编码：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107115058.png alt></p><p>保存一下配置，可开始爆破：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107115127.png alt></p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107115142.png alt></p><h2 id=des--3des>DES / 3DES<a hidden class=anchor aria-hidden=true href=#des--3des>#</a></h2><p>数据加密标准，其中3DES也叫DESede，作为使用者我们需要关注的参数有6个：</p><pre tabindex=0><code>1. 密钥（Key）
+
+3. 明文（Plaintext）
+
+3. 加密模式（Cipher Mode）
+最常见的包括：
+ECB（Electronic Codebook，电子密码本模式）：
+每个数据块独立加密。
+优点：简单，但安全性较低，因为相同的明文块会生成相同的密文块。
+
+CBC（Cipher Block Chaining，加密块链模式）：
+每个数据块在加密前与前一个密文块异或，增强了安全性。
+必须使用初始化向量（IV）。
+优点：安全性高，但需要处理 IV。
+
+4. 填充方式（Padding Scheme）
+常见的填充方式：
+PKCS5Padding：将填充字节设置为填充长度。
+NoPadding：不进行填充，但此时明文必须是 64 位的倍数。
+
+5. 初始化向量（IV）
+在 CBC 模式下，IV 是必需的，它是一个随机的 64 位值，用于确保即使相同的明文和密钥，生成的密文也不同。
+
+6. 密文（Ciphertext）
+</code></pre><p>在线解密：https://tool.hiofd.com/des-decrypt-online/</p><p>和上面一个没有太多的区别，查看函数的方法一样，如果不想动脑理函数，可以尝试GPT：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107140757.png alt>
+autodecoder配置：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107141119.png alt></p><h2 id=sm4>SM4<a hidden class=anchor aria-hidden=true href=#sm4>#</a></h2><p>SM4 是中国国家密码管理局发布的分组对称加密算法，标准编号为 GBT 32907-2016。它主要用于在无线局域网产品中保护数据完整性和隐私性，与国际上的 AES 类似，成为中国国家商用密码标准的一部分。</p><pre tabindex=0><code>使用者需要设置的参数
+1、密钥（Key）：
+
+由用户提供，长度为 16 字节（128 位）。
+加密和解密必须使用相同的密钥。
+2、加密模式（Mode）：
+
+用户可以选择 ECB、CBC 等模式，推荐使用 CBC 模式。
+在 ECB 模式下不需要设置初始化向量（IV）。
+3、初始化向量（IV）（仅在 CBC 模式下需要）：
+
+长度为 16 字节（128 位），需要用户提供。
+确保不同加密操作使用不同的 IV，以增强安全性。
+4、填充方式（Padding）：
+
+常用填充方式是 PKCS#7，通常前端库会默认使用，无需用户手动设置。
+自动生成或固定的参数
+1、填充方式：前端库通常会自动处理填充，用户不需要手动设置。
+2、块大小：SM4 的块大小固定为 16 字节（128 位）。
+</code></pre><p>在线解密：https://tool.hiofd.com/sm4-encrypt-online/</p><h1 id=2非对称加密>2、非对称加密<a hidden class=anchor aria-hidden=true href=#2非对称加密>#</a></h1><h2 id=rsa>RSA<a hidden class=anchor aria-hidden=true href=#rsa>#</a></h2><p>RSA（Rivest–Shamir–Adleman）是一个广泛使用的 非对称加密算法，用于保护数据传输的机密性。与对称加密不同，非对称加密算法使用一对密钥——公钥和私钥，其中：</p><p>公钥 用于加密数据（可以公开）；
+私钥 用于解密数据（必须保密）；</p><p>作为使用者我们需要关注的参数有6个：</p><pre tabindex=0><code>1. 公钥（Public Key）
+2. 明文（Plaintext）
+3. 加密模式
+在实际应用中，RSA 经常与其他加密算法一起使用，通常是对称加密算法（如 AES），先用 RSA 加密对称密钥，再用对称加密算法加密数据。
+4. 填充方式（Padding）
+常见的填充方式有：
+PKCS#1：最常用的 RSA 填充方案，包含数据长度、数据本身、填充字节等信息，确保数据加密时的安全性。
+OAEP（Optimal Asymmetric Encryption Padding）：更安全的填充方式，通常用于现代 RSA 加密中。
+5. 密文（Ciphertext）
+6. 私钥（Private Key）
+
+用户需要设置或提供的参数主要是 公钥 和 私钥
+</code></pre><p>在线解密：https://www.bejson.com/enc/rsa/</p><p>这里的案例是RSA和AES一起使用的场景：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107142855.png alt></p><p>一样的打断点：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107143511.png alt></p><p>不想思考，这里贴一下GPT的解释：</p><pre tabindex=0><code>这段代码是一个JavaScript函数，用于加密数据并发送到指定的URL。以下是代码的逐步解释：
+
+1、获取用户名和密码：
+
+从表单中获取用户名和密码的值。document[_0x13ef4f(0x3bf, 0x3af)](&#39;username&#39;) 和 document[_0x13ef4f(0x3c1, 0x3af)](_0x13ef4f(0x3ac, 0x3b7))[&#39;value&#39;] 分别获取用户名和密码的输入框的值.
+
+2、生成随机密钥和初始化向量（IV）：
+
+使用 CryptoJS[&#39;lib&#39;][&#39;WordArray&#39;][&#39;random&#39;](0x10) 生成两个随机的16字节（128位）的密钥和IV.
+
+3、加密数据：
+
+使用AES算法对JSON字符串化的用户名和密码进行加密。加密模式为CBC，填充模式为PKCS7.
+CryptoJS[_0x13ef4f(0x3c1, 0x3cb)][_0x13ef4f(0x3c6, 0x3b9)](_0x57740d, _0x4515a4, {&#39;iv&#39;: _0x5e9345, &#39;mode&#39;: CryptoJS[&#39;mode&#39;][&#39;CBC&#39;], &#39;padding&#39;: CryptoJS[&#39;pad&#39;][_0x13ef4f(0x3b6, 0x3bc)]})[&#39;toString&#39;]() 这行代码执行了加密操作，并将结果转换为字符串.
+
+4、RSA加密AES密钥和IV：
+
+使用JSEncrypt库对AES密钥和IV进行RSA加密。首先初始化JSEncrypt对象，并设置公钥.
+_0x41d8d9[_0x13ef4f(0x3b9, 0x3cc)](_0x13ef4f(0x3de, 0x3cd)); 这行代码设置了RSA公钥.
+_0x2a1fb9 和 _0x1af58a 分别存储了加密后的AES密钥和IV的Base64编码字符串.
+
+5、发送数据：
+
+使用 fetch 函数将加密后的数据发送到指定的URL. 发送的数据包括加密后的数据、加密后的AES密钥和加密后的IV.
+fetch(_0xcb20dc, {&#39;method&#39;: _0x13ef4f(0x3bd, 0x3cf), &#39;headers&#39;: {&#39;Content-Type&#39;: &#39;application/json&#39;}, &#39;body&#39;: JSON[&#39;stringify&#39;]({&#39;encryptedData&#39;: _0x4cf83b, &#39;encryptedKey&#39;: _0x2a1fb9, &#39;encryptedIv&#39;: _0x1af58a})}) 这行代码执行了数据的发送操作.
+
+注意：
+_0x13ef4f 函数用于解密字符串，可能是为了混淆代码.
+代码中有一些字符串和方法名被加密或混淆，例如 document.getElementById 和 CryptoJS.AES.encrypt 等，需要根据上下文进行解密或替换以理解代码的完整逻辑.
+</code></pre><p>理清一下思路：</p><p>非对称算法，使用公钥加密随机生成的对称算法的密钥，也就是说，在AES密钥和IV知道的情况下，数据包中红框圈起来的参数可以不用变动：
+<img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107145112.png alt></p><p>使用_0x4515a4.toString(CryptoJS.enc.Hex);和_0x5e9345.toString(CryptoJS.enc.Hex);查看一下密钥和IV即可</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107154651.png alt>
+autodecoder配置如下，注意正则表达式，encryptedData":"(.*?)",&ldquo;encryptedKey</p><p>(.*?)</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107163909.png alt></p><p>看一下解密效果：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107155349.png alt></p><p>爆破：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107164319.png alt></p><h2 id=ecc>ECC<a hidden class=anchor aria-hidden=true href=#ecc>#</a></h2><p>椭圆曲线密码学，作为使用者需要了解的参数有4个：</p><pre tabindex=0><code>1、椭圆曲线参数
+常见的标准曲线有：
+secp256k1（比特币和以太坊使用的曲线）
+P-256、P-384、P-521（由 NIST 标准化）
+
+2、公钥（Public Key）
+3、私钥（Private Key）
+4、随机数k
+
+*** 用户需要设置或提供的参数主要是 公钥 和 私钥，其他参数通常是固定或自动生成的。
+</code></pre><p>实战中比较少，渗透实战的话，重点关注公私钥就可以了。</p><h2 id=sm2>SM2<a hidden class=anchor aria-hidden=true href=#sm2>#</a></h2><p>SM2 是中国国家密码管理局发布的基于椭圆曲线密码学（ECC）的公钥密码算法，标准编号为 GBT 32918-2016。它广泛用于数字签名、密钥交换和加密，属于中国国家商用密码标准的一部分，是在 ECC 的基础上设计的，具有良好的安全性和性能。</p><p>作为使用者需要关注的参数有5个：</p><pre tabindex=0><code>1、椭圆曲线参数：标准规定好的固定参数。
+2、公钥与私钥：用于加密和解密的密钥对。
+3、随机数 k：加密时必须生成随机数 
+4、填充方式：通常使用 PKCS#7 填充。
+5、哈希算法：默认使用 SM3 作为哈希函数。
+
+*** 用户需要设置或提供的参数主要是 公钥 和 私钥，其他参数通常是固定或自动生成的。
+</code></pre><h1 id=3签名校验>3、签名校验<a hidden class=anchor aria-hidden=true href=#3签名校验>#</a></h1><h2 id=hmac>HMAC<a hidden class=anchor aria-hidden=true href=#hmac>#</a></h2><p>HMAC 是一种基于散列函数（如 SHA-256 或 MD5）的消息认证码，用于验证消息的完整性和真实性。它结合了一个密钥和一个散列函数来生成消息的认证码，能够有效防止数据被篡改。</p><p>HMAC 的本质是对消息和密钥进行混合操作，然后通过散列函数计算出一个固定长度的值（称为 MAC，Message Authentication Code）。这个值随密钥或消息的变化而变化，因此可以用来验证消息是否被篡改。</p><p>HMAC 的主要功能：
+1、消息完整性验证，检查消息在传输过程中是否被篡改。
+2、消息认证，确保消息确实由合法的发送方发送，防止伪造。
+HMAC 适用于身份认证和数据完整性保护，常用于 HTTPS、JWT（JSON Web Token）、OAuth 等协议。</p><p>作为使用者需要关注的参数有5个：</p><pre tabindex=0><code>使用者需要设置的参数
+
+1、密钥（Key）
+用户必须提供，长度建议为哈希函数块大小（例如 SHA-256 的块大小为 64 字节）。
+密钥可以是字符串或二进制数据。
+
+2、消息（Message）
+需要加密或认证的消息，由用户提供。
+
+3、哈希函数（Hash Function）
+选择合适的哈希函数，推荐使用 SHA-256 或 SHA-512，因为它们安全性较高。
+
+自动生成或固定的参数：
+4、填充值（ipad 和 opad）
+内外填充值是固定的，算法内部会自动处理，用户无需设置。
+5、大小（Block Size）
+块大小取决于选择的哈希函数，例如 SHA-256 的块大小为 64 字节。库内部会根据哈希函数自动确定块大小。
+
+重点关注前三个。
+</code></pre><p>案例：</p><p>和前面的操作没有区别，通过控制台获取到相关信息：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107172404.png alt>
+看不懂的话可以借助GPT，密钥为：_0x2e9aaf = &lsquo;be56e057f20f883e&rsquo;，加密方式为HmacSHA256，逻辑较为简单，将用户名 <code>_0x2547ae</code>、密码 <code>_0x52eec5</code>、随机数 <code>_0x3db627</code> 和时间戳 <code>_0x1a525d</code> 拼接成一个字符串，然后进行加密就完成了：</p><p>其中的python加密实现逻辑可以尝试使用gpt来生成，尝试效果不错，一般只需要细微修改即可。</p><p>使用python来实现这个功能：</p><pre tabindex=0><code>import hashlib  
+import hmac  
+import os  
+import time  
+import json  
+  
+from flask import Flask  
+import base64  
+from flask import request  
+  
+# 密钥（key）, 密斯偏移量（vi） CBC模式加密  
+app = Flask(__name__)  
+  
+def generate_signature(username, password):  
+    # 生成nonce  
+    secret_key = &#39;be56e057f20f883e&#39;  
+    nonce = base64.urlsafe_b64encode(os.urandom(16)).decode(&#39;utf-8&#39;)  
+  
+    # 获取当前时间的时间戳（以秒为单位）  
+    timestamp = int(time.time())  
+  
+    # 拼接待签名数据  
+    data_to_sign = f&#34;{username}{password}{nonce}{timestamp}&#34;  
+  
+    # 使用HMAC-SHA256算法生成签名  
+    signature = hmac.new(secret_key.encode(&#39;utf-8&#39;), data_to_sign.encode(&#39;utf-8&#39;), hashlib.sha256).hexdigest()  
+  
+    # 返回签名及相关数据  
+    return {  
+        &#34;username&#34;: username,  
+        &#34;password&#34;: password,  
+        &#34;nonce&#34;: nonce,  
+        &#34;timestamp&#34;: timestamp,  
+        &#34;signature&#34;: signature  
+    }  
+@app.route(&#39;/encrypt&#39;,methods=[&#34;POST&#34;])  
+def encrypt():  
+    param = request.form.get(&#39;dataBody&#39;)  # 获取  post 参数  
+    print(param)  
+    parsed_data = json.loads(param)  
+    username = parsed_data[&#34;username&#34;]  
+    print(username)  
+    password = parsed_data[&#34;password&#34;]  
+    print(password)  
+    encry_param = generate_signature(username, password)  
+    print(encry_param)  
+    return encry_param  
+  
+@app.route(&#39;/decode&#39;,methods=[&#34;POST&#34;]) # 不解密  
+def decrypt():  
+    param = request.form.get(&#39;dataBody&#39;)  # 获取  post 参数  
+    return param  
+  
+  
+if __name__ == &#39;__main__&#39;:  
+    app.run()
+</code></pre><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107174310.png alt></p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107174338.png alt></p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107174401.png alt></p><p>爆破即可：</p><p><img loading=lazy src=/skills_img/jmsf_img/Pasted%20image%2020250107174448.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/><span class=title>Next »</span><br><span>代码审计总结</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
