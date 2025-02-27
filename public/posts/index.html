@@ -1,0 +1,123 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>Posts | 养猪日记</title>
+<meta name=keywords content><meta name=description content="Posts - 养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=http://localhost:1313/posts/index.xml><link rel=alternate hreflang=en href=http://localhost:1313/posts/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a></div><h1>Posts</h1></header><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>003 JS逆向实战案例一</h2></header><div class=entry-content><p>前言 实战中遇到的一个案例的分析，真实环境，厚马处理。
+Yakit+动态RSA+动态AES 这个站的环境比较复杂，当年测试的时候也是花了一些功夫，首先不确定是burp哪里的问题，可能是指纹，或者是更底层导致的，即使使用了Awesome-TLS插件也无法正常访问，会出现以下报错：
+随后尝试使用yakit进行抓包，发现是ok的，于是就尝试使用yakit进行渗透，yakit上没有autodecoder，但是可以使用热加载技术来实现，首先还是先搞清楚是使用的什么加密：
+首先是正常访问，抓包情况如下，第二个数据包是这样的，最开始的时候并不知道什么作用，后面经过一段时间的尝试后，才知道是什么东西，这里可以先不管：
+先前正常访问了一次，这里返回去查看v_jstools的相关情况，在明文处发现了解密函数的内容：
+定位函数触发位置，其实比较清晰的知道使用的是AES算法，模式为ECB，不需要IV：
+打上断点，随便请求一个功能点，即可获得响应解密密钥Yn7OPMq3J52Hvoyh：
+就当我以为就这么结束的时候，发现这个密钥解不开请求的加密内容，难道请求的密钥和响应解密密钥不一样？于是找到了加密的函数，再次上断点查看，果然不一样，密钥为9ypTbpBcWA54LHBn：
+解密验证，基本上就得到了成功的验证，到这一步我都没觉得有什么问题，注意一下数据包中带有key参数，我之前认为是使用rsa公钥加密了的aes密钥，在我们知道aes密钥的情况下没有用，但是随后发生的事情直接打了我的脸：
+过了一会儿后，我尝试对服务器返回的内容进行解密，发现解密失败了，aes的密钥进行了变动，那么这里就出问题了，明明是几秒内的包，为什么密钥就进行了变动，而且客户端还能正常解密，这让我必须把目光放在这个key参数上了，重新抓一组干净的报文，我们来看看问题在哪儿：
+在这组数据包中，看起来存在加密的只有两个包，一个是上文提到过的serverKey，另外一个就是我们的登录包了，那么仔细查看后，我们可以发现，serverKey的报文只发送了key，没有data数据，而serverKey是存在data数据的，这里先没想明白，继续往下看：
+我们重放这个登录包，这里的secret来自serverKey响应中的key参数，直接带过来了：
+这是serverKey的数据包：
+重放后发现响应的key和data都不一样了，aes密钥如果固定的话，这里的数据应该不会变动才对，那么这样的话，基本可以确定，key和data应该是一组的，key应该就是data的密钥，不过需要进行解密，这件事其实不难，我们接着断点：
+借助v_jstools，我们直接定位到密文出现的最后位置：
+然后挨个步过，最后定位到了一个函数附近：
+这段代码很好看懂，第一个解密了key，获得了data的密钥，第二个就是解密data:
+呐我们要需要key的密钥是多少，控制台输出一下即可：
+我们再看一下加密方式是什么，rsa：
+验证一下，确实可以解密成功，那么现在有个问题存在了，rsa的解密密钥是否会进行变动呢，如果不会变动，我们的逆向到此其实就可以结束了：
+运气不错，发现rsa的解密密钥是不会变动的，可以长期使用，而请求报文中也存在同样的key，使用同样的方法获取到加密方法即可：
+这里有个意外发现，这个rsa的公钥来自serverKey的响应内容：
+那么结合目前获得的信息，大概可以还原整体逻辑：
+1、首先是serverKey请求：当前客户端会随机生成一对公私钥，发送给服务器公钥，服务器返回一个公钥，目测也是随机生成的，还有一个key参数，在后续的请求中，客户端会带有这个dd44f119-139d-44f0-83d1-2368177c8b7e，猜测是用来约定密钥参数的：
+2、后续请求，带有secret: dd44f119-139d-44f0-83d1-2368177c8b7e，data是发送的数据，使用了aes进行加密，密钥是也是随机生成的，使用第一步中服务器返回的rsa公钥进行加密。
+3、同理，服务器返回的内容，使用了先前约定的客户端公钥加密aes密钥，使用aes密钥加密数据data。
+理清了加解密逻辑，我们就可以大致琢磨一下hook代码逻辑了，首先是作为中间人的我们，如果是向服务器发送的加密后的内容，我们是无法破解的，因为我们没有服务器的私钥，但是看到客户端的原始数据对我们来说并不难，服务器返回的内容，我们可以顺利解密，因为客户端的私钥我们可以知道，同时，只要不刷新浏览器，secret: dd44f119-139d-44f0-83d1-2368177c8b7e是不会变动的，基本满足了代码逻辑需求，可以实现修改数据包重放了和返回结果的查看了。
+这里来看一个功能点，登录，由于前面的解析，其实只要请求包中的secret: 227d83cf-9959-400b-8d24-4d0de6226bed和key参数不动，我们就可以一直使用一样的aes密钥对请求包进行加密，直接改动data即可，其他东西不需要改动：
+yakit热加载配置如下，这个可以直接实现爆破：
+...</p></div><footer class=entry-footer><span title='2025-01-10 15:06:59 +0800 CST'>January 10, 2025</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;114 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 003 JS逆向实战案例一" href=http://localhost:1313/posts/skill/003-js%E9%80%86%E5%90%91%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E4%B8%80/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>002 常见前端加密算法</h2></header><div class=entry-content><p>前言 为了更好的对加密数据进行解密，了解常见的加密算法是需要的，这里只讨论数据加密，散列和编码不讨论。
+1、对称加密 AES 高级加密标准，加密和解密使用相同的密钥，作为使用者我们需要关注的参数有6个：
+1. 密钥 (Key) 2. 明文 (Plaintext) 3. 加密模式 (Cipher Mode) 常见模式： ECB（电子密码本模式）：简单，但不推荐使用（易遭受模式攻击）。 CBC（加密块链模式）：安全性高，但需要初始化向量 (IV)。 CFB（加密反馈模式）：支持流式加密。 OFB（输出反馈模式）：避免错误传播。 GCM（加洛瓦计数器模式）：提供加密和认证功能。 4. 填充方式 (Padding Scheme) 常见方式： Pkcs5 Pkcs7 AnsiX923 Iso97971 Iso10126 ZeroPadding NoPadding 5. 初始化向量 (IV) 用于某些加密模式（如 CBC 和 GCM），确保相同的明文在每次加密时生成不同的密文。 要求： 长度为 16 字节（128 位）。 必须随机生成且不可重复。 注意：IV 不需要保密，但需要在加密时和解密时一致。 6. 密文 (Ciphertext) 密文常见两种格式：Hex、Base64 在线解密：https://tool.hiofd.com/aes-encrypt-online/
+案例，来自开源靶场encrypt-labs：
+使用v_jstools js hook工具监控函数：
+定位加密函数位置：
+打上断点查看：
+这里其实比较清晰了，我们关注的几个参数：
+1、加密模式为：CBC 2、初始化向量 (IV)为：1234567890123456 3、填充方式 (Padding Scheme)为：PKCS7 4、密钥 (Key)为：1234567890123456
+...</p></div><footer class=entry-footer><span title='2025-01-08 15:06:59 +0800 CST'>January 8, 2025</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;505 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 002 常见前端加密算法" href=http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>代码审计总结</h2></header><div class=entry-content><p>前言 Java安全是一个比较庞大的东西，单论Java代码审计所需要的知识点其实较为简单，Java安全研究会比较深入，其实可以这两者可以较为明显的区分开来，一个为了业务服务，一个为了深入挖掘。单论安全服务以及渗透测试的程度，业务层面的Java代码审计足以。如果是要深入研究的话，愚见认为，不同的岗位决定对知识的掌握深度，当前岗位如果有深入需求再考虑。以下文章内容仅从快速完成代码审计的视角出发，不涉及深入的漏洞研究。
+常见组件漏洞 1、Shiro shiro的漏洞主要是两个，一个是硬编码，一个是权限绕过：
+硬编码： 硬编码漏洞大家都知道问题出在rememberMe功能上，对于shiro而言，配置rememberMe的方法大致如下：
+securityManager.setRememberMeManager(rememberMeManager());//设置rememberMeManager() 关键词：setRememberMeManager 具体实现： public CookieRememberMeManager rememberMeManager() { CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager(); cookieRememberMeManager.setCookie(rememberMeCookie()); cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ==")); return cookieRememberMeManager; } 搜索密钥关键词：setCipherKey shiro还可以通过配置文件的方式进行配置，同样可以搜索关键词： org.apache.shiro.web.mgt.DefaultWebSecurityManager org.apache.shiro.web.mgt.CookieRememberMeManager 案例：
+权限绕过： CVE 描述 影响范围 payload CVE-2020-1957 权限绕过 Shiro &lt; 1.5.2 /xxx/..;/admin/ CVE-2020-11989 CVE-2020-1957补丁绕过 Shiro &lt; 1.5.3 /;/admin/page CVE-2020-13933 CVE-2020-11989补丁绕过 Shiro &lt; 1.6.0 /admin/%3bpage CVE-2020-17523 权限绕过 Shiro &lt; 1.7.1 /admin/%20 /admin/%2e shiro配置路径匿名访问的方法大概如下： 1、集中配置
+...</p></div><footer class=entry-footer><span title='2024-12-19 14:25:59 +0800 CST'>December 19, 2024</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;938 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 代码审计总结" href=http://localhost:1313/posts/java/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>001 JS逆向</h2></header><div class=entry-content><p>前言 实战渗透项目很多时候都能遇到数据包加密的情况，很多时候会觉得棘手，因为很多改包的动作无法实现，但是这样不完全是坏处，特别是一些参数加密的时候，由于数据包加密，所以他们天然存在WAF绕过，将我们的payload加入JS加密的文本中传输，WAF几乎很难识别。
+目前有两种解决方案，一种是扣JS代码，获取所有的加密函数，中间很容易遇到函数嵌套，陷入扣代码的困局，还有一种是JS-RPC的解决方案，详情可以参考：
+https://xz.aliyun.com/t/14629?time__1311=GqAhYK0KBKAIP05DKBOxmODRrzc6LK%3D63x#toc-2 JS-RPC，详情查看使用方式配合上文食用：
+https://github.com/jxhczhl/JsRpc 简单记录一些遇到的网站，以及如何配合burp插件，方便我们进行渗透：
+一、常规扣代码解密 返回数据包中带有encrypt_data：
+浏览器ctrl+shift+f搜索encrypt_data，找到对应的JS代码文件，找到符合要求的，必须为某方法，全部包含该参数的，而非只取某个值，打上断点可以看URL是否正确，以及参数是否对应：
+控制台再次确认参数是否找正确了：
+源码里面点进去，找到相关函数：
+把相关的内容放到本地进行调试：
+这里出现错误，W未定义：
+把W也复制过来：
+继续把J也复制过来，中间还会遇到好几个函数缺失，都复制过来即可：
+这里就算是逆向完成了，接下来就要做代码层面的嵌入了，用python的execjs库即可：
+pip install pyexecjs2
+demo01.py
+import requests
+import execjs
+headers = {
+'accept': 'application/json, text/plain, */*',
+'accept-language': 'zh-CN',
+'cache-control': 'no-cache',
+'content-type': 'application/x-www-form-urlencoded',
+'origin': 'https://rxxx',
+'pragma': 'no-cache',
+'priority': 'u=1, i',
+'referer': 'https://xxx/',
+'sec-fetch-dest': 'empty',
+'sec-fetch-mode': 'cors',
+'sec-fetch-site': 'cross-site',
+'user-agent': 'Mozilla/5.0Â\xa0(compatible;Â\xa0Baiduspider-render/2.0;Â\xa0+http://www.baidu.com/search/spider.html)',
+}
+data = {
+'page': '1',
+'num': '8',
+'type': '榜单',
+}
+response = requests.post('https://xxxn/web/webSiteCaNews', headers=headers, data=data)
+encrypt_data= response.json()['encrypt_data']
+print(encrypt_data)
+decrypt = execjs.compile(open('./demo01.js', 'r', encoding='utf-8').read()).call('Z',encrypt_data)
+print(decrypt) demo01.js
+...</p></div><footer class=entry-footer><span title='2024-10-18 14:25:59 +0800 CST'>October 18, 2024</span>&nbsp;·&nbsp;10 min&nbsp;·&nbsp;2028 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 001 JS逆向" href=http://localhost:1313/posts/skill/001-js%E9%80%86%E5%90%91/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X000 HTB windows靶机总结</h2></header><div class=entry-content><p>个人打靶经历，不追求完美，只是记录，早些记录较为粗糙，见谅。
+0x001：Bastard 中等 非域 渗透路线：drupal web漏洞–>fuzz端点–>修改poc–>getshell–>提权使用winpeass–>ms15-051
+考点：drupal漏洞信息查找、fuzz的理解、poc理解和使用
+0x002：Arctic 简单 非域 渗透思路：端口扫描无果–>http访问–>发现adobe coldfusion–>漏洞信息查找–>漏洞利用getshgell–>提权使用winpeass–>ms16-032
+考点：较为简单，思路常规，正常渗透即可完成
+0x003：Devel 简单 非域 渗透思路：FTP匿名登录–>发现web网站和匿名登录目录一致–>生成asp木马反弹shell–>提权使用winpeass–>ms16-032
+考点：较为简单，思路常规，正常渗透即可完成
+0x004：Bastion 中等 非域 渗透思路：smb匿名访问–>windows image backup –>发现vhd的备份文件 –>发现是C盘–>导出SAM和SYSTEM文件–>读取hash–>破解–>提权
+提权无法直接通过脚本提示，需要查找软件目录，发现非常规软件mRemoteNG—>信息查找，发现该软件可能存在密码读取的情况–>漏洞利用，提取administrator密码成功
+考点：VHD硬盘备份、sam文件读取、mRemoteNG密码提取；知识点盲区是本靶场的核心问题。
+0x005：Blue 简单 非域 渗透思路：nmap告诉存在ms17-010–>需要了解python如何实现ms17-010
+考点：在不依赖msf的情况下，如何打ms17-010
+0x006：Bounty 简单 非域 渗透思路：目录扫描发现上传功能–>但是无法上传正常的后缀–>通过fuzz发现可上传.config后缀–>该后缀在II7.0以上可以getshell–>提权ms16-032
+考点：config getshell
+0x007：Acute 困难 域渗透（非常规打法） 端口扫描：
+发现443 https端口，浏览器访问失效，通过证书发现域名，修改hosts文件，成功访问到了网页。
+web渗透：
+首页about us，泄露部分出名员工名称，同时有个新人表单，通过新人表单，可以发现PSWA入口以及默认密码：Password1!，以及创建者主机信息：Acute-PC01以及Lois用户是网站管理员等信息；通过泄露的员工名，拼接首字母和后面的名，使用默认密码，成功撞库PSWA，获取立足点powershell，普通权限，用户名：acute\edavies。
+后渗透阶段：
+这台靶机目前最好还是使用meterpreter，完全避免使用meterpreter的话，会花费巨量时间，以及部分功能可能无法通过脚本实现。
+后渗透-横向移动阶段1：
+通过查看当前的远程登录会话，可以发现目前的用户acute\edavies是使用了RDP的，使用meterpreter的屏幕监控功能，查看当前用户的操作，发现了另外一台主机名为：ATSSERVER，以及一个相关凭证：密码：W3_4R3_th3_f0rce.用户：acute\imonks，使用powershell，申请凭证，获取到ATSSERVER普通权限，可以拿到第一个user.txt，同时使用这个用户可以发现Program Files目录下有个keepmeon目录，是用户安装的，非常规软件目录，但是当前\imonks用户没有权限进入。
+后渗透-横向移动阶段2：
+在第一个user.txt的附近有主机Acute-PC01的脚本信息，虽然密码进行了加密，但是可以修改脚本达到命令执行的效果，反弹一个脚本内用户的权限为：acute\jmorgan，属于本地管理员用户组，也就是说我们拿到了Acute-PC01主机的管理员权限。
+后渗透-横向移动阶段3：
+使用Acute-PC01主机的管理员权限dumphash，拿到本地administrator的密码，但是无法登录ATSSERVER，由于我们之前拥有ATSSERVER的imonks用户，通过查看用户目录，可以知道该主机有哪些用户登录过了，使用Acute-PC01主机的密码进行喷洒，成功获取了一个名为awallace的用户。
+后渗透-横向移动阶段4：
+awallace用户可以进去keepmeon目录，这个目录下面有个bat文件，内容为计划任务，执行者为Lois，该用户是最开始告诉我们的网站管理员，同时在域内查找用户组，可以发现，site_admin用户组，该用户组属于domain admin group用户组，也就是说这个计划任务可以让我们获得域管理员组权限，利用这个BAT提权成功，即可获得ATSSERVER主机的管理员权限，拿到最终的flag.
+考点：1、信息收集；2、pswa；3、powershell熟练度；4、内网信息收集，密码获取；5、计划任务提权
+放在最后：这个靶机的打法及其非常规，最开始的信息收集便在一直挑战打靶者的思路完善程度，内网的提权和信息收集过程，更是把两个机器当成一个整体的思维在进行渗透，信息收集的程度堪称离谱，powershell的熟悉程度也是一个不小的挑战，最后的来回横跳巨爽。
+0x008：Timelapse 简单 域渗透 渗透思路： smb匿名访问–>zip文件–>破解发现pfx文件–>再次破解–>提取出私钥和公钥–>wirm登录–>提权，通过查看powershell历史记录，发现账号密码–>发现该账号具有laps_readers组权限，可以读取administraor密码
+考点：1、PFX；2、laps_readers
+0x009：StreamIO 中等 域渗透 渗透思路： web渗透–>注意证书的域名变化–>再次目录扫描–>发现sql注入–>获取网站的用户名和密码–>通过burp爆破，成功获取到合法用户–>进入后台，注意url存在?–>fuzz发现debug参数–>是个文件包含，需要使用base64带出–>这里的思路有点非常规，爆破当前目录，发现master.php，读取它–>发现它接收post提交的参数，并执行–>通过文件包含，并携带参数，命令执行反弹shell–>读取数据库账号密码–>winrm登录–>读取浏览器密码–>获取到JDgodd用户权限–>修改CORE STAFF组的拥有者为JDgodd，把自己添加到组内，并修改dacl，读取密码
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;240 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X000 HTB windows靶机总结" href=http://localhost:1313/posts/htb/0x000-htb-windows%E9%9D%B6%E6%9C%BA%E6%80%BB%E7%BB%93/></a></article><footer class=page-footer><nav class=pagination><a class=next href=http://localhost:1313/posts/page/2/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

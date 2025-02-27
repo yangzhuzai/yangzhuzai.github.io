@@ -1,0 +1,105 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>003 JS逆向实战案例一 | 养猪日记</title>
+<meta name=keywords content><meta name=description content="前言
+实战中遇到的一个案例的分析，真实环境，厚马处理。
+Yakit+动态RSA+动态AES
+这个站的环境比较复杂，当年测试的时候也是花了一些功夫，首先不确定是burp哪里的问题，可能是指纹，或者是更底层导致的，即使使用了Awesome-TLS插件也无法正常访问，会出现以下报错：
+
+
+随后尝试使用yakit进行抓包，发现是ok的，于是就尝试使用yakit进行渗透，yakit上没有autodecoder，但是可以使用热加载技术来实现，首先还是先搞清楚是使用的什么加密：
+首先是正常访问，抓包情况如下，第二个数据包是这样的，最开始的时候并不知道什么作用，后面经过一段时间的尝试后，才知道是什么东西，这里可以先不管：
+
+
+先前正常访问了一次，这里返回去查看v_jstools的相关情况，在明文处发现了解密函数的内容：
+
+
+定位函数触发位置，其实比较清晰的知道使用的是AES算法，模式为ECB，不需要IV：
+
+
+打上断点，随便请求一个功能点，即可获得响应解密密钥Yn7OPMq3J52Hvoyh：
+
+
+就当我以为就这么结束的时候，发现这个密钥解不开请求的加密内容，难道请求的密钥和响应解密密钥不一样？于是找到了加密的函数，再次上断点查看，果然不一样，密钥为9ypTbpBcWA54LHBn：
+
+
+解密验证，基本上就得到了成功的验证，到这一步我都没觉得有什么问题，注意一下数据包中带有key参数，我之前认为是使用rsa公钥加密了的aes密钥，在我们知道aes密钥的情况下没有用，但是随后发生的事情直接打了我的脸：
+
+
+过了一会儿后，我尝试对服务器返回的内容进行解密，发现解密失败了，aes的密钥进行了变动，那么这里就出问题了，明明是几秒内的包，为什么密钥就进行了变动，而且客户端还能正常解密，这让我必须把目光放在这个key参数上了，重新抓一组干净的报文，我们来看看问题在哪儿：
+在这组数据包中，看起来存在加密的只有两个包，一个是上文提到过的serverKey，另外一个就是我们的登录包了，那么仔细查看后，我们可以发现，serverKey的报文只发送了key，没有data数据，而serverKey是存在data数据的，这里先没想明白，继续往下看：
+
+
+我们重放这个登录包，这里的secret来自serverKey响应中的key参数，直接带过来了：
+这是serverKey的数据包：
+
+
+重放后发现响应的key和data都不一样了，aes密钥如果固定的话，这里的数据应该不会变动才对，那么这样的话，基本可以确定，key和data应该是一组的，key应该就是data的密钥，不过需要进行解密，这件事其实不难，我们接着断点：
+
+
+借助v_jstools，我们直接定位到密文出现的最后位置：
+
+
+然后挨个步过，最后定位到了一个函数附近：
+这段代码很好看懂，第一个解密了key，获得了data的密钥，第二个就是解密data:
+
+
+呐我们要需要key的密钥是多少，控制台输出一下即可：
+
+
+我们再看一下加密方式是什么，rsa：
+
+
+验证一下，确实可以解密成功，那么现在有个问题存在了，rsa的解密密钥是否会进行变动呢，如果不会变动，我们的逆向到此其实就可以结束了：
+
+
+运气不错，发现rsa的解密密钥是不会变动的，可以长期使用，而请求报文中也存在同样的key，使用同样的方法获取到加密方法即可：
+这里有个意外发现，这个rsa的公钥来自serverKey的响应内容：
+
+
+那么结合目前获得的信息，大概可以还原整体逻辑：
+1、首先是serverKey请求：当前客户端会随机生成一对公私钥，发送给服务器公钥，服务器返回一个公钥，目测也是随机生成的，还有一个key参数，在后续的请求中，客户端会带有这个dd44f119-139d-44f0-83d1-2368177c8b7e，猜测是用来约定密钥参数的：
+
+
+2、后续请求，带有secret: dd44f119-139d-44f0-83d1-2368177c8b7e，data是发送的数据，使用了aes进行加密，密钥是也是随机生成的，使用第一步中服务器返回的rsa公钥进行加密。
+
+
+3、同理，服务器返回的内容，使用了先前约定的客户端公钥加密aes密钥，使用aes密钥加密数据data。
+理清了加解密逻辑，我们就可以大致琢磨一下hook代码逻辑了，首先是作为中间人的我们，如果是向服务器发送的加密后的内容，我们是无法破解的，因为我们没有服务器的私钥，但是看到客户端的原始数据对我们来说并不难，服务器返回的内容，我们可以顺利解密，因为客户端的私钥我们可以知道，同时，只要不刷新浏览器，secret: dd44f119-139d-44f0-83d1-2368177c8b7e是不会变动的，基本满足了代码逻辑需求，可以实现修改数据包重放了和返回结果的查看了。
+这里来看一个功能点，登录，由于前面的解析，其实只要请求包中的secret: 227d83cf-9959-400b-8d24-4d0de6226bed和key参数不动，我们就可以一直使用一样的aes密钥对请求包进行加密，直接改动data即可，其他东西不需要改动：
+yakit热加载配置如下，这个可以直接实现爆破："><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/skill/003-js%E9%80%86%E5%90%91%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E4%B8%80/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/skill/003-js%E9%80%86%E5%90%91%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E4%B8%80/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">003 JS逆向实战案例一</h1><div class=post-meta><span title='2025-01-10 15:06:59 +0800 CST'>January 10, 2025</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;114 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=前言>前言<a hidden class=anchor aria-hidden=true href=#前言>#</a></h1><p>实战中遇到的一个案例的分析，真实环境，厚马处理。</p><h1 id=yakit动态rsa动态aes>Yakit+动态RSA+动态AES<a hidden class=anchor aria-hidden=true href=#yakit动态rsa动态aes>#</a></h1><p>这个站的环境比较复杂，当年测试的时候也是花了一些功夫，首先不确定是burp哪里的问题，可能是指纹，或者是更底层导致的，即使使用了Awesome-TLS插件也无法正常访问，会出现以下报错：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250108202442.png alt></p><p>随后尝试使用yakit进行抓包，发现是ok的，于是就尝试使用yakit进行渗透，yakit上没有autodecoder，但是可以使用热加载技术来实现，首先还是先搞清楚是使用的什么加密：</p><p>首先是正常访问，抓包情况如下，第二个数据包是这样的，最开始的时候并不知道什么作用，后面经过一段时间的尝试后，才知道是什么东西，这里可以先不管：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109162203.png alt></p><p>先前正常访问了一次，这里返回去查看v_jstools的相关情况，在明文处发现了解密函数的内容：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109164015.png alt></p><p>定位函数触发位置，其实比较清晰的知道使用的是AES算法，模式为ECB，不需要IV：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109164233.png alt></p><p>打上断点，随便请求一个功能点，即可获得响应解密密钥Yn7OPMq3J52Hvoyh：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109164839.png alt></p><p>就当我以为就这么结束的时候，发现这个密钥解不开请求的加密内容，难道请求的密钥和响应解密密钥不一样？于是找到了加密的函数，再次上断点查看，果然不一样，密钥为9ypTbpBcWA54LHBn：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109165114.png alt></p><p>解密验证，基本上就得到了成功的验证，到这一步我都没觉得有什么问题，注意一下数据包中带有key参数，我之前认为是使用rsa公钥加密了的aes密钥，在我们知道aes密钥的情况下没有用，但是随后发生的事情直接打了我的脸：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109165634.png alt></p><p>过了一会儿后，我尝试对服务器返回的内容进行解密，发现解密失败了，aes的密钥进行了变动，那么这里就出问题了，明明是几秒内的包，为什么密钥就进行了变动，而且客户端还能正常解密，这让我必须把目光放在这个key参数上了，重新抓一组干净的报文，我们来看看问题在哪儿：</p><p>在这组数据包中，看起来存在加密的只有两个包，一个是上文提到过的serverKey，另外一个就是我们的登录包了，那么仔细查看后，我们可以发现，serverKey的报文只发送了key，没有data数据，而serverKey是存在data数据的，这里先没想明白，继续往下看：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109233141.png alt></p><p>我们重放这个登录包，这里的secret来自serverKey响应中的key参数，直接带过来了：</p><p>这是serverKey的数据包：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109233701.png alt></p><p>重放后发现响应的key和data都不一样了，aes密钥如果固定的话，这里的数据应该不会变动才对，那么这样的话，基本可以确定，key和data应该是一组的，key应该就是data的密钥，不过需要进行解密，这件事其实不难，我们接着断点：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109233518.png alt></p><p>借助v_jstools，我们直接定位到密文出现的最后位置：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109234106.png alt></p><p>然后挨个步过，最后定位到了一个函数附近：</p><p>这段代码很好看懂，第一个解密了key，获得了data的密钥，第二个就是解密data:</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109234441.png alt></p><p>呐我们要需要key的密钥是多少，控制台输出一下即可：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109234654.png alt></p><p>我们再看一下加密方式是什么，rsa：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109234949.png alt></p><p>验证一下，确实可以解密成功，那么现在有个问题存在了，rsa的解密密钥是否会进行变动呢，如果不会变动，我们的逆向到此其实就可以结束了：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250109235804.png alt></p><p>运气不错，发现rsa的解密密钥是不会变动的，可以长期使用，而请求报文中也存在同样的key，使用同样的方法获取到加密方法即可：</p><p>这里有个意外发现，这个rsa的公钥来自serverKey的响应内容：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110002359.png alt></p><p>那么结合目前获得的信息，大概可以还原整体逻辑：</p><p>1、首先是serverKey请求：当前客户端会随机生成一对公私钥，发送给服务器公钥，服务器返回一个公钥，目测也是随机生成的，还有一个key参数，在后续的请求中，客户端会带有这个dd44f119-139d-44f0-83d1-2368177c8b7e，猜测是用来约定密钥参数的：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110112003.png alt></p><p>2、后续请求，带有secret: dd44f119-139d-44f0-83d1-2368177c8b7e，data是发送的数据，使用了aes进行加密，密钥是也是随机生成的，使用第一步中服务器返回的rsa公钥进行加密。</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110113037.png alt></p><p>3、同理，服务器返回的内容，使用了先前约定的客户端公钥加密aes密钥，使用aes密钥加密数据data。</p><p>理清了加解密逻辑，我们就可以大致琢磨一下hook代码逻辑了，首先是作为中间人的我们，如果是向服务器发送的加密后的内容，我们是无法破解的，因为我们没有服务器的私钥，但是看到客户端的原始数据对我们来说并不难，服务器返回的内容，我们可以顺利解密，因为客户端的私钥我们可以知道，同时，只要不刷新浏览器，secret: dd44f119-139d-44f0-83d1-2368177c8b7e是不会变动的，基本满足了代码逻辑需求，可以实现修改数据包重放了和返回结果的查看了。</p><p>这里来看一个功能点，登录，由于前面的解析，其实只要请求包中的secret: 227d83cf-9959-400b-8d24-4d0de6226bed和key参数不动，我们就可以一直使用一样的aes密钥对请求包进行加密，直接改动data即可，其他东西不需要改动：</p><p>yakit热加载配置如下，这个可以直接实现爆破：</p><pre tabindex=0><code>{&#34;data&#34;:&#34;{{yak(handle|{&#34;mobile&#34;:&#34;{{payload(user_top10)}}&#34;,&#34;password&#34;:&#34;{{payload(pass_top25)}}&#34;,&#34;wechatProId&#34;:&#34;&#34;})}}&#34;,&#34;key&#34;:&#34;J/7yaz3UskJHxGByhVKGYi37RRmUA6A89AOAIgs2LfImf3GlpuBiRwYP1NW0l4eWGHKdG12ECNjlqsvbYzQmeaynyWHYCs6iT1AbmIPPvWRMC5ZCYx9qoHLX6QU6+l9zYuFJ8nrG8lSiK6/qAkcH9nf05KEHABUBtKMP0o0adJU=&#34;}
+</code></pre><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110161901.png alt></p><p>热加载代码，在对加密逻辑完全理解后，我们的代码其实只是实现了一个aesecb加密：</p><pre tabindex=0><code>handle = func(param) {
+
+    // 在这里可以直接返回一个字符串
+
+    key = &#34;L63SjjyEiJPIOvNq&#34;
+
+    data = codec.AESECBEncrypt(key /*type: []byte*/, param, nil /*type: []byte*/)~
+
+    data1 = codec.EncodeBase64(data)
+
+    return  string(data1)
+
+}
+</code></pre><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110162141.png alt></p><p>如果加密失败的话，返回的是网络不给力的错误：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110162255.png alt></p><p>修改一下请求，测试一下，成功了：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110163046.png alt></p><p>接下来是对响应的处理：</p><pre tabindex=0><code>mirrorHTTPFlow = func(req, rsp, params) {
+
+    _, body = poc.Split(rsp)
+
+    body = json.loads(body)
+
+    data =  body.data
+
+    key = body.key
+
+    PRIVATE_KEY = &#34;-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgG2B6cIVSDO5MidJRXIoylW0W51fTsim6V5098HGYNd3tV/nzVpNcvxmsVS88sbYAYhtQd/orsAAnuh7Y16ZSGSod0mSYOGsS39TKK0aGNXT9ljKTrk4f1smYqT0P5O8pBNaq8IHnf1BjGne5gp4MpUYEuUIb3VSA5cxiQrJubbrAgMBAAECgYAPKQokrW+WgZAY8kLkABOq89IvIk+05a6vPgBC2mTzz4XTpjK+yrQdj1YDhjkSIDtuGLoi9oKi4DMful1SbmQgJOpqOL3onTwj3woia/xz7ol5CGaqbhV10h+Ie/9TJLRg7hwiqzEI+t6LXdQaa7YyHep6ZzHb9Z70lmgCu2zHsQJBALBYywNV2sioIxjYm5NqMfGV3PMwCBnHo6gV1m+53/ngowVBUHetjUbWdBOY60SDYwQcbGgSTqxWitbDzniK02MCQQCe+GZCvpSyWjj0Bw/NMkvhUk2u5JnK8tv85LPIVGfU8qAlMYn83BbSHznPt8UO7iZAo7S05bz+le8OfKIM29jZAkAKhLFPOJ69GzJEuB7Hcy0ZcMvmAXZqOzsqumq47UhLujdfB99J1CM6F26DALr/siqEw0FAD997bgoH91PoYrdrAkBBtqb3AjcPfvI6Fc03Yooxa0dHe6IDXd8ILDYRIqsFQQJoPZEv4H7ifxvzvKCN6m4PnFxvxuQYTTxTvbtzG1IJAkEAiRQWwyuAC9FAbZsHGz78vg3gCkOSRzZJZp72ALSYIjGfXBIoI/hltogvd7ja66+xEqu7OyI9v6sG3qP9lyem2g==\n-----END RSA PRIVATE KEY-----&#34;
+
+    aeskey = codec.RSADecryptWithPKCS1v15(PRIVATE_KEY, codec.DecodeBase64(key)~)~
+
+    data = codec.AESECBDecrypt(aeskey /*type: []byte*/, codec.DecodeBase64(data /*type: string*/)~, iv /*type: []byte*/)~
+
+    return  string(data)
+
+}
+</code></pre><p>值得注意的是，Yak语言本身不难理解，但是很多细节需要注意：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110184448.png alt></p><p>解密成功：</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110184631.png alt></p><p>ok，到这里基本上已经完成了，但是局限性还是有的，由于网站密钥的获取机制，不能点击刷新，否则rsa密钥变动就不好了，如果要修改其他的请求包，而不想抓取aes密钥的话，直接把这里的key覆盖过去即可。</p><p>然后是自动化工具的引入，把未加密的流量导入到自动化工具中，然后自动化工具再引入到yakit，并由yakit处理完响应内容，再返回给自动化工具即可，yakit支持这种处理方式，不过这里的请求数据包无法全自动解密，这里不太适用。</p><p><img loading=lazy src=/skills_img/1_img/Pasted%20image%2020250110190050.png alt></p><p>说在最后，yakit本身做得挺不错的，但是yakit的生态其实还有待完善，如果不是burp在这个站点的抓包问题，还是很少考虑到yakit。上述的功能，burp都有相应的插件可供实现，而且由于学习成本的因素，以及功能实现的代码案例数量，个人还是更倾向于Python而不是Yaklang，当然，这只是个人喜好，毕竟都可以完成需求。</p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=next href=http://localhost:1313/posts/skill/002-%E5%B8%B8%E8%A7%81%E5%89%8D%E7%AB%AF%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/><span class=title>Next »</span><br><span>002 常见前端加密算法</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

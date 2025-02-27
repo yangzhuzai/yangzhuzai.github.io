@@ -1,0 +1,97 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>Posts | 养猪日记</title>
+<meta name=keywords content><meta name=description content="Posts - 养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=http://localhost:1313/posts/index.xml><link rel=alternate hreflang=en href=http://localhost:1313/posts/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a></div><h1>Posts</h1></header><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x037 Sunset Twilight</h2></header><div class=entry-content><p>端口扫描 渗透 21匿名登录失败：
+mysql无密码直接登录成功，翻查敏感信息：
+不允许写入：
+数据库也没有其他信息了，暂时先放一下，看一下smb，疑似根目录：
+挂载下来，慢慢看：
+用户名：miguel
+翻查敏感目录，发现web目录存在写入权限：
+反弹shell:
+提权 跑完一圈脚本后，咋感觉提权点有点多呢：
+这个密码看起来是破解出来了，咋用不了呢：
+算了，用openssl生成一个passwd的密码，然后修改passwd文件，就可以提权了：
+root:$1$ZytY2Uoj$1.aU20M/0/xD4Wo1ymW9Z0:0:0:root:/root:/bin/bash 密码Abcd1234
+邪门儿，我咋先拿了root再拿的用户权限呢，我去看看其他人咋做的
+其他人是web渗透拿到的，但是好像也没去拿用户权限</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;18 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x037 Sunset Twilight" href=http://localhost:1313/posts/vulnhub/0x037-sunset-twilight/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X038 Tally</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的服务：
+ftp、http、smb、mysql、winrm
+先看ftp:
+smb：
+只能看看http了：
+我扫了半天也没扫出东西来，看了才知道，得用其他字典:
+/usr/share/wordlists/dirb/vulns/sharepoint.txt
+这三个都可以用：
+发现文档：
+有密码了，但是好像没名字
+先试试，但是失败了，继续信息收集，通过删除#号前面的内容，可以成功看到信息：
+用户名为：ftp_user，同时告诉我们一个信息，他们会定时查看htlm文件，在Intranet文件夹中，可能可以钓鱼：
+发现用户名：
+继续信息收集，发现一个keepass软件：
+这个软件好像是个密码保存软件：
+并且查询后发现存储的密码是可以破解的：
+simplementeyo (tim)
+通过keepass2读取文件：
+winrm登录失败了，但是成功登录了smb，说实话，东西太多了，这样增加的难度我不是很喜欢：
+在zz_Archived中发现密码：
+但是好像不对：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;35 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X038 Tally" href=http://localhost:1313/posts/htb/0x038-tally/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x038 Ted 1</h2></header><div class=entry-content><p>端口扫描 渗透 看样子目录没扫出什么东西：
+有些时候很想要报警啊，试了半天，没想到是要大写啊：
+8C6976E5B5410415BDE908BD4DEE15DFB167A9C873FC4BB8A81F6F2AB448A918
+文件包含：
+远程文件包含尝试：
+http看样子是不行的：
+但是看这个是个simple file brower，会不会是走sftp协议的：
+可惜一直不让我看源码，一看就卡住：
+得用伪协议改一下
+php://filter/read=convert.base64-encode/resource= 弄是弄出来了，没发现可以利用的地方啊，代码审计吧：
+home.php
+authenticate.php
+没看懂，这里是search了存放session的文件嘛，cookie里面的user_pref值会赋值给session里面的user_pref，这个代码我看懂了：
+但是这存放session的路径哪儿来的？？难不成是默认的？后面看了一下，还真的是:
+Session的存储位置获取：一般是通过以下两种方式。
+（1）通过phpinfo的信息可以获取到Session的存储位置。phpinfo中的session.save_path存储的是Session的存放位置。通过phpinfo的信息获取到session.save_path为/var/lib/php/session。
+（2）通过猜测默认的Session存放位置进行尝试。通常Linux下Session默认存储在/var/lib/php/session目录下。默认存储Session存放位置。
+直接PHP弹shell吧：
+提权</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;24 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x038 Ted 1  " href=http://localhost:1313/posts/vulnhub/0x038-ted-1--/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x039 Tr0ll</h2></header><div class=entry-content><p>端口扫描 渗透 这台靶机的思路比较骚，隐藏的信息也比较多：
+挨个端口看：
+21发现pacp包
+然后是pacp包的查看方式，我最开始使用的是whireshark，然后看了半天找不到重点，后面才知道可以用strings慢了来看：
+然后就可以看到路径了，由于web之前扫了半天没发现可用信息，这是个web目录：
+这个东西打开运行，看起来真的有可能是内存地址，但是实际上是个web目录，
+目录下面两个文件：
+第一个显然是用户名：
+第二个说有密码，
+然后就是SSH爆破，
+由于目标机器开了一些放爆破的设置，如果使用medusa爆破就会出现直接卡住的情况：
+如果使用hydra去爆破，不清楚是不是因为hydra速度较快还是顺序问题，就可以直接爆破成功：
+后面看了视频，最好的解决方式是crackmapexec的排除法，将已经爆破了的账户删掉，爆破剩下的账户，最后就可以排除出来合法的用户了，可能是因为crackmapexec显示的内容更加细节一些：
+可以看到前面的都是认证失败，后面的才是连接失败
+提权 很好，这个脏牛又把机器打崩了
+坑点4 会话时间很短，很容易就断了
+最后是37292这个打成功了
+[CVE-2015-1328] overlayfs
+然后是计划任务也可以提权，可以直接弹shell、</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;24 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x039 Tr0ll" href=http://localhost:1313/posts/vulnhub/0x039-tr0ll/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x040 blackrose-1,509</h2></header><div class=entry-content><p>这次网络修复非常奇葩，记录一下:
+i='
+shift 7 = /
+/ = .
+shift / = :
+= = - 端口扫描 渗透 由于没有任何凭据，直接尝试爆破，3306不允许连接，那么重点就是web了
+80渗透，扫描基本无果：
+用户名枚举，有admin账户：
+好吧，完全没有思路过后，我看了WP，目前觉得该靶机可能不太适合我，超纲了，并且后面证明这个地方校验很强，没法枚举。
+然后时隔一个月，再次打开这个靶机：
+首先是自己注册的账户，进去是没有东西的，也就是说必须要admin用户登录进去，同时也有很明显的用户名枚举，所以是可以知道用户名是admin的：
+这里的知识点是，后端采用的是
+int strcmp(string $str1, string $str2) 参数 str1第一个字符串。str2第二个字符串。如果 str1 小于 str2 返回 &lt; 0；如果 str1 大于 str2 返回 > 0；
+当这个函数接受到了不符合的类型，这个函数将发生错误，但是在5.3之前的php中，显示了报错的警告信息后，将
+只要我们$_POST[‘password’]是一个
+通过拦截修改数据包就可以登录后台：
+就可以看到如下：
+然后这里有个输入框：可以执行命令：
+但是只能执行whoami，执行其他的就会提示签名错误：
+那么现在就是破解这个签名，看看这个签名写的啥，加密方式为
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;112 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x040 blackrose-1,509" href=http://localhost:1313/posts/vulnhub/0x040-blackrose-1509/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=http://localhost:1313/posts/page/14/>«&nbsp;Prev&nbsp;
+</a><a class=next href=http://localhost:1313/posts/page/16/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

